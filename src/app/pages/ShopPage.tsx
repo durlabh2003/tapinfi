@@ -1,0 +1,152 @@
+import { Link } from 'react-router-dom';
+import Header from '../components/Header';
+import ScrollReveal from '../components/ScrollReveal';
+import imgWhiteGloss from '../../imports/Frame1-1/e436e6b89b49a3d046b520fae180b3d8e2ef5396.png';
+import imgMatteBlack from '../../imports/Frame1-1/b70470e67d7a77c2b65e8724e75b75f2497ba316.png';
+import imgWooden from '../../imports/Frame1-1/1d69cb9a0b8c7c77c84dc373238e43c2a1424558.png';
+
+const SHOP_BTN = 'linear-gradient(63.8351deg, rgb(90, 164, 244) 14.564%, rgb(14, 45, 110) 74.668%)';
+
+const products = [
+  { id: 'white-gloss', name: 'PVC GLOSSY',  price: 499,  img: imgWhiteGloss },
+  { id: 'matte-black', name: 'MATTE BLACK', price: 799,  img: imgMatteBlack },
+  { id: 'wooden',      name: 'WOODEN',      price: 1199, img: imgWooden     },
+];
+
+const features = [
+  { icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1', title: 'Premium Quality', desc: 'High-quality materials with custom printing options'           },
+  { icon: 'M13 10V3L4 14h7v7l9-11h-7z',                                                                                                                          title: 'Fast Delivery',   desc: 'Quick shipping across India within 5–7 business days'      },
+  { icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z',                                                            title: 'Secure Payment',  desc: 'Safe and secure payment options with buyer protection'     },
+];
+
+export default function ShopPage() {
+  return (
+    <div className="bg-white min-h-screen">
+      <Header />
+
+      <main className="pt-[110px]">
+        {/* ── Hero ─────────────────────────────────────────── */}
+        <div className="px-4 sm:px-8 lg:px-20 py-12 lg:py-16 text-center">
+          <ScrollReveal animation="fade-up">
+            <h1
+              className="text-[28px] sm:text-[36px] lg:text-[48px] text-[#100425] mb-4"
+              style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700 }}
+            >
+              Shop Our Products
+            </h1>
+          </ScrollReveal>
+          <ScrollReveal animation="fade-up" delay={120}>
+            <p
+              className="text-[16px] sm:text-[18px] lg:text-[20px] text-[#656565] max-w-[700px] mx-auto"
+              style={{ fontFamily: "'Poppins', sans-serif" }}
+            >
+              Premium NFC business cards designed to make networking seamless and eco-friendly
+            </p>
+          </ScrollReveal>
+        </div>
+
+        {/* ── Products Grid ─────────────────────────────────── */}
+        <div className="px-4 sm:px-8 lg:px-20 pb-16">
+          <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
+            {products.map((p, i) => (
+              <ScrollReveal key={p.id} animation="fade-up" delay={i * 100}>
+                <Link to={`/product/${p.id}`} className="group block h-full">
+                  <div className="border-2 border-[#5aa4f4]/40 rounded-[25px] p-6 h-full
+                      flex flex-col cursor-pointer
+                      transition-all duration-300
+                      hover:border-[#5aa4f4]
+                      hover:-translate-y-2
+                      hover:shadow-[0_20px_40px_rgba(90,164,244,0.18)]
+                      card-glow">
+                    <p className="text-[18px] text-[#0e2d6e] mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
+                      {p.name}
+                    </p>
+                    <div className="flex-1 flex items-center justify-center py-4 overflow-hidden rounded-xl">
+                      <img
+                        alt={`${p.name} NFC Card`}
+                        className="max-h-[240px] w-auto object-contain
+                          transition-transform duration-500
+                          group-hover:scale-110"
+                        src={p.img}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between mt-4">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-[15px] text-[#0e2d6e]" style={{ fontFamily: "'Inter', sans-serif" }}>INR</span>
+                        <span className="text-[28px] text-[#0e2d6e] font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>{p.price}</span>
+                      </div>
+                      <div
+                        className="h-[36px] rounded-[100px] px-5 flex items-center justify-center cursor-pointer
+                          transition-all duration-200
+                          hover:opacity-90 hover:scale-105 btn-shimmer"
+                        style={{ backgroundImage: SHOP_BTN }}
+                      >
+                        <span className="text-[13px] text-white font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>SHOP NOW</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Features ──────────────────────────────────────── */}
+        <div className="bg-gray-50 px-4 sm:px-8 lg:px-20 py-16">
+          <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            {features.map((f, i) => (
+              <ScrollReveal key={f.title} animation="zoom" delay={i * 100}>
+                <div className="text-center p-8 bg-gradient-to-br from-[#5aa4f4]/10 to-[#0e2d6e]/10 rounded-2xl
+                    transition-all duration-300
+                    hover:shadow-xl hover:-translate-y-1
+                    hover:from-[#5aa4f4]/20 hover:to-[#0e2d6e]/20">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-r from-[#5aa4f4] to-[#0e2d6e]
+                      flex items-center justify-center mx-auto mb-4
+                      transition-transform duration-300 hover:scale-110">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={f.icon} />
+                    </svg>
+                  </div>
+                  <h3 className="text-[20px] text-[#0e2d6e] mb-3 font-bold" style={{ fontFamily: "'Inter', sans-serif" }}>{f.title}</h3>
+                  <p className="text-[15px] text-[#656565]" style={{ fontFamily: "'Inter', sans-serif" }}>{f.desc}</p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Footer ────────────────────────────────────────── */}
+        <div className="bg-[#100425] py-12 px-4 sm:px-8 lg:px-20">
+          <div className="max-w-[1280px] mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
+              {[
+                { heading: 'Customer Care', content: <p className="text-[15px] text-white/70" style={{ fontFamily: "'Inter', sans-serif" }}>+91 0000 0000</p> },
+                { heading: 'Quick Links', content: (
+                  <div className="space-y-2">
+                    <Link to="/shop" className="block text-[15px] text-white/70 hover:text-[#5aa4f4] transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>Shop</Link>
+                    <p className="text-[15px] text-white/70" style={{ fontFamily: "'Inter', sans-serif" }}>Analytics</p>
+                    <p className="text-[15px] text-white/70" style={{ fontFamily: "'Inter', sans-serif" }}>Your Orders</p>
+                  </div>
+                )},
+                { heading: 'Contact', content: <p className="text-[15px] text-white/70 sm:text-right" style={{ fontFamily: "'Inter', sans-serif" }}>tapinfi@gmail.com</p> },
+              ].map((col) => (
+                <div key={col.heading} className={col.heading === 'Contact' ? 'sm:text-right' : ''}>
+                  <h3 className="text-[16px] text-white mb-3 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>{col.heading}</h3>
+                  {col.content}
+                </div>
+              ))}
+            </div>
+            <div className="border-t border-white/20 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+              <p className="text-[14px] text-white/60" style={{ fontFamily: "'Inter', sans-serif" }}>Tapinfi 2025. All Rights Reserved</p>
+              <div className="flex gap-6">
+                {['Refund Policy', 'Privacy Policy', 'Terms & Conditions'].map((t) => (
+                  <p key={t} className="text-[13px] text-white/60 hover:text-white cursor-pointer transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>{t}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

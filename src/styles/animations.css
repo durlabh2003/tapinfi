@@ -1,0 +1,246 @@
+/* ── Scroll-reveal keyframes ──────────────────────────────── */
+@keyframes sr-fade-up {
+  from { opacity: 0; transform: translateY(36px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes sr-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes sr-slide-left {
+  from { opacity: 0; transform: translateX(-36px); }
+  to   { opacity: 1; transform: translateX(0);     }
+}
+
+@keyframes sr-slide-right {
+  from { opacity: 0; transform: translateX(36px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+@keyframes sr-zoom {
+  from { opacity: 0; transform: scale(0.93); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+
+/* ── Animation utility classes ──────────────────────────── */
+.sr-hidden  { opacity: 0; }
+
+.sr-fade-up    { animation: sr-fade-up    0.65s cubic-bezier(.22,.68,0,1.2) both; }
+.sr-fade-in    { animation: sr-fade-in    0.55s ease                        both; }
+.sr-slide-left { animation: sr-slide-left 0.65s cubic-bezier(.22,.68,0,1.2) both; }
+.sr-slide-right{ animation: sr-slide-right 0.65s cubic-bezier(.22,.68,0,1.2) both; }
+.sr-zoom       { animation: sr-zoom       0.55s cubic-bezier(.22,.68,0,1.2) both; }
+
+/* ── Shimmer button effect ────────────────────────────────── */
+@keyframes shimmer {
+  from { background-position: -200% center; }
+  to   { background-position:  200% center; }
+}
+
+.btn-shimmer {
+  background-size: 200% auto;
+  transition: background-position 0.5s ease;
+}
+.btn-shimmer:hover {
+  animation: shimmer 1.4s linear infinite;
+}
+
+/* ── Glow pulsing card highlight ───────────────────────────── */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(90, 164, 244, 0); }
+  50%       { box-shadow: 0 0 24px 4px rgba(90, 164, 244, 0.25); }
+}
+.card-glow:hover {
+  animation: glow-pulse 1.8s ease infinite;
+}
+
+/* ── Homepage: page entrance ─────────────────────────────── */
+@keyframes page-enter {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.page-enter {
+  animation: page-enter 1s cubic-bezier(.22,.68,0,1.1) both;
+  transform-origin: top center;
+}
+
+/* ── Homepage: CTA button pulsing glow ring ──────────────── */
+@keyframes cta-glow {
+  0%, 100% { box-shadow: 0 0 0 0   rgba(90,164,244,0.55); }
+  50%       { box-shadow: 0 0 0 14px rgba(90,164,244,0);   }
+}
+.cta-pulse {
+  animation: cta-glow 2.2s ease-in-out infinite;
+}
+
+/* ── Homepage: gentle float for hero elements ────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+.float {
+  animation: float 3.5s ease-in-out infinite;
+}
+
+/* ── Homepage: product card hover ring ───────────────────── */
+.product-overlay {
+  border: 2px solid transparent;
+  border-radius: 25px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.product-overlay:hover {
+  border-color: rgba(90, 164, 244, 0.55);
+  box-shadow: 0 0 0 4px rgba(90, 164, 244, 0.12),
+              0 16px 40px rgba(90, 164, 244, 0.18);
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* Scroll-reveal: section headings (data-sr)                   */
+/* ─────────────────────────────────────────────────────────── */
+[data-sr] {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity  0.75s cubic-bezier(.22,.68,0,1.1),
+    transform 0.75s cubic-bezier(.22,.68,0,1.1);
+}
+[data-sr].is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* Scroll-reveal: glass product cards (data-sr-card)           */
+/* Starts invisible, fades to opacity-50 (matches Figma)       */
+/* ─────────────────────────────────────────────────────────── */
+[data-sr-card] {
+  opacity: 0 !important;
+  transform: translateY(44px);
+  transition:
+    opacity  0.75s cubic-bezier(.22,.68,0,1.1),
+    transform 0.75s cubic-bezier(.22,.68,0,1.1);
+}
+[data-sr-card].is-visible {
+  opacity: 0.5 !important;  /* restore Figma's opacity-50 */
+  transform: translateY(0);
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* Homepage transparent overlay button hover effects           */
+/* ─────────────────────────────────────────────────────────── */
+
+/* Large CTA buttons: SHOP NOW hero & GET STARTED */
+.hp-btn {
+  display: block;
+  border-radius: 100px;
+  transition:
+    transform     0.2s cubic-bezier(.22,.68,0,1.2),
+    box-shadow    0.2s ease,
+    background    0.2s ease;
+}
+.hp-btn:hover {
+  transform: scale(1.06);
+  background: rgba(255, 255, 255, 0.10) !important;
+  box-shadow:
+    0 10px 36px rgba(90, 164, 244, 0.50),
+    0 0 0 4px  rgba(90, 164, 244, 0.28);
+}
+.hp-btn:active {
+  transform: scale(0.97);
+}
+
+/* Small SHOP NOW buttons on product cards */
+.hp-btn-sm {
+  display: block;
+  border-radius: 100px;
+  transition:
+    transform  0.2s cubic-bezier(.22,.68,0,1.2),
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+.hp-btn-sm:hover {
+  transform: scale(1.08);
+  background: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 6px 22px rgba(90, 164, 244, 0.52);
+}
+.hp-btn-sm:active {
+  transform: scale(0.95);
+}
+
+/* LOGIN / nav button overlay */
+.hp-login-btn {
+  border-radius: 50px;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+.hp-login-btn:hover {
+  background: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.55), 0 0 18px rgba(255,255,255,0.18);
+  transform: scale(1.04);
+}
+
+/* ─────────────────────────────────────────────────────────── */
+/* FAQ Accordion                                               */
+/* ─────────────────────────────────────────────────────────── */
+.faq-item {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.faq-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: opacity 0.2s ease;
+}
+
+.faq-btn:hover {
+  opacity: 0.78;
+}
+
+/* Chevron rotates when open */
+.faq-chevron {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition:
+    transform 0.38s cubic-bezier(.22,.68,0,1.2),
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+.faq-chevron.open {
+  transform: rotate(180deg);
+  background: rgba(90, 164, 244, 0.25);
+  border-color: rgba(90, 164, 244, 0.6);
+}
+
+/* Answer panel — max-height accordion trick */
+.faq-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.faq-body.open {
+  max-height: 180px;
+}
+
+/* Divider line */
+.faq-divider {
+  display: none; /* handled by border-bottom on .faq-item */
+}
+
+
+
+
