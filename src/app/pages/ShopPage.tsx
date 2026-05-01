@@ -1,17 +1,9 @@
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import ScrollReveal from '../components/ScrollReveal';
-import imgWhiteGloss from '../../imports/Frame1-1/e436e6b89b49a3d046b520fae180b3d8e2ef5396.png';
-import imgMatteBlack from '../../imports/Frame1-1/b70470e67d7a77c2b65e8724e75b75f2497ba316.png';
-import imgWooden from '../../imports/Frame1-1/1d69cb9a0b8c7c77c84dc373238e43c2a1424558.png';
+import { products } from '../data/products';
 
 const SHOP_BTN = 'linear-gradient(63.8351deg, rgb(90, 164, 244) 14.564%, rgb(14, 45, 110) 74.668%)';
-
-const products = [
-  { id: 'white-gloss', name: 'PVC GLOSSY',  price: 499,  img: imgWhiteGloss },
-  { id: 'matte-black', name: 'MATTE BLACK', price: 799,  img: imgMatteBlack },
-  { id: 'wooden',      name: 'WOODEN',      price: 1199, img: imgWooden     },
-];
 
 const features = [
   { icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1', title: 'Premium Quality', desc: 'High-quality materials with custom printing options'           },

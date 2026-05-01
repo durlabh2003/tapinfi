@@ -116,14 +116,14 @@
 /* Starts invisible, fades to opacity-50 (matches Figma)       */
 /* ─────────────────────────────────────────────────────────── */
 [data-sr-card] {
-  opacity: 0 !important;
+  opacity: 0;
   transform: translateY(44px);
   transition:
     opacity  0.75s cubic-bezier(.22,.68,0,1.1),
     transform 0.75s cubic-bezier(.22,.68,0,1.1);
 }
 [data-sr-card].is-visible {
-  opacity: 0.5 !important;  /* restore Figma's opacity-50 */
+  opacity: 1;
   transform: translateY(0);
 }
 

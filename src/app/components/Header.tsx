@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import imgLogo from '../../imports/Frame1-1/f00b995e56d83fe3818dbb20f3489f43c9842118.png';
+import { useCart } from '../context/CartContext';
 
 const NAV_FONT: React.CSSProperties = {
   fontFamily: "'Inter', sans-serif",
@@ -12,6 +13,7 @@ export default function Header() {
   const location = useLocation();
   const isHome = location.pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
+  const { cartCount, setIsCartOpen } = useCart();
 
   const linkClass = (path: string) =>
     `transition-colors duration-200 ${
@@ -45,14 +47,24 @@ export default function Header() {
               <Link to="/shop" className={linkClass('/shop')} style={NAV_FONT}>SHOP</Link>
               <Link to="/blogs" className={linkClass('/blogs')} style={NAV_FONT}>BLOGS</Link>
               <Link to="/about" className={linkClass('/about')} style={NAV_FONT}>ABOUT US</Link>
+
             </div>
 
             {/* Cart icon */}
-            <button aria-label="Cart" className="text-white hover:text-[#5aa4f4] transition-colors">
+            <button 
+              aria-label="Cart" 
+              className="text-white hover:text-[#5aa4f4] transition-colors relative"
+              onClick={() => setIsCartOpen(true)}
+            >
               <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#5aa4f4] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#100425]">
+                  {cartCount}
+                </span>
+              )}
             </button>
 
             {/* Login */}
@@ -67,11 +79,20 @@ export default function Header() {
 
           {/* Mobile right actions */}
           <div className="flex items-center gap-4 lg:hidden">
-            <button aria-label="Cart" className="text-white hover:text-[#5aa4f4] transition-colors">
+            <button 
+              aria-label="Cart" 
+              className="text-white hover:text-[#5aa4f4] transition-colors relative"
+              onClick={() => setIsCartOpen(true)}
+            >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#5aa4f4] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#100425]">
+                  {cartCount}
+                </span>
+              )}
             </button>
             <button
               className="text-white p-1"
@@ -102,6 +123,7 @@ export default function Header() {
           <Link to="/shop" className={linkClass('/shop')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>SHOP</Link>
           <Link to="/blogs" className={linkClass('/blogs')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>BLOGS</Link>
           <Link to="/about" className={linkClass('/about')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>ABOUT US</Link>
+
           <Link
             to="/login"
             className="text-center border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 mt-2"
