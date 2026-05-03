@@ -62,7 +62,6 @@ export default function OrderSummaryPage() {
   };
 
   const handleConfirmAndPay = () => {
-    console.log("Using Razorpay Key:", import.meta.env.VITE_RAZORPAY_KEY_ID);
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
       amount: finalTotal * 100, // Amount in paise
