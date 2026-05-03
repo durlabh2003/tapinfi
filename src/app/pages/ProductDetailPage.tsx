@@ -225,11 +225,6 @@ export default function ProductDetailPage() {
                   {/* Decorative element behind preview */}
                   <div className="absolute -z-10 w-full h-full bg-[#5aa4f4]/10 blur-[100px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
                 </div>
-                  </div>
-                  
-                  {/* Decorative element behind phone */}
-                  <div className="absolute -z-10 w-[450px] h-[450px] bg-[#5aa4f4]/20 blur-[120px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse" />
-                </div>
 
                 {/* Right: Theme Selection Grid */}
                 <div className="lg:w-1/2 flex flex-col h-full w-full">
@@ -252,7 +247,7 @@ export default function ProductDetailPage() {
                             className={`w-full aspect-square rounded-[36px] bg-gray-50 shadow-xl transition-all duration-500 relative group overflow-hidden ${selectedThemeId === theme.id ? 'ring-[6px] ring-[#5aa4f4] ring-offset-[6px] scale-105' : 'hover:scale-105 hover:shadow-2xl'} ${showThemeError && !selectedThemeId ? 'ring-2 ring-red-400 animate-pulse' : ''}`}
                           >
                             {theme.cover_photo ? (
-                              <img src={theme.cover_photo} alt={theme.name} className="absolute inset-0 w-full h-full object-cover" />
+                              <img src={theme.cover_photo} alt={theme.name} className="absolute inset-0 w-full h-full object-contain p-1" />
                             ) : (
                               <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-400 flex items-center justify-center text-white font-bold">No Image</div>
                             )}
