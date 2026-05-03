@@ -202,55 +202,29 @@ export default function ProductDetailPage() {
 
             <ScrollReveal delay={200}>
               <div className="bg-white rounded-[48px] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] border border-gray-100 p-8 lg:p-20 flex flex-col lg:flex-row gap-16 lg:gap-24 items-center">
-                {/* Left: Large Phone Preview */}
-                <div className="lg:w-1/2 flex justify-center relative scale-90 lg:scale-100">
-                  <div className="w-[320px] h-[640px] border-[12px] border-gray-900 rounded-[56px] overflow-hidden relative shadow-2xl bg-white flex flex-col">
-                    {/* Speaker/Dynamic Island */}
-                    <div className="absolute top-0 inset-x-0 h-6 bg-gray-900 rounded-b-[24px] w-40 mx-auto z-10 flex items-center justify-center">
-                       <div className="w-12 h-1 bg-white/20 rounded-full" />
-                    </div>
-                    
+                {/* Left: Theme Preview (No Phone Mockup) */}
+                <div className="lg:w-1/2 flex justify-center relative">
+                  <div className="w-full max-w-[400px] aspect-[9/16] rounded-[32px] overflow-hidden relative shadow-2xl bg-white flex flex-col border border-gray-100">
                     {/* Screen Content */}
-                    <div className="flex-1 w-full transition-all duration-700 relative flex flex-col overflow-hidden bg-[#0e2d6e]">
-                       {/* Background Image if selected */}
+                    <div className="flex-1 w-full transition-all duration-700 relative flex flex-col overflow-hidden bg-gray-50">
+                       {/* Background Image - Object Contain to avoid cropping */}
                        {selectedTheme?.cover_photo ? (
                           <img 
                             src={selectedTheme.cover_photo} 
                             alt="Theme Preview" 
-                            className="absolute inset-0 w-full h-full object-cover animate-in fade-in duration-700"
+                            className="absolute inset-0 w-full h-full object-contain animate-in fade-in duration-700 p-2"
                           />
                        ) : (
-                          <div className="absolute inset-0 bg-[#0e2d6e]" />
+                          <div className="absolute inset-0 flex items-center justify-center text-gray-300">
+                             <svg className="w-20 h-20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                          </div>
                        )}
-                       
-                       {/* Overlay to ensure text readability if it's an image */}
-                       {selectedTheme?.cover_photo && <div className="absolute inset-0 bg-black/20" />}
-
-                       {/* Profile Header */}
-                       <div className="p-8 pt-20 flex flex-col items-center text-center z-10">
-                          <div className="w-28 h-28 bg-white/20 rounded-[32px] mb-6 flex items-center justify-center backdrop-blur-md border border-white/30 shadow-2xl rotate-3 hover:rotate-0 transition-transform">
-                             <svg className="w-14 h-14 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                          </div>
-                          <h2 className="text-3xl font-bold text-white font-['Poppins'] mb-2">{selectedTheme?.name || 'Your Profile'}</h2>
-                          <p className="text-xs text-white/80 tracking-[0.2em] uppercase font-medium mb-12">DIGITAL BUSINESS PROFILE</p>
-                          
-                          {/* Profile Buttons Mockup */}
-                          <div className="w-full space-y-4 px-2">
-                             {[1, 2, 3, 4].map(i => (
-                               <div key={i} className="h-16 bg-white/15 rounded-3xl flex items-center px-5 gap-4 backdrop-blur-md border border-white/20 hover:bg-white/25 transition-all cursor-pointer shadow-lg group/btn">
-                                  <div className="w-10 h-10 bg-white/20 rounded-2xl shrink-0 flex items-center justify-center group-hover/btn:scale-110 transition-transform">
-                                     <div className="w-4 h-4 bg-white/40 rounded-sm" />
-                                  </div>
-                                  <div className="h-3 w-1/2 bg-white/30 rounded-full" />
-                                  <ChevronRight className="w-5 h-5 text-white/40 ml-auto" />
-                               </div>
-                             ))}
-                          </div>
-                       </div>
-                       
-                       {/* Wave Decoration */}
-                       <svg className="absolute bottom-0 w-full h-40 text-white/10" preserveAspectRatio="none" viewBox="0 0 1440 320"><path fill="currentColor" d="M0,160L48,144C96,128,192,96,288,106.7C384,117,480,171,576,170.7C672,171,768,117,864,117.3C960,117,1056,171,1152,192C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>
                     </div>
+                  </div>
+                  
+                  {/* Decorative element behind preview */}
+                  <div className="absolute -z-10 w-full h-full bg-[#5aa4f4]/10 blur-[100px] rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                </div>
                   </div>
                   
                   {/* Decorative element behind phone */}
