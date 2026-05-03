@@ -9,6 +9,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import DeliveryDetailsPage from './pages/DeliveryDetailsPage';
 import OrderSummaryPage from './pages/OrderSummaryPage';
 import OrderSuccessPage from './pages/OrderSuccessPage';
+import CustomizeCardPage from './pages/CustomizeCardPage';
 import ScrollToTop from './components/ScrollToTop';
 import { CartProvider } from './context/CartContext';
 import Header from './components/Header';
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/shop" element={<ShopPage />} />
             <Route path="/product/:id" element={<ProductDetailPage />} />
+            <Route path="/customize/:id" element={<CustomizeCardPage />} />
             <Route path="/blogs" element={<BlogsPage />} />
             <Route path="/blog/:id" element={<BlogPostPage />} />
             <Route path="/about" element={<AboutPage />} />

@@ -6,6 +6,8 @@ import ScrollReveal from '../components/ScrollReveal';
 import { THEMES } from '../data/themes';
 import { ArrowLeft, Lock } from 'lucide-react';
 
+import { supabase } from '../../lib/supabase';
+
 declare global {
   interface Window {
     Razorpay: any;
@@ -15,6 +17,11 @@ declare global {
 export default function OrderSummaryPage() {
   const { cartItems, cartTotal, deliveryDetails } = useCart();
   const navigate = useNavigate();
+
+  const [couponCode, setCouponCode] = React.useState('');
+  const [discount, setDiscount] = React.useState(0);
+  const [couponError, setCouponError] = React.useState('');
+  const [isApplied, setIsApplied] = React.useState(false);
 
   // If there are no delivery details or cart items, redirect back
   if (cartItems.length === 0 || !deliveryDetails) {
@@ -29,8 +36,30 @@ export default function OrderSummaryPage() {
   }
 
   const shipping = 50; // Flat shipping rate
-  const taxes = Math.round(cartTotal * 0.18); // 18% GST approx
-  const finalTotal = cartTotal + shipping + taxes;
+  const taxes = Math.round((cartTotal - discount) * 0.18); // 18% GST approx
+  const finalTotal = (cartTotal - discount) + shipping + taxes;
+
+  const handleApplyCoupon = () => {
+    if (couponCode.toUpperCase() === 'TAPINFI10') {
+      const discountAmount = Math.round(cartTotal * 0.1);
+      setDiscount(discountAmount);
+      setIsApplied(true);
+      setCouponError('');
+    } else if (couponCode.trim() === '') {
+      setCouponError('Please enter a code');
+    } else {
+      setCouponError('Invalid coupon code');
+      setIsApplied(false);
+      setDiscount(0);
+    }
+  };
+
+  const removeCoupon = () => {
+    setIsApplied(false);
+    setDiscount(0);
+    setCouponCode('');
+    setCouponError('');
+  };
 
   const handleConfirmAndPay = () => {
     console.log("Using Razorpay Key:", import.meta.env.VITE_RAZORPAY_KEY_ID);
@@ -41,9 +70,39 @@ export default function OrderSummaryPage() {
       name: "Tapinfi",
       description: "Order Payment",
       image: "https://tapinfi.com/wp-content/uploads/2023/04/Tapinfi-Logo-Final-1.png",
-      handler: function (response: any) {
+      handler: async function (response: any) {
         console.log("Payment Success:", response);
-        // Here we would typically verify the payment on the backend
+        
+        // Save to Supabase
+        try {
+          const firstItem = cartItems[0];
+          const { error } = await supabase.from('orders').insert({
+            customer_name: deliveryDetails?.fullName,
+            customer_email: deliveryDetails?.email,
+            customer_phone: deliveryDetails?.phone,
+            card_theme_id: firstItem?.id,
+            profile_theme_id: firstItem?.customization?.themeId,
+            delivery_name: deliveryDetails?.fullName,
+            delivery_phone: deliveryDetails?.phone,
+            delivery_email: deliveryDetails?.email,
+            delivery_address: deliveryDetails?.address,
+            delivery_city: deliveryDetails?.city,
+            delivery_state: deliveryDetails?.state,
+            delivery_pincode: deliveryDetails?.zipCode,
+            final_amount: finalTotal,
+            status: 'Pending',
+            print_qr: firstItem?.customization?.printQR || false
+          });
+
+          if (error) {
+            console.error("Error saving order to Supabase:", error);
+          } else {
+            console.log("Order saved successfully to Supabase");
+          }
+        } catch (err) {
+          console.error("Unexpected error saving order:", err);
+        }
+
         navigate('/checkout/success', { 
           state: { 
             paymentId: response.razorpay_payment_id,
@@ -182,7 +241,39 @@ export default function OrderSummaryPage() {
                     <span>Taxes (18% GST)</span>
                     <span className="font-medium text-gray-900">₹{taxes}</span>
                   </div>
+                  {isApplied && (
+                    <div className="flex justify-between text-green-600 font-medium animate-in fade-in slide-in-from-top-2 duration-300">
+                      <div className="flex items-center gap-1">
+                        <span>Discount (TAPINFI10)</span>
+                        <button onClick={removeCoupon} className="text-xs text-red-500 hover:underline ml-1">Remove</button>
+                      </div>
+                      <span>-₹{discount}</span>
+                    </div>
+                  )}
                 </div>
+
+                {/* Coupon Code Input */}
+                {!isApplied && (
+                  <div className="mb-6 space-y-2">
+                    <p className="text-sm font-semibold text-gray-700 font-['Inter']">Have a coupon code?</p>
+                    <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        placeholder="Enter code (Try TAPINFI10)"
+                        className={`flex-1 h-12 px-4 rounded-xl border ${couponError ? 'border-red-300' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-[#5aa4f4]/20 focus:border-[#5aa4f4] transition-all font-['Inter'] text-sm uppercase`}
+                      />
+                      <button 
+                        onClick={handleApplyCoupon}
+                        className="px-6 h-12 bg-[#0e2d6e] text-white rounded-xl font-semibold text-sm hover:bg-[#1a3a7a] transition-colors"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                    {couponError && <p className="text-xs text-red-500 font-medium ml-1">{couponError}</p>}
+                  </div>
+                )}
                 
                 <div className="flex justify-between items-end mb-8 font-['Inter']">
                   <span className="text-lg font-medium text-gray-600">Total</span>
