@@ -1,6 +1,7 @@
 import React from 'react';
 import ScrollReveal from '../ScrollReveal';
-import { THEMES } from '../../data/themes';
+import { THEMES as STATIC_THEMES } from '../../data/themes';
+import { supabase } from '../../../lib/supabase';
 
 interface Props {
   selectedThemeId: string;
@@ -9,7 +10,30 @@ interface Props {
 }
 
 export default function ThemeSelectionStep({ selectedThemeId, onSelectTheme, onNext }: Props) {
-  const selectedTheme = THEMES.find(t => t.id === selectedThemeId) || THEMES[0];
+  const [profileThemes, setProfileThemes] = React.useState<any[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    async function fetchThemes() {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('theme_type', 'Profile')
+          .eq('status', 'Active');
+        
+        if (error) throw error;
+        setProfileThemes(data || []);
+      } catch (err) {
+        console.error('Error fetching themes:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchThemes();
+  }, []);
+
+  const selectedTheme = profileThemes.find(t => t.id === selectedThemeId);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 h-full min-h-[600px]">
@@ -20,16 +44,32 @@ export default function ThemeSelectionStep({ selectedThemeId, onSelectTheme, onN
           <div className="absolute top-0 inset-x-0 h-6 bg-gray-900 rounded-b-3xl w-40 mx-auto z-10" />
           
           {/* Preview Content */}
-          <div className={`flex-1 w-full ${selectedTheme.color} transition-colors duration-500 relative flex flex-col`}>
+          <div className="flex-1 w-full relative flex flex-col bg-[#0e2d6e] transition-all duration-500 overflow-hidden">
+             {selectedTheme?.cover_photo ? (
+                <img 
+                  src={selectedTheme.cover_photo} 
+                  alt="Theme Preview" 
+                  className="absolute inset-0 w-full h-full object-cover animate-in fade-in duration-700"
+                />
+             ) : (
+                <div className="absolute inset-0 bg-[#0e2d6e]" />
+             )}
+             
+             {/* Overlay */}
+             {selectedTheme?.cover_photo && <div className="absolute inset-0 bg-black/20" />}
+
              <div className="flex-1 flex flex-col items-center justify-center text-white px-6 text-center z-10 mt-10">
                 <div className="w-20 h-20 bg-white/10 rounded-full mb-6 flex items-center justify-center backdrop-blur-sm border border-white/20">
                    <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 </div>
-                <h2 className="text-xl font-bold font-['Poppins'] mb-2">{selectedTheme.name}</h2>
-                <p className="text-sm text-white/70 font-['Inter'] mb-8">TAP INTO THE FUTURE</p>
-                <button className="px-6 py-2 bg-white text-gray-900 rounded-full font-semibold font-['Inter'] text-sm hover:scale-105 transition-transform">
-                   SHOP NOW
-                </button>
+                <h2 className="text-xl font-bold font-['Poppins'] mb-2">{selectedTheme?.name || 'Your Profile'}</h2>
+                <p className="text-sm text-white/70 font-['Inter'] mb-8 uppercase tracking-widest">Digital Business Profile</p>
+                
+                <div className="w-full space-y-3 px-4">
+                   {[1, 2, 3].map(i => (
+                     <div key={i} className="h-10 bg-white/10 rounded-xl border border-white/20" />
+                   ))}
+                </div>
              </div>
              
              {/* Decorative bottom wave */}
@@ -43,21 +83,41 @@ export default function ThemeSelectionStep({ selectedThemeId, onSelectTheme, onN
         <h2 className="text-3xl font-bold text-[#100425] font-['Poppins'] mb-2">Select Digital Profile Design</h2>
         <p className="text-[#656565] font-['Inter'] mb-8">Choose a theme for your digital profile that people will see when they tap your card.</p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
-          {THEMES.map((theme) => (
-            <button
-              key={theme.id}
-              onClick={() => onSelectTheme(theme.id)}
-              className={`flex flex-col items-center gap-3 p-2 rounded-2xl transition-all duration-200 border-2 ${selectedThemeId === theme.id ? 'border-[#5aa4f4] bg-[#5aa4f4]/5 shadow-md scale-105' : 'border-transparent hover:bg-gray-50'}`}
-            >
-              <div className={`w-full aspect-[4/5] rounded-xl ${theme.color} flex items-center justify-center shadow-inner`}>
-                 <svg className="w-8 h-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-8">
+          {isLoading ? (
+            [1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="animate-pulse flex flex-col items-center gap-3">
+                <div className="w-full aspect-[4/5] rounded-xl bg-gray-100" />
+                <div className="h-4 w-20 bg-gray-100 rounded" />
               </div>
-              <span className={`text-xs font-['Inter'] font-medium ${selectedThemeId === theme.id ? 'text-[#0e2d6e]' : 'text-gray-500'}`}>
-                {theme.name}
-              </span>
-            </button>
-          ))}
+            ))
+          ) : (
+            profileThemes.map((theme) => (
+              <button
+                key={theme.id}
+                onClick={() => onSelectTheme(theme.id)}
+                className={`flex flex-col items-center gap-3 p-2 rounded-2xl transition-all duration-300 border-2 ${selectedThemeId === theme.id ? 'border-[#5aa4f4] bg-[#5aa4f4]/5 shadow-lg scale-105' : 'border-transparent hover:bg-gray-50'}`}
+              >
+                <div className="w-full aspect-[4/5] rounded-xl bg-gray-100 flex items-center justify-center shadow-inner overflow-hidden relative">
+                   {theme.cover_photo ? (
+                      <img src={theme.cover_photo} alt={theme.name} className="w-full h-full object-cover" />
+                   ) : (
+                      <svg className="w-8 h-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                   )}
+                   {selectedThemeId === theme.id && (
+                      <div className="absolute inset-0 bg-[#0e2d6e]/20 flex items-center justify-center backdrop-blur-[2px]">
+                         <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#0e2d6e] shadow-lg">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                         </div>
+                      </div>
+                   )}
+                </div>
+                <span className={`text-[10px] uppercase tracking-wider font-['Poppins'] font-bold ${selectedThemeId === theme.id ? 'text-[#0e2d6e]' : 'text-gray-400'}`}>
+                  {theme.name}
+                </span>
+              </button>
+            ))
+          )}
         </div>
 
         {/* Pagination placeholder */}
