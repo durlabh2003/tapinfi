@@ -68,9 +68,9 @@ export default function OrderSummaryPage() {
     );
   }
 
-  const shipping = 50; // Flat shipping rate
-  const taxes = Math.round((cartTotal - discount) * 0.18); // 18% GST approx
-  const finalTotal = (cartTotal - discount) + shipping + taxes;
+  const shipping = 80; // Delivery charges set to 80
+  const taxes = 0; // Removed GST
+  const finalTotal = (cartTotal - discount) + shipping;
 
   const handleApplyCoupon = async () => {
     if (couponCode.trim() === '') {
@@ -357,10 +357,6 @@ export default function OrderSummaryPage() {
                   <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
                     <span className="font-medium text-gray-900">₹{shipping}</span>
-                  </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>Taxes (18% GST)</span>
-                    <span className="font-medium text-gray-900">₹{taxes}</span>
                   </div>
                   {isApplied && appliedCoupon && (
                     <div className="flex justify-between text-green-600 font-medium animate-in fade-in slide-in-from-top-2 duration-300 font-['Inter']">
