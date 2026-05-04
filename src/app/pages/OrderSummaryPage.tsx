@@ -98,8 +98,11 @@ export default function OrderSummaryPage() {
         return;
       }
 
-      // Check usage limits
-      if (data.used >= data.usage_limit) {
+      // Check usage limits (using used_count as primary tracker)
+      const currentUsage = data.used_count ?? data.used ?? 0;
+      const limit = data.usage_limit ?? data.max_global_usage ?? 999999;
+      
+      if (currentUsage >= limit) {
         setCouponError('This coupon has reached its usage limit');
         return;
       }
@@ -196,7 +199,10 @@ export default function OrderSummaryPage() {
             if (isApplied && appliedCoupon) {
               await supabase
                 .from('coupons')
-                .update({ used: (appliedCoupon.used || 0) + 1 })
+                .update({ 
+                  used: (appliedCoupon.used || 0) + 1,
+                  used_count: (appliedCoupon.used_count || 0) + 1 
+                })
                 .eq('id', appliedCoupon.id);
             }
           }
