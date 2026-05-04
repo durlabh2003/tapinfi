@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
-import { products } from '../data/products';
+import { products, Product } from '../data/products';
 import { useCart, CustomizationData } from '../context/CartContext';
+import { supabase } from '../../lib/supabase';
 import CardCustomizationStep from '../components/customization/CardCustomizationStep';
 import ScrollReveal from '../components/ScrollReveal';
 
@@ -12,7 +13,9 @@ export default function CustomizeCardPage() {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   
-  const product = products.find(p => p.id === id);
+  const productStatic = products.find(p => p.id === id);
+  const [product, setProduct] = useState<Product | null>(productStatic || null);
+  const [isLoading, setIsLoading] = useState(!productStatic);
   const themeId = searchParams.get('theme') || 'theme-1';
 
   const [customization, setCustomization] = useState<CustomizationData>({
@@ -26,10 +29,59 @@ export default function CustomizeCardPage() {
   });
 
   useEffect(() => {
-    if (!product) {
+    async function fetchProduct() {
+      if (!id) return;
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('id', id)
+          .single();
+        
+        if (error) throw error;
+        if (data) {
+          setProduct({
+            id: data.id,
+            name: data.name,
+            price: data.selling_price || 0,
+            img: data.cover_photo || '',
+            shortDesc: data.description?.slice(0, 100) || 'Premium Smart Business Card',
+            description: data.description || '',
+            front_mock_photo: data.front_mock_photo,
+            back_photo: data.back_photo,
+            customization_options: data.customization_options
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching product in customize page:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    if (!productStatic) {
+      fetchProduct();
+    } else {
+      setIsLoading(false);
+    }
+  }, [id, productStatic]);
+
+  useEffect(() => {
+    if (!isLoading && !product) {
       navigate('/shop');
     }
-  }, [product, navigate]);
+  }, [product, isLoading, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center">
+        <Header />
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0e2d6e]"></div>
+        <p className="mt-4 text-[#0e2d6e]">Loading product details...</p>
+      </div>
+    );
+  }
+
 
   if (!product) return null;
 
@@ -56,7 +108,7 @@ export default function CustomizeCardPage() {
                 data={customization}
                 onChange={(updates) => setCustomization(prev => ({ ...prev, ...updates }))}
                 onFinish={handleFinish}
-                cardImage={product.img}
+                product={product}
               />
            </div>
         </ScrollReveal>

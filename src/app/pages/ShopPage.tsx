@@ -1,7 +1,9 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import ScrollReveal from '../components/ScrollReveal';
-import { products } from '../data/products';
+import { supabase } from '../../lib/supabase';
+import { Product } from '../data/products';
 
 const SHOP_BTN = 'linear-gradient(63.8351deg, rgb(90, 164, 244) 14.564%, rgb(14, 45, 110) 74.668%)';
 
@@ -12,6 +14,41 @@ const features = [
 ];
 
 export default function ShopPage() {
+  const [dbProducts, setDbProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('theme_type', 'Card')
+          .eq('status', 'Active');
+
+        if (error) throw error;
+
+        if (data) {
+          const mappedProducts: Product[] = data.map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            price: p.selling_price || 0,
+            img: p.cover_photo || '',
+            shortDesc: p.description?.slice(0, 100) || 'Premium Smart Business Card',
+            description: p.description || 'No description available.'
+          }));
+          setDbProducts(mappedProducts);
+        }
+      } catch (err) {
+        console.error('Error fetching products:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchProducts();
+  }, []);
+
   return (
     <div className="bg-white min-h-screen">
       <Header />
@@ -39,47 +76,65 @@ export default function ShopPage() {
 
         {/* ── Products Grid ─────────────────────────────────── */}
         <div className="px-4 sm:px-8 lg:px-20 pb-16">
-          <div className="max-w-[1280px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
-            {products.map((p, i) => (
-              <ScrollReveal key={p.id} animation="fade-up" delay={i * 100}>
-                <Link to={`/product/${p.id}`} className="group block h-full">
-                  <div className="border-2 border-[#5aa4f4]/40 rounded-[25px] p-6 h-full
-                      flex flex-col cursor-pointer
-                      transition-all duration-300
-                      hover:border-[#5aa4f4]
-                      hover:-translate-y-2
-                      hover:shadow-[0_20px_40px_rgba(90,164,244,0.18)]
-                      card-glow">
-                    <p className="text-[18px] text-[#0e2d6e] mb-4" style={{ fontFamily: "'Inter', sans-serif" }}>
-                      {p.name}
-                    </p>
-                    <div className="flex-1 flex items-center justify-center py-4 overflow-hidden rounded-xl">
-                      <img
-                        alt={`${p.name} NFC Card`}
-                        className="max-h-[240px] w-auto object-contain
-                          transition-transform duration-500
-                          group-hover:scale-110"
-                        src={p.img}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-[15px] text-[#0e2d6e]" style={{ fontFamily: "'Inter', sans-serif" }}>INR</span>
-                        <span className="text-[28px] text-[#0e2d6e] font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>{p.price}</span>
-                      </div>
-                      <div
-                        className="h-[36px] rounded-[100px] px-5 flex items-center justify-center cursor-pointer
-                          transition-all duration-200
-                          hover:opacity-90 hover:scale-105 btn-shimmer"
-                        style={{ backgroundImage: SHOP_BTN }}
-                      >
-                        <span className="text-[13px] text-white font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>SHOP NOW</span>
-                      </div>
-                    </div>
+          <div className="max-w-[1280px] mx-auto">
+            {isLoading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="animate-pulse border-2 border-gray-100 rounded-[25px] p-6 h-[400px] flex flex-col">
+                    <div className="h-6 w-3/4 bg-gray-100 rounded mb-4" />
+                    <div className="flex-1 bg-gray-50 rounded-xl mb-4" />
+                    <div className="h-10 bg-gray-100 rounded-full" />
                   </div>
-                </Link>
-              </ScrollReveal>
-            ))}
+                ))}
+              </div>
+            ) : dbProducts.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
+                {dbProducts.map((p, i) => (
+                  <ScrollReveal key={p.id} animation="fade-up" delay={i * 100}>
+                    <Link to={`/product/${p.id}`} className="group block h-full">
+                      <div className="border-2 border-[#5aa4f4]/40 rounded-[25px] p-6 h-full
+                          flex flex-col cursor-pointer
+                          transition-all duration-300
+                          hover:border-[#5aa4f4]
+                          hover:-translate-y-2
+                          hover:shadow-[0_20px_40px_rgba(90,164,244,0.18)]
+                          card-glow">
+                        <p className="text-[18px] text-[#0e2d6e] mb-4 font-bold" style={{ fontFamily: "'Inter', sans-serif" }}>
+                          {p.name}
+                        </p>
+                        <div className="flex-1 flex items-center justify-center py-4 overflow-hidden rounded-xl bg-gray-50/50 mb-4">
+                          <img
+                            alt={`${p.name} NFC Card`}
+                            className="max-h-[240px] w-auto object-contain
+                              transition-transform duration-500
+                              group-hover:scale-110"
+                            src={p.img}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between mt-auto">
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-[15px] text-[#0e2d6e]" style={{ fontFamily: "'Inter', sans-serif" }}>INR</span>
+                            <span className="text-[28px] text-[#0e2d6e] font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>{p.price}</span>
+                          </div>
+                          <div
+                            className="h-[36px] rounded-[100px] px-5 flex items-center justify-center cursor-pointer
+                              transition-all duration-200
+                              hover:opacity-90 hover:scale-105 btn-shimmer"
+                            style={{ backgroundImage: SHOP_BTN }}
+                          >
+                            <span className="text-[13px] text-white font-semibold" style={{ fontFamily: "'Inter', sans-serif" }}>SHOP NOW</span>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                  </ScrollReveal>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20">
+                <p className="text-gray-500 text-lg">No products found in the shop.</p>
+              </div>
+            )}
           </div>
         </div>
 

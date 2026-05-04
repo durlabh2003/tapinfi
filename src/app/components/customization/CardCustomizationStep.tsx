@@ -2,15 +2,39 @@ import React, { useRef } from 'react';
 import ScrollReveal from '../ScrollReveal';
 import { CustomizationData } from '../../context/CartContext';
 
+import { Product } from '../../data/products';
+
 interface Props {
   data: CustomizationData;
   onChange: (updates: Partial<CustomizationData>) => void;
   onFinish: () => void;
-  cardImage: string;
+  product: Product;
 }
 
-export default function CardCustomizationStep({ data, onChange, onFinish, cardImage }: Props) {
+export default function CardCustomizationStep({ data, onChange, onFinish, product }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const frontFields = product.customization_options?.frontFields || ['personal_details'];
+  const backFields = product.customization_options?.backFields || [];
+  const hasDetails = frontFields.includes('personal_details');
+  const hasLogo = frontFields.includes('company_logo');
+  const hasQR = backFields.includes('qr_code');
+
+  // If only logo is available, force it
+  React.useEffect(() => {
+    if (!hasDetails && hasLogo && data.frontOption !== 'logo') {
+      onChange({ frontOption: 'logo' });
+    } else if (hasDetails && !hasLogo && data.frontOption !== 'details') {
+      onChange({ frontOption: 'details' });
+    }
+  }, [hasDetails, hasLogo, data.frontOption, onChange]);
+
+  // If QR is in backFields, it's mandatory
+  React.useEffect(() => {
+    if (hasQR && !data.printQR) {
+      onChange({ printQR: true });
+    }
+  }, [hasQR, data.printQR, onChange]);
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -27,47 +51,16 @@ export default function CardCustomizationStep({ data, onChange, onFinish, cardIm
       <ScrollReveal animation="fade-right" className="flex flex-col items-center justify-center gap-8">
         
         {/* Front Preview */}
-        <div className="w-full max-w-[400px] aspect-[1.586/1] rounded-2xl shadow-xl overflow-hidden relative group">
-          <img src={cardImage} alt="Card Front" className="absolute inset-0 w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-black/10" />
-          
-          <div className="absolute inset-0 flex flex-col items-start justify-end p-8 text-white z-10">
-            {data.frontOption === 'logo' && data.logoUrl ? (
-              <div className="absolute inset-0 flex items-center justify-center">
-                 <img src={data.logoUrl} alt="Company Logo" className="max-w-[60%] max-h-[60%] object-contain drop-shadow-md" />
-              </div>
-            ) : (
-              <>
-                <h3 className="text-2xl font-bold font-['Poppins'] tracking-wider mb-1 drop-shadow-md">
-                  {data.fullName || 'YOUR NAME'}
-                </h3>
-                <p className="text-xs font-['Inter'] opacity-90 tracking-widest drop-shadow-md flex items-center gap-2">
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-                  {data.phone || '+1 234 567 890'}
-                </p>
-                <p className="text-xs font-['Inter'] opacity-90 tracking-widest mt-1 drop-shadow-md flex items-center gap-2">
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                  {data.email || 'email@example.com'}
-                </p>
-              </>
-            )}
-          </div>
+        <div className="w-full max-w-[400px] aspect-[1.586/1] rounded-2xl shadow-xl overflow-hidden relative group bg-gray-100">
+          <img src={product.front_mock_photo || product.img} alt="Card Front" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/5" />
           <div className="absolute top-2 right-2 bg-black/50 text-white text-[10px] px-2 py-1 rounded-md font-['Inter'] backdrop-blur-sm">FRONT</div>
         </div>
 
         {/* Back Preview */}
-        <div className="w-full max-w-[400px] aspect-[1.586/1] rounded-2xl shadow-xl overflow-hidden relative">
-           <img src={cardImage} alt="Card Back" className="absolute inset-0 w-full h-full object-cover scale-x-[-1]" />
-           <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-              {data.printQR && (
-                 <div className="bg-white p-2 rounded-lg shadow-lg">
-                    {/* Mock QR Code */}
-                    <svg className="w-24 h-24 text-gray-900" viewBox="0 0 24 24" fill="currentColor">
-                       <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2z" />
-                    </svg>
-                 </div>
-              )}
-           </div>
+        <div className="w-full max-w-[400px] aspect-[1.586/1] rounded-2xl shadow-xl overflow-hidden relative bg-gray-100">
+           <img src={product.back_photo || product.img} alt="Card Back" className="absolute inset-0 w-full h-full object-cover" />
+           <div className="absolute inset-0 bg-black/5 flex items-center justify-center" />
            <div className="absolute top-2 right-2 bg-black/50 text-white text-[10px] px-2 py-1 rounded-md font-['Inter'] backdrop-blur-sm">BACK</div>
         </div>
       </ScrollReveal>
@@ -79,18 +72,22 @@ export default function CardCustomizationStep({ data, onChange, onFinish, cardIm
         {/* Front Customization Tabs */}
         <div className="mb-6">
            <div className="flex border-b border-gray-200">
-              <button 
-                 onClick={() => onChange({ frontOption: 'details' })}
-                 className={`flex-1 py-3 text-sm font-semibold font-['Inter'] border-b-2 transition-colors ${data.frontOption === 'details' ? 'border-[#5aa4f4] text-[#0e2d6e]' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
-              >
-                 Personal Details
-              </button>
-              <button 
-                 onClick={() => onChange({ frontOption: 'logo' })}
-                 className={`flex-1 py-3 text-sm font-semibold font-['Inter'] border-b-2 transition-colors ${data.frontOption === 'logo' ? 'border-[#5aa4f4] text-[#0e2d6e]' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
-              >
-                 Company Logo
-              </button>
+              {hasDetails && (
+                <button 
+                  onClick={() => onChange({ frontOption: 'details' })}
+                  className={`flex-1 py-3 text-sm font-semibold font-['Inter'] border-b-2 transition-colors ${data.frontOption === 'details' ? 'border-[#5aa4f4] text-[#0e2d6e]' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+                >
+                  Personal Details
+                </button>
+              )}
+              {hasLogo && (
+                <button 
+                  onClick={() => onChange({ frontOption: 'logo' })}
+                  className={`flex-1 py-3 text-sm font-semibold font-['Inter'] border-b-2 transition-colors ${data.frontOption === 'logo' ? 'border-[#5aa4f4] text-[#0e2d6e]' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+                >
+                  Company Logo
+                </button>
+              )}
            </div>
         </div>
 
@@ -156,27 +153,40 @@ export default function CardCustomizationStep({ data, onChange, onFinish, cardIm
            )}
         </div>
 
-        {/* Backside Customization */}
-        <div className="mt-8 mb-10 pt-8 border-t border-gray-200">
-           <h3 className="text-lg font-bold text-[#100425] font-['Poppins'] mb-4">Backside Settings</h3>
-           <label className="flex items-start gap-3 cursor-pointer group">
-              <div className="relative flex items-center justify-center mt-0.5">
-                 <input 
-                    type="checkbox" 
-                    checked={data.printQR}
-                    onChange={e => onChange({ printQR: e.target.checked })}
-                    className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-md checked:bg-[#5aa4f4] checked:border-[#5aa4f4] transition-colors cursor-pointer"
-                 />
-                 <svg className="absolute w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                 </svg>
+        {/* Backside Customization - Only show if not mandatory QR */}
+        {backFields.length > 0 && !hasQR && (
+          <div className="mt-8 mb-10 pt-8 border-t border-gray-200">
+            <h3 className="text-lg font-bold text-[#100425] font-['Poppins'] mb-4">Backside Settings</h3>
+            <label className="flex items-start gap-3 cursor-pointer group">
+                <div className="relative flex items-center justify-center mt-0.5">
+                  <input 
+                      type="checkbox" 
+                      checked={data.printQR}
+                      onChange={e => onChange({ printQR: e.target.checked })}
+                      className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-md checked:bg-[#5aa4f4] checked:border-[#5aa4f4] transition-colors cursor-pointer"
+                  />
+                  <svg className="absolute w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[#0e2d6e] font-semibold font-['Inter'] group-hover:text-[#5aa4f4] transition-colors">Print Profile QR ?</p>
+                  <p className="text-sm text-gray-500 font-['Inter']">Enable this to print a QR code linking to your digital profile on the back of the card.</p>
+                </div>
+            </label>
+          </div>
+        )}
+
+        {hasQR && (
+           <div className="mt-8 mb-10 pt-8 border-t border-gray-200">
+              <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100 flex items-center gap-4">
+                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#5aa4f4] shadow-sm">
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2z" /></svg>
+                 </div>
+                 <p className="text-sm font-medium text-[#0e2d6e] font-['Inter']">Profile QR code will be printed on the back of this card.</p>
               </div>
-              <div>
-                 <p className="text-[#0e2d6e] font-semibold font-['Inter'] group-hover:text-[#5aa4f4] transition-colors">Print Profile QR ?</p>
-                 <p className="text-sm text-gray-500 font-['Inter']">Enable this to print a QR code linking to your digital profile on the back of the card. Recommended for older phones without NFC.</p>
-              </div>
-           </label>
-        </div>
+           </div>
+        )}
 
         <button 
           onClick={onFinish}

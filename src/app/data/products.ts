@@ -9,6 +9,12 @@ export interface Product {
   img: string;
   shortDesc: string;
   description: string;
+  front_mock_photo?: string;
+  back_photo?: string;
+  customization_options?: {
+    frontFields?: string[];
+    backFields?: string[];
+  };
 }
 
 export const products: Product[] = [

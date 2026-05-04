@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../../lib/supabase';
 import svgPaths from "./svg-xgpv5e2dj8";
 import imgLogo from "./f00b995e56d83fe3818dbb20f3489f43c9842118.png";
 import img1400 from "./c99f7f3f82a0bf28a3d5a01e39607bd48ab97bc7.png";
@@ -488,15 +489,52 @@ function ProductCard({ title, price, image, delay, productId }: { title: string;
 }
 
 function OurProducts() {
+  const [products, setProducts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('theme_type', 'Card')
+          .eq('status', 'Active')
+          .limit(3);
+        if (data) setProducts(data);
+      } catch (err) {
+        console.error('Error fetching home products:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchProducts();
+  }, []);
+
   return (
     <section className="w-full max-w-[1440px] z-10 py-20 px-6" data-name="Our Products">
       <p data-sr data-delay="0" className="font-['Inter:Bold',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
         Our Products
       </p>
-      <div className="flex flex-col md:flex-row gap-8 w-full justify-center items-center">
-        <ProductCard title="PVC GLOSSY" price="499" image={imgWhiteGlociCoverPhotoPhotoroom1} delay="0" productId="white-gloss" />
-        <ProductCard title="MATTE BLACK" price="799" image={imgBlackMatCoverPhotoPhotoroom1} delay="100" productId="matte-black" />
-        <ProductCard title="WOODEN" price="1199" image={imgWoodenCoverPhotoPhotoroom1} delay="200" productId="wooden" />
+      <div className="flex flex-col md:flex-row gap-8 w-full justify-center items-center min-h-[455px]">
+        {isLoading ? (
+          [1, 2, 3].map(i => (
+            <div key={i} className="w-full max-w-[355px] h-[455px] rounded-[25px] border-2 border-white/20 bg-white/5 animate-pulse" />
+          ))
+        ) : products.length > 0 ? (
+          products.map((p, i) => (
+            <ProductCard 
+              key={p.id}
+              title={p.name} 
+              price={p.selling_price.toString()} 
+              image={p.cover_photo} 
+              delay={(i * 100).toString()} 
+              productId={p.id} 
+            />
+          ))
+        ) : (
+          <p className="text-white/60">Coming soon...</p>
+        )}
       </div>
     </section>
   );

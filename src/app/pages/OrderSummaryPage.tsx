@@ -22,6 +22,39 @@ export default function OrderSummaryPage() {
   const [discount, setDiscount] = React.useState(0);
   const [couponError, setCouponError] = React.useState('');
   const [isApplied, setIsApplied] = React.useState(false);
+  const [appliedCoupon, setAppliedCoupon] = React.useState<any>(null);
+  const [themesData, setThemesData] = React.useState<Record<string, any>>({});
+
+  React.useEffect(() => {
+    async function fetchThemes() {
+      const themeIds = cartItems
+        .map(item => item.customization?.themeId)
+        .filter(Boolean) as string[];
+      
+      if (themeIds.length === 0) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('id, name, cover_photo')
+          .in('id', themeIds);
+
+        if (error) throw error;
+
+        if (data) {
+          const map = data.reduce((acc: any, t: any) => {
+            acc[t.id] = t;
+            return acc;
+          }, {});
+          setThemesData(map);
+        }
+      } catch (err) {
+        console.error('Error fetching themes for summary:', err);
+      }
+    }
+    fetchThemes();
+  }, [cartItems]);
+
 
   // If there are no delivery details or cart items, redirect back
   if (cartItems.length === 0 || !deliveryDetails) {
@@ -39,27 +72,66 @@ export default function OrderSummaryPage() {
   const taxes = Math.round((cartTotal - discount) * 0.18); // 18% GST approx
   const finalTotal = (cartTotal - discount) + shipping + taxes;
 
-  const handleApplyCoupon = () => {
-    if (couponCode.toUpperCase() === 'TAPINFI10') {
-      const discountAmount = Math.round(cartTotal * 0.1);
+  const handleApplyCoupon = async () => {
+    if (couponCode.trim() === '') {
+      setCouponError('Please enter a code');
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('coupons')
+        .select('*')
+        .eq('code', couponCode.trim().toUpperCase())
+        .single();
+
+      if (error || !data) {
+        setCouponError('Invalid coupon code');
+        setIsApplied(false);
+        setDiscount(0);
+        return;
+      }
+
+      // Validate status (handling potential case sensitivity)
+      if (data.status.toLowerCase() !== 'active') {
+        setCouponError('This coupon is no longer active');
+        return;
+      }
+
+      // Check usage limits
+      if (data.used >= data.usage_limit) {
+        setCouponError('This coupon has reached its usage limit');
+        return;
+      }
+
+      let discountAmount = 0;
+      if (data.discount_type === 'percentage') {
+        discountAmount = Math.round(cartTotal * (data.discount_value / 100));
+      } else if (data.discount_type === 'fixed' || data.discount_type === 'value' || data.discount_type === 'amount') {
+        discountAmount = data.discount_value;
+      }
+
+      // Ensure discount doesn't exceed total
+      discountAmount = Math.min(discountAmount, cartTotal);
+
       setDiscount(discountAmount);
       setIsApplied(true);
+      setAppliedCoupon(data);
+      setCouponCode(data.code); // Sync input with validated code
       setCouponError('');
-    } else if (couponCode.trim() === '') {
-      setCouponError('Please enter a code');
-    } else {
-      setCouponError('Invalid coupon code');
-      setIsApplied(false);
-      setDiscount(0);
+    } catch (err) {
+      console.error('Error applying coupon:', err);
+      setCouponError('Failed to validate coupon');
     }
   };
 
   const removeCoupon = () => {
-    setIsApplied(false);
-    setDiscount(0);
-    setCouponCode('');
-    setCouponError('');
-  };
+      setIsApplied(false);
+      setDiscount(0);
+      setCouponCode('');
+      setCouponError('');
+      setAppliedCoupon(null);
+    };
 
   const handleConfirmAndPay = () => {
     const options = {
@@ -75,12 +147,32 @@ export default function OrderSummaryPage() {
         // Save to Supabase
         try {
           const firstItem = cartItems[0];
+          const profileThemeName = firstItem?.customization?.themeId ? themesData[firstItem.customization.themeId]?.name : null;
+          
+          // Map product ID to material
+          const materialMap: Record<string, string> = {
+            'white-gloss': 'PVC Glossy',
+            'matte-black': 'Matte Black',
+            'wooden': 'Wooden'
+          };
+          // Strip the timestamp from the unique ID if present
+          const baseProductId = firstItem?.id.split('-')[0];
+          const material = materialMap[baseProductId] || 'Standard';
+
           const { error } = await supabase.from('orders').insert({
             customer_name: deliveryDetails?.fullName,
             customer_email: deliveryDetails?.email,
             customer_phone: deliveryDetails?.phone,
-            card_theme_id: firstItem?.id,
+            card_theme_id: baseProductId,
+            card_theme_name: firstItem?.name,
+            card_material: material,
             profile_theme_id: firstItem?.customization?.themeId,
+            profile_theme_name: profileThemeName,
+            customization_type: firstItem?.customization?.frontOption === 'logo' ? 'logo' : 'personal',
+            personal_full_name: firstItem?.customization?.fullName,
+            personal_phone: firstItem?.customization?.phone,
+            personal_email: firstItem?.customization?.email,
+            company_logo_link: firstItem?.customization?.logoUrl,
             delivery_name: deliveryDetails?.fullName,
             delivery_phone: deliveryDetails?.phone,
             delivery_email: deliveryDetails?.email,
@@ -90,13 +182,23 @@ export default function OrderSummaryPage() {
             delivery_pincode: deliveryDetails?.zipCode,
             final_amount: finalTotal,
             status: 'Pending',
-            print_qr: firstItem?.customization?.printQR || false
+            print_qr: firstItem?.customization?.printQR || false,
+            applied_coupon_code: isApplied && appliedCoupon ? appliedCoupon.code : null,
+            discount_amount: discount
           });
 
           if (error) {
             console.error("Error saving order to Supabase:", error);
           } else {
             console.log("Order saved successfully to Supabase");
+            
+            // Increment coupon usage
+            if (isApplied && appliedCoupon) {
+              await supabase
+                .from('coupons')
+                .update({ used: (appliedCoupon.used || 0) + 1 })
+                .eq('id', appliedCoupon.id);
+            }
           }
         } catch (err) {
           console.error("Unexpected error saving order:", err);
@@ -155,7 +257,8 @@ export default function OrderSummaryPage() {
                 <h2 className="text-xl font-bold text-[#0A0A0A] font-['Poppins'] mb-6">Items in your order</h2>
                 <div className="space-y-6">
                   {cartItems.map((item) => {
-                    const theme = THEMES.find(t => t.id === item.customization?.themeId) || THEMES[0];
+                    // Static theme fallback removed in favor of DB fetch
+
                     
                     return (
                       <div key={item.id} className="flex flex-col sm:flex-row gap-6 p-4 rounded-2xl border border-gray-100 bg-gray-50/50">
@@ -182,16 +285,29 @@ export default function OrderSummaryPage() {
                                   <p className="text-sm text-gray-700 font-medium">{item.customization.frontOption === 'details' ? item.customization.fullName : 'Custom Logo'}</p>
                                   {item.customization.printQR && <p className="text-xs text-[#5aa4f4] mt-1">✓ QR Code Included</p>}
                                </div>
-                               <div>
-                                  <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Selected Profile Theme</p>
-                                  {/* Mini Theme Preview */}
-                                  <div className="flex items-center gap-3">
-                                     <div className={`w-8 h-12 rounded-sm ${theme.color} shadow-inner flex flex-col items-center justify-start pt-2`}>
-                                        <div className="w-4 h-4 bg-white/20 rounded-full" />
+                                <div>
+                                   <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Selected Profile Theme</p>
+                                   {/* Mini Theme Preview */}
+                                   {item.customization?.themeId && themesData[item.customization.themeId] ? (
+                                     <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 flex-shrink-0">
+                                           <img 
+                                             src={themesData[item.customization.themeId].cover_photo} 
+                                             alt="Theme" 
+                                             className="w-full h-full object-contain p-1" 
+                                           />
+                                        </div>
+                                        <span className="text-sm font-medium text-gray-700">
+                                          {themesData[item.customization.themeId].name}
+                                        </span>
                                      </div>
-                                     <span className="text-sm font-medium text-gray-700">{theme.name}</span>
-                                  </div>
-                               </div>
+                                   ) : (
+                                     <div className="flex items-center gap-3 animate-pulse">
+                                        <div className="w-10 h-10 rounded-lg bg-gray-100" />
+                                        <div className="h-4 w-24 bg-gray-100 rounded" />
+                                     </div>
+                                   )}
+                                </div>
                             </div>
                           )}
                         </div>
@@ -240,10 +356,10 @@ export default function OrderSummaryPage() {
                     <span>Taxes (18% GST)</span>
                     <span className="font-medium text-gray-900">₹{taxes}</span>
                   </div>
-                  {isApplied && (
-                    <div className="flex justify-between text-green-600 font-medium animate-in fade-in slide-in-from-top-2 duration-300">
+                  {isApplied && appliedCoupon && (
+                    <div className="flex justify-between text-green-600 font-medium animate-in fade-in slide-in-from-top-2 duration-300 font-['Inter']">
                       <div className="flex items-center gap-1">
-                        <span>Discount (TAPINFI10)</span>
+                        <span>Discount ({appliedCoupon.code})</span>
                         <button onClick={removeCoupon} className="text-xs text-red-500 hover:underline ml-1">Remove</button>
                       </div>
                       <span>-₹{discount}</span>

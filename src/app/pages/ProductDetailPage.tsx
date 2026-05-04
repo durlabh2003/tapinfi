@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { products } from '../data/products';
+import { products, Product } from '../data/products';
 import { THEMES as STATIC_THEMES, ThemeOption } from '../data/themes';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../../lib/supabase';
@@ -19,12 +19,55 @@ export default function ProductDetailPage() {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   
-  const product = products.find(p => p.id === id);
+  const productStatic = products.find(p => p.id === id);
+  const [product, setProduct] = useState<Product | null>(productStatic || null);
   const [profileThemes, setProfileThemes] = useState<any[]>([]);
   const [selectedThemeId, setSelectedThemeId] = useState<string | null>(null);
+  const [isLoadingProduct, setIsLoadingProduct] = useState(!productStatic);
   const [isLoadingThemes, setIsLoadingThemes] = useState(true);
   const [activeView, setActiveView] = useState<'front' | 'back' | 'profile'>('front');
   const [showThemeError, setShowThemeError] = useState(false);
+
+  // Fetch product from Supabase if not in static list
+  React.useEffect(() => {
+    async function fetchProduct() {
+      if (!id) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('id', id)
+          .single();
+        
+        if (error) throw error;
+        if (data) {
+          setProduct({
+            id: data.id,
+            name: data.name,
+            price: data.selling_price || 0,
+            img: data.cover_photo || '',
+            shortDesc: data.description?.slice(0, 150) || 'Premium Smart Business Card',
+            description: data.description || 'No description available.',
+            front_mock_photo: data.front_mock_photo,
+            back_photo: data.back_photo,
+            customization_options: data.customization_options
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching product from DB:', err);
+      } finally {
+        setIsLoadingProduct(false);
+      }
+    }
+    
+    if (!productStatic) {
+      fetchProduct();
+    } else {
+      setIsLoadingProduct(false);
+    }
+  }, [id, productStatic]);
+
 
   // Fetch themes from Supabase
   React.useEffect(() => {
@@ -48,6 +91,16 @@ export default function ProductDetailPage() {
   }, []);
 
   const selectedTheme = profileThemes.find(t => t.id === selectedThemeId);
+
+  if (isLoadingProduct) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center">
+        <Header />
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0e2d6e]"></div>
+        <p className="mt-4 text-[#0e2d6e] font-medium">Loading Product...</p>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -99,9 +152,9 @@ export default function ProductDetailPage() {
               <div className="space-y-6">
                 <div className="aspect-[4/3] bg-gray-50 rounded-[40px] overflow-hidden border border-gray-100 relative group shadow-inner flex items-center justify-center p-8 lg:p-12 transition-all duration-500">
                   <img 
-                    src={product.img} 
+                    src={activeView === 'front' ? (product.front_mock_photo || product.img) : (product.back_photo || product.img)} 
                     alt={product.name} 
-                    className={`max-w-full max-h-full object-contain transition-transform duration-700 ${activeView === 'back' ? 'scale-x-[-1]' : ''}`} 
+                    className={`max-w-full max-h-full object-contain transition-transform duration-700`} 
                   />
                   
                   {/* View Toggles */}
@@ -121,13 +174,12 @@ export default function ProductDetailPage() {
                   </div>
                 </div>
                 
-                {/* Thumbnails */}
                 <div className="flex gap-4 justify-center">
                   <div className={`w-20 h-20 rounded-2xl border-2 cursor-pointer transition-all ${activeView === 'front' ? 'border-[#5aa4f4]' : 'border-gray-100 hover:border-gray-200'} bg-gray-50 p-2 flex items-center justify-center`} onClick={() => setActiveView('front')}>
-                    <img src={product.img} alt="Front" className="w-full h-full object-contain" />
+                    <img src={product.front_mock_photo || product.img} alt="Front" className="w-full h-full object-contain" />
                   </div>
                   <div className={`w-20 h-20 rounded-2xl border-2 cursor-pointer transition-all ${activeView === 'back' ? 'border-[#5aa4f4]' : 'border-gray-100 hover:border-gray-200'} bg-gray-50 p-2 flex items-center justify-center`} onClick={() => setActiveView('back')}>
-                    <img src={product.img} alt="Back" className="w-full h-full object-contain scale-x-[-1]" />
+                    <img src={product.back_photo || product.img} alt="Back" className="w-full h-full object-contain" />
                   </div>
                 </div>
               </div>
