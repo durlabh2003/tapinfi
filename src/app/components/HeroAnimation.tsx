@@ -10,13 +10,13 @@ export default function HeroAnimation() {
     target: containerRef,
     offset: ["start start", "end end"]
   });
-  
+
   // Smooth scroll transitions
   const smoothY = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
   // Responsive detection for mobile optimizations
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-  
+
   useEffect(() => {
     const handleResize = () => {
       setWindowSize({ width: window.innerWidth, height: window.innerHeight });
@@ -32,35 +32,35 @@ export default function HeroAnimation() {
 
   // === ANIMATION TIMING (0 to 1 Progress) ===
   const phoneOpacity = useTransform(smoothY, [0.05, 0.12], [0, 1]);
-  const phoneScale = useTransform(smoothY, [0.05, 0.12, 0.50, 0.58], 
-    isMobile ? [0.6, 0.75, 0.75, 0.65] : 
-    isTablet ? [0.7, 0.85, 0.85, 0.75] : [0.8, 1, 1, 0.85]
+  const phoneScale = useTransform(smoothY, [0.05, 0.12, 0.50, 0.58],
+    isMobile ? [0.6, 0.75, 0.75, 0.65] :
+      isTablet ? [0.7, 0.85, 0.85, 0.75] : [0.8, 1, 1, 0.85]
   );
   // On mobile/tablet, move phone UP to be at the top
-  const phoneY = useTransform(smoothY, [0, 0.50, 0.58, 0.65], 
-    isMobile ? [0, 0, -140, -250] : 
-    isTablet ? [0, 0, -180, -320] : [0, 0, 0, 0]
-  ); 
-  const phoneX = useTransform(smoothY, [0.55, 0.65], 
+  const phoneY = useTransform(smoothY, [0, 0.50, 0.58, 0.65],
+    isMobile ? [0, 0, -140, -250] :
+      isTablet ? [0, 0, -180, -320] : [0, 0, 0, 0]
+  );
+  const phoneX = useTransform(smoothY, [0.55, 0.65],
     [0, isMobile ? 0 : isTablet ? 0 : 250]
   );
 
   // Card
-  const cardX = useTransform(smoothY, [0.04, 0.12, 0.30], 
+  const cardX = useTransform(smoothY, [0.04, 0.12, 0.30],
     [0, 0, isMobile ? 55 : isTablet ? 100 : 185]
   );
-  const cardY = useTransform(smoothY, [0.04, 0.12, 0.30], 
+  const cardY = useTransform(smoothY, [0.04, 0.12, 0.30],
     [0, 0, isMobile ? -140 : isTablet ? -180 : -255]
   );
-  const cardRotateZ = useTransform(smoothY, [0.04, 0.12, 0.30], 
+  const cardRotateZ = useTransform(smoothY, [0.04, 0.12, 0.30],
     [0, 0, isMobile ? -10 : -20]
   );
-  const cardRotateY = useTransform(smoothY, [0.04, 0.12, 0.30], 
+  const cardRotateY = useTransform(smoothY, [0.04, 0.12, 0.30],
     [0, 0, isMobile ? 20 : 45]
   );
-  const cardScale = useTransform(smoothY, [0.04, 0.12, 0.30, 0.55, 0.62], 
-    isMobile ? [0.8, 0.8, 0.38, 0.38, 0] : 
-    isTablet ? [0.95, 0.95, 0.42, 0.42, 0] : [1.1, 1.1, 0.48, 0.48, 0]
+  const cardScale = useTransform(smoothY, [0.04, 0.12, 0.30, 0.55, 0.62],
+    isMobile ? [0.8, 0.8, 0.38, 0.38, 0] :
+      isTablet ? [0.95, 0.95, 0.42, 0.42, 0] : [1.1, 1.1, 0.48, 0.48, 0]
   );
   const cardOpacity = useTransform(smoothY, [0.55, 0.62], [1, 0]);
 
@@ -87,14 +87,14 @@ export default function HeroAnimation() {
 
   return (
     <div ref={containerRef} className="relative text-white selection:bg-violet-500/30">
-      
+
       {/* Hero Animation Track */}
       <div className="relative h-[2000px] sm:h-[2400px] z-10">
-        <motion.div 
+        <motion.div
           className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-[100px] sm:pt-[120px]"
         >
           {/* Top Branding / Intro Space */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             style={{ opacity: useTransform(smoothY, [0, 0.05], [1, 0]) }}
@@ -107,15 +107,15 @@ export default function HeroAnimation() {
           </motion.div>
 
           {/* Initial Card Center Glow */}
-          <motion.div 
+          <motion.div
             style={{ opacity: initialGlowOpacity }}
             className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] lg:w-[450px] lg:h-[450px] bg-violet-500/25 blur-[90px] sm:blur-[110px] rounded-full pointer-events-none"
           />
 
           {/* iPhone 15 Pro Mockup */}
           <motion.div
-            style={{ 
-              opacity: phoneOpacity, 
+            style={{
+              opacity: phoneOpacity,
               scale: phoneScale,
               y: phoneY,
               x: phoneX,
@@ -126,7 +126,7 @@ export default function HeroAnimation() {
             <div className="relative flex-1 bg-black overflow-hidden">
               {/* Dynamic Island */}
               <div className="absolute top-3 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-[100] ring-[1px] ring-white/10" />
-              
+
               {/* Home Screen Icons */}
               <div className="h-full flex flex-col p-6 pt-16 space-y-6 opacity-40">
                 <div className="flex justify-between">
@@ -171,11 +171,11 @@ export default function HeroAnimation() {
                       <img src={profileAvatar} alt="Profile" className="w-full h-full object-cover" />
                     </div>
                   </div>
-                  
+
                   <div className="flex-1 pt-14 px-6 text-center">
                     <h3 className="text-slate-900 text-2xl font-black tracking-tighter">Marcus Sterling</h3>
                     <p className="text-violet-600 text-[10px] font-black uppercase tracking-[0.2em] mt-1">Founding Partner • Creative</p>
-                    
+
                     <div className="flex justify-center gap-3 my-6">
                       {[1, 2, 3].map(i => (
                         <div key={i} className="w-9 h-9 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400">
@@ -196,11 +196,11 @@ export default function HeroAnimation() {
 
           {/* Tap Ripple Effect */}
           <motion.div
-            style={{ 
-              scale: rippleScale, 
-              opacity: rippleOpacity, 
-              x: isMobile ? 55 : isTablet ? 100 : 185, 
-              y: isMobile ? -170 : isTablet ? -220 : -310 
+            style={{
+              scale: rippleScale,
+              opacity: rippleOpacity,
+              x: isMobile ? 55 : isTablet ? 100 : 185,
+              y: isMobile ? -170 : isTablet ? -220 : -310
             }}
             className="absolute z-20 w-44 h-44 md:w-56 md:h-56 border border-violet-400/50 rounded-full pointer-events-none shadow-[0_0_40px_rgba(139,92,246,0.3)]"
           />
@@ -220,61 +220,58 @@ export default function HeroAnimation() {
           >
             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/brushed-alum.png')]" />
             <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0%,transparent_50%)]" />
-            
+
             <div className="flex justify-between items-start relative z-10">
-              <div className="space-y-5">
-                <div className="w-14 h-14 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex items-center justify-center shadow-2xl">
-                  <div className="w-9 h-9 bg-gradient-to-tr from-slate-400 via-slate-200 to-slate-500 rounded-lg flex items-center justify-center shadow-inner">
-                    <Cpu className="text-slate-900 w-5 h-5" />
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 flex items-center justify-center">
+                  <div className="w-7 h-7 bg-gradient-to-tr from-violet-500 to-indigo-600 rounded-md flex items-center justify-center">
+                    <Cpu className="text-white w-4 h-4" />
                   </div>
                 </div>
                 <div>
-                  <p className="text-[9px] text-slate-400 tracking-[0.5em] font-black uppercase mb-1">Matte Black Series</p>
-                  <h4 className="text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 text-2xl font-black tracking-tighter italic">STEALTH PRO</h4>
+                  <p className="text-[8px] text-white/30 tracking-[0.4em] font-black uppercase">Stealth Edition</p>
+                  <h4 className="text-white text-lg font-bold tracking-tight">NEXUS CARD</h4>
                 </div>
               </div>
               <div className="text-right">
-                <div className="flex items-center gap-2 justify-end bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                  <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]" />
-                  <span className="text-[10px] text-emerald-400 font-black uppercase tracking-widest">READY</span>
+                <div className="flex items-center gap-1.5 justify-end">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                  <span className="text-[9px] text-emerald-500 font-black uppercase tracking-[0.1em]">Ready</span>
                 </div>
               </div>
             </div>
-            
-            <div className="mt-auto relative z-10 flex items-center justify-between">
-              <p className="text-slate-400 font-mono tracking-[0.4em] text-xs">•••• •••• •••• 2026</p>
-              <div className="flex -space-x-1">
-                <div className="w-6 h-6 rounded-full bg-slate-800 border border-white/10 shadow-lg" />
-                <div className="w-6 h-6 rounded-full bg-slate-700 border border-white/10 shadow-lg" />
-              </div>
+
+            <div className="mt-auto relative z-10">
+              <p className="text-white/80 font-mono tracking-[0.25em] text-sm">•••• •••• •••• 2026</p>
             </div>
           </motion.div>
 
           {/* Scrolling CTA Content */}
           <motion.div
-            style={{ 
-              opacity: ctaOpacity, 
-              x: ctaX, 
+            style={{
+              opacity: ctaOpacity,
+              x: ctaX,
               y: ctaY,
               pointerEvents: "auto"
             }}
             className="absolute z-[200] w-full max-w-[640px] px-6 lg:px-0 text-center lg:text-left lg:left-[100px] xl:left-[150px] left-1/2 -translate-x-1/2 lg:translate-x-0 top-[68%] sm:top-[65%] lg:top-[40%] sm:translate-y-0 -translate-y-1/2"
           >
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               className="mb-5 sm:mb-6 inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 bg-violet-500/10 border border-violet-500/25 rounded-full backdrop-blur-xl"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
               <span className="text-[10px] sm:text-[11px] font-bold text-violet-200 uppercase tracking-[0.25em]">Effortless Onboarding</span>
             </motion.div>
-            
-            <h2 className="text-white text-[32px] leading-[1.1] sm:text-[48px] md:text-[64px] lg:text-[72px] xl:text-[84px] font-black tracking-[-0.04em] mb-4 sm:mb-8 italic uppercase">
-              Tap with 
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-500 to-amber-600 drop-shadow-[0_0_15px_rgba(234,179,8,0.2)]"> Tapinfi.</span>
-              <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-100 via-amber-400 to-yellow-600 drop-shadow-[0_0_30px_rgba(251,191,36,0.3)]">
-                The Future of
-                <br className="hidden lg:block"/> Connection.
+
+            <h2 className="text-white text-[28px] leading-[1.1] sm:text-[38px] md:text-[48px] lg:text-[56px] xl:text-[64px] font-black tracking-[-0.02em] mb-4 sm:mb-8">
+              Let's Tap into the
+              <br className="hidden sm:block" />
+              <span className="sm:hidden"> </span>future for
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-200 via-fuchsia-200 to-cyan-200 drop-shadow-[0_0_30px_rgba(167,139,250,0.3)]">
+                Effortless digital
+                <br className="hidden lg:block" /> connection
               </span>
             </h2>
 
@@ -288,10 +285,10 @@ export default function HeroAnimation() {
                   <ArrowRight className="w-5 h-5" />
                 </div>
               </Link>
-              
+
               <div className="flex items-center gap-3 text-white/70 text-[13px] font-medium">
                 <div className="flex -space-x-2">
-                  {[1,2,3].map(i => (
+                  {[1, 2, 3].map(i => (
                     <div key={i} className="w-6 h-6 rounded-full border border-[#020617] bg-gradient-to-br from-violet-600 to-indigo-600" />
                   ))}
                 </div>
