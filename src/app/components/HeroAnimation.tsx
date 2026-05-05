@@ -268,14 +268,13 @@ export default function HeroAnimation() {
               <span className="text-[10px] sm:text-[11px] font-bold text-violet-200 uppercase tracking-[0.25em]">Effortless Onboarding</span>
             </motion.div>
             
-            <h2 className="text-white text-[28px] leading-[1.1] sm:text-[38px] md:text-[48px] lg:text-[56px] xl:text-[64px] font-black tracking-[-0.02em] mb-4 sm:mb-8">
-              Let's Tap into the
-              <br className="hidden sm:block"/>
-              <span className="sm:hidden"> </span>future for
+            <h2 className="text-white text-[32px] leading-[1.1] sm:text-[48px] md:text-[64px] lg:text-[72px] xl:text-[84px] font-black tracking-[-0.04em] mb-4 sm:mb-8 italic uppercase">
+              Tap with 
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-500"> Tapinfi.</span>
               <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-200 via-fuchsia-200 to-cyan-200 drop-shadow-[0_0_30px_rgba(167,139,250,0.3)]">
-                Effortless digital
-                <br className="hidden lg:block"/> connection
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+                The Future of
+                <br className="hidden lg:block"/> Connection.
               </span>
             </h2>
 
