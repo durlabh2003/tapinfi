@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '../../lib/supabase';
 import imgLogo from '../../imports/Frame1-1/f00b995e56d83fe3818dbb20f3489f43c9842118.png';
 import { useCart } from '../context/CartContext';
 
@@ -13,7 +14,22 @@ export default function Header() {
   const location = useLocation();
   const isHome = location.pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
+  const [session, setSession] = useState<any>(null);
   const { cartCount, setIsCartOpen } = useCart();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const linkClass = (path: string) =>
     `transition-colors duration-200 ${
@@ -67,14 +83,24 @@ export default function Header() {
               )}
             </button>
 
-            {/* Login */}
-            <Link
-              to="/login"
-              className="border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 whitespace-nowrap"
-              style={NAV_FONT}
-            >
-              LOGIN
-            </Link>
+            {/* Login / Orders */}
+            {session ? (
+              <Link
+                to="/orders"
+                className="border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 whitespace-nowrap bg-white/10"
+                style={NAV_FONT}
+              >
+                ORDERS
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                className="border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 whitespace-nowrap"
+                style={NAV_FONT}
+              >
+                LOGIN
+              </Link>
+            )}
           </nav>
 
           {/* Mobile right actions */}
@@ -124,14 +150,25 @@ export default function Header() {
           <Link to="/blogs" className={linkClass('/blogs')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>BLOGS</Link>
           <Link to="/about" className={linkClass('/about')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>ABOUT US</Link>
 
-          <Link
-            to="/login"
-            className="text-center border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 mt-2"
-            style={NAV_FONT}
-            onClick={() => setMenuOpen(false)}
-          >
-            LOGIN
-          </Link>
+          {session ? (
+            <Link
+              to="/orders"
+              className="text-center border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 mt-2 bg-white/10"
+              style={NAV_FONT}
+              onClick={() => setMenuOpen(false)}
+            >
+              ORDERS
+            </Link>
+          ) : (
+            <Link
+              to="/login"
+              className="text-center border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 mt-2"
+              style={NAV_FONT}
+              onClick={() => setMenuOpen(false)}
+            >
+              LOGIN
+            </Link>
+          )}
         </div>
       )}
     </div>

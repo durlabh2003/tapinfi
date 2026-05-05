@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import ScrollReveal from '../components/ScrollReveal';
 import { supabase } from '../../lib/supabase';
@@ -14,8 +14,22 @@ const features = [
 ];
 
 export default function ShopPage() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const initialMaterial = searchParams.get('material') || 'All';
+
   const [dbProducts, setDbProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedMaterial, setSelectedMaterial] = useState(initialMaterial);
+
+  // Update URL when selectedMaterial changes
+  useEffect(() => {
+    if (selectedMaterial === 'All') {
+      window.history.replaceState(null, '', '/shop');
+    } else {
+      window.history.replaceState(null, '', `/shop?material=${selectedMaterial}`);
+    }
+  }, [selectedMaterial]);
 
   useEffect(() => {
     async function fetchProducts() {
@@ -35,7 +49,8 @@ export default function ShopPage() {
             price: p.selling_price || 0,
             img: p.cover_photo || '',
             shortDesc: p.description?.slice(0, 100) || 'Premium Smart Business Card',
-            description: p.description || 'No description available.'
+            description: p.description || 'No description available.',
+            card_type: p.card_type
           }));
           setDbProducts(mappedProducts);
         }
@@ -48,6 +63,11 @@ export default function ShopPage() {
 
     fetchProducts();
   }, []);
+
+  const displayedProducts = dbProducts.filter(p => 
+    selectedMaterial === 'All' || 
+    (p.card_type && p.card_type.toLowerCase() === selectedMaterial.toLowerCase())
+  );
 
   return (
     <div className="bg-white min-h-screen">
@@ -77,6 +97,24 @@ export default function ShopPage() {
         {/* ── Products Grid ─────────────────────────────────── */}
         <div className="px-4 sm:px-8 lg:px-20 pb-16">
           <div className="max-w-[1280px] mx-auto">
+            {/* Filter Buttons */}
+            <div className="flex flex-wrap justify-center gap-4 mb-10">
+              {['All', 'PVC', 'Matt'].map(mat => (
+                <button 
+                  key={mat}
+                  onClick={() => setSelectedMaterial(mat)}
+                  className={`px-6 py-2 rounded-full border-2 transition-all font-semibold ${
+                    selectedMaterial.toLowerCase() === mat.toLowerCase() 
+                      ? 'border-[#5aa4f4] bg-[#5aa4f4] text-white shadow-md' 
+                      : 'border-gray-200 text-gray-600 hover:border-[#5aa4f4] hover:text-[#5aa4f4]'
+                  }`}
+                  style={{ fontFamily: "'Inter', sans-serif" }}
+                >
+                  {mat}
+                </button>
+              ))}
+            </div>
+
             {isLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
                 {[1, 2, 3].map((i) => (
@@ -87,9 +125,9 @@ export default function ShopPage() {
                   </div>
                 ))}
               </div>
-            ) : dbProducts.length > 0 ? (
+            ) : displayedProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
-                {dbProducts.map((p, i) => (
+                {displayedProducts.map((p, i) => (
                   <ScrollReveal key={p.id} animation="fade-up" delay={i * 100}>
                     <Link to={`/product/${p.id}`} className="group block h-full">
                       <div className="border-2 border-[#5aa4f4]/40 rounded-[25px] p-6 h-full

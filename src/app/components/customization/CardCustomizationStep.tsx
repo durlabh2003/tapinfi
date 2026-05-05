@@ -3,6 +3,7 @@ import ScrollReveal from '../ScrollReveal';
 import { CustomizationData } from '../../context/CartContext';
 
 import { Product } from '../../data/products';
+import { supabase } from '../../../lib/supabase';
 
 interface Props {
   data: CustomizationData;
@@ -13,6 +14,7 @@ interface Props {
 
 export default function CardCustomizationStep({ data, onChange, onFinish, product }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = React.useState(false);
 
   const frontFields = product.customization_options?.frontFields || ['personal_details'];
   const backFields = product.customization_options?.backFields || [];
@@ -36,12 +38,29 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
     }
   }, [hasQR, data.printQR, onChange]);
 
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Create a temporary object URL for preview purposes
-      const url = URL.createObjectURL(file);
-      onChange({ logoUrl: url });
+      setUploading(true);
+      try {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `logos/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('uploads')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data } = supabase.storage.from('uploads').getPublicUrl(filePath);
+        onChange({ logoUrl: data.publicUrl });
+      } catch (err) {
+        console.error('Error uploading logo:', err);
+        alert('Failed to upload logo. Please try again.');
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -139,7 +158,9 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
                           <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                        </div>
                     )}
-                    <p className="text-[#0e2d6e] font-semibold font-['Inter']">{data.logoUrl ? 'Change Logo' : 'Click to Upload Logo'}</p>
+                    <p className="text-[#0e2d6e] font-semibold font-['Inter']">
+                       {uploading ? 'Uploading...' : (data.logoUrl ? 'Change Logo' : 'Click to Upload Logo')}
+                    </p>
                     <p className="text-gray-500 text-sm font-['Inter'] mt-1">SVG, PNG, JPG or GIF (max. 5MB)</p>
                     <input 
                        type="file" 

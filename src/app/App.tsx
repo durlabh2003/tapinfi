@@ -14,7 +14,8 @@ import ScrollToTop from './components/ScrollToTop';
 import { CartProvider } from './context/CartContext';
 import Header from './components/Header';
 import CartDrawer from './components/CartDrawer';
-
+import LoginPage from './pages/LoginPage';
+import OrdersPage from './pages/OrdersPage';
 import MarketingPage from './pages/MarketingPage';
 
 export default function App() {
@@ -31,6 +32,8 @@ export default function App() {
             <Route path="/blogs" element={<BlogsPage />} />
             <Route path="/blog/:id" element={<BlogPostPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/orders" element={<OrdersPage />} />
             <Route path="/marketing" element={<MarketingPage />} />
             <Route path="/checkout/delivery" element={<DeliveryDetailsPage />} />
             <Route path="/checkout/summary" element={<OrderSummaryPage />} />

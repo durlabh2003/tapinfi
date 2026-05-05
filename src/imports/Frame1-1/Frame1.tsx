@@ -458,7 +458,7 @@ function HowItWorks() {
 
 // ── Our Products ──────────────────────────────────────────────────────────────
 
-function ProductCard({ title, price, image, delay, productId }: { title: string; price: string; image: string; delay: string; productId: string }) {
+function ProductCard({ title, price, image, delay, comingSoon, linkTo }: { title: string; price: string; image: string; delay: string; comingSoon?: boolean; linkTo: string }) {
   return (
     <div
       data-sr-card
@@ -476,65 +476,49 @@ function ProductCard({ title, price, image, delay, productId }: { title: string;
           <span className="font-['Inter:Regular',sans-serif] text-[20px]">INR </span>
           <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[32px]">{price}</span>
         </div>
-        <Link
-          to={`/product/${productId}`}
-          className="bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] rounded-full px-6 py-2 font-['Inter:Semi_Bold',sans-serif] text-white text-[14px] shadow-lg hover:shadow-[#5AA4F4]/50 transition-shadow relative z-20"
-        >
-          SHOP NOW
-        </Link>
+        {comingSoon ? (
+          <div className="bg-gray-500 rounded-full px-6 py-2 font-['Inter:Semi_Bold',sans-serif] text-white text-[14px] opacity-70 cursor-not-allowed">
+            COMING SOON
+          </div>
+        ) : (
+          <Link
+            to={linkTo}
+            className="bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] rounded-full px-6 py-2 font-['Inter:Semi_Bold',sans-serif] text-white text-[14px] shadow-lg hover:shadow-[#5AA4F4]/50 transition-shadow relative z-20"
+          >
+            SHOP NOW
+          </Link>
+        )}
       </div>
-      <Link to={`/product/${productId}`} className="absolute inset-0 z-10" aria-label={`Shop ${title}`} />
+      {!comingSoon && <Link to={linkTo} className="absolute inset-0 z-10" aria-label={`Shop ${title}`} />}
     </div>
   );
 }
 
+import { products as staticProducts } from '../../app/data/products';
+
 function OurProducts() {
-  const [products, setProducts] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const { data, error } = await supabase
-          .from('products')
-          .select('*')
-          .eq('theme_type', 'Card')
-          .eq('status', 'Active')
-          .limit(3);
-        if (data) setProducts(data);
-      } catch (err) {
-        console.error('Error fetching home products:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchProducts();
-  }, []);
-
   return (
     <section className="w-full max-w-[1440px] z-10 py-20 px-6" data-name="Our Products">
       <p data-sr data-delay="0" className="font-['Inter:Bold',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
         Our Products
       </p>
       <div className="flex flex-col md:flex-row gap-8 w-full justify-center items-center min-h-[455px]">
-        {isLoading ? (
-          [1, 2, 3].map(i => (
-            <div key={i} className="w-full max-w-[355px] h-[455px] rounded-[25px] border-2 border-white/20 bg-white/5 animate-pulse" />
-          ))
-        ) : products.length > 0 ? (
-          products.map((p, i) => (
+        {staticProducts.slice(0, 3).map((p, i) => {
+          let toLink = `/product/${p.id}`;
+          if (p.id === 'white-gloss') toLink = '/shop?material=PVC';
+          if (p.id === 'matte-black') toLink = '/shop?material=Matt';
+          return (
             <ProductCard 
               key={p.id}
               title={p.name} 
-              price={p.selling_price.toString()} 
-              image={p.cover_photo} 
+              price={p.price.toString()} 
+              image={p.img} 
               delay={(i * 100).toString()} 
-              productId={p.id} 
+              comingSoon={p.id === 'wooden'}
+              linkTo={toLink}
             />
-          ))
-        ) : (
-          <p className="text-white/60">Coming soon...</p>
-        )}
+          );
+        })}
       </div>
     </section>
   );

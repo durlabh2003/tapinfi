@@ -11,6 +11,7 @@ export interface Product {
   description: string;
   front_mock_photo?: string;
   back_photo?: string;
+  card_type?: string;
   customization_options?: {
     frontFields?: string[];
     backFields?: string[];
