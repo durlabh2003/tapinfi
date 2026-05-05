@@ -270,9 +270,9 @@ export default function HeroAnimation() {
             
             <h2 className="text-white text-[32px] leading-[1.1] sm:text-[48px] md:text-[64px] lg:text-[72px] xl:text-[84px] font-black tracking-[-0.04em] mb-4 sm:mb-8 italic uppercase">
               Tap with 
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-500"> Tapinfi.</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-500 to-amber-600 drop-shadow-[0_0_15px_rgba(234,179,8,0.2)]"> Tapinfi.</span>
               <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-100 via-amber-400 to-yellow-600 drop-shadow-[0_0_30px_rgba(251,191,36,0.3)]">
                 The Future of
                 <br className="hidden lg:block"/> Connection.
               </span>
