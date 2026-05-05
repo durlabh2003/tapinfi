@@ -412,35 +412,46 @@ function HowItWorksStep({ number, title, description, image, delay }: { number: 
     <motion.div 
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
+      viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.8, delay }}
-      whileHover={{ y: -5 }}
-      className="flex flex-col items-center text-center w-full max-w-[380px] group"
+      whileHover={{ y: -8 }}
+      className="flex flex-col items-center text-center w-full max-w-[380px] group relative p-8 rounded-[32px] transition-all duration-500 hover:bg-white/[0.03] border border-transparent hover:border-white/10 hover:shadow-[0_20px_50px_rgba(90,164,244,0.05)]"
     >
       <div className="relative w-[260px] h-[220px] flex items-center justify-center mb-8">
-        <div className="absolute inset-0 bg-cyan-500/5 blur-3xl rounded-full scale-0 group-hover:scale-110 transition-transform duration-700" />
-        <img alt={title} className="max-w-full max-h-full object-contain relative z-10 drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" src={image} />
+        <div className="absolute inset-0 bg-[#5AA4F4]/10 blur-[60px] rounded-full scale-0 group-hover:scale-110 transition-transform duration-700 opacity-0 group-hover:opacity-100" />
+        <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-[180px] h-[180px] bg-gradient-to-br from-[#5AA4F4]/20 to-transparent blur-3xl animate-pulse" />
+        </div>
+        <img alt={title} className="max-w-full max-h-full object-contain relative z-10 drop-shadow-[0_20px_60px_rgba(90,164,244,0.3)] transition-transform duration-500 group-hover:scale-110" src={image} />
       </div>
       <div className="flex flex-col items-center gap-4 w-full">
         <div className="flex items-center gap-4">
-          <div className="relative size-10 flex-shrink-0">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#5AA4F4] to-[#0E2D6E] rounded-full opacity-20 group-hover:opacity-40 transition-opacity" />
-            <div className="absolute inset-0 border border-white/10 rounded-full" />
-            <span className="absolute inset-0 flex items-center justify-center font-black text-lg text-[#5AA4F4] group-hover:text-white transition-colors">{number}</span>
+          <div className="relative size-12 flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
+            <div className="absolute inset-[-4px] bg-[#5AA4F4] blur-xl opacity-0 group-hover:opacity-40 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#5AA4F4] via-[#5AA4F4] to-[#0E2D6E] rounded-full shadow-[0_0_20px_rgba(90,164,244,0.3)]" />
+            <div className="absolute inset-[1px] border border-white/40 rounded-full" />
+            <span className="absolute inset-0 flex items-center justify-center font-black text-xl text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">{number}</span>
           </div>
-          <h3 className="font-['Inter',sans-serif] font-black text-2xl lg:text-3xl text-white tracking-tighter italic group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#5AA4F4] group-hover:to-white transition-all duration-300">
+          <h3 className="font-['Inter',sans-serif] font-bold text-2xl lg:text-3xl text-white uppercase tracking-tight transition-all duration-300">
             {title}
           </h3>
         </div>
-        <div className="w-16 h-1 bg-[#5AA4F4]/30 rounded-full overflow-hidden">
+        <div className="w-20 h-[6px] bg-white/10 rounded-full overflow-hidden relative">
           <motion.div 
-            initial={{ x: "-100%" }}
-            whileInView={{ x: "0%" }}
-            transition={{ duration: 1, delay: delay + 0.3 }}
-            className="w-full h-full bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E]"
+            animate={{ 
+              x: ["-100%", "200%"],
+              opacity: [0, 1, 0]
+            }}
+            transition={{ 
+              duration: 2.5, 
+              repeat: Infinity,
+              ease: "linear"
+            }}
+            className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-[#5AA4F4] to-transparent blur-[2px]"
           />
+          <div className="absolute inset-0 bg-[#5AA4F4]/40" />
         </div>
-        <p className="font-['Inter',sans-serif] text-sm lg:text-[15px] text-white/50 leading-relaxed max-w-[300px] mx-auto font-medium">
+        <p className="font-['Inter',sans-serif] text-sm lg:text-[15px] text-white/90 leading-relaxed max-w-[320px] mx-auto font-medium">
           {description}
         </p>
       </div>
@@ -450,23 +461,23 @@ function HowItWorksStep({ number, title, description, image, delay }: { number: 
 
 function HowItWorks() {
   return (
-    <section className="w-full max-w-[1440px] z-10 py-32 px-6 overflow-hidden" data-name="How It Works">
+    <section className="relative w-full max-w-[1440px] z-10 py-32 px-6 overflow-hidden" data-name="How It Works">
       <div className="text-center mb-24">
         <motion.p 
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="text-[#5AA4F4] font-black uppercase tracking-[0.4em] text-xs mb-4"
+          viewport={{ once: true, margin: "-100px" }}
+          className="text-[#5AA4F4] font-bold uppercase tracking-[0.4em] text-xs mb-4"
         >
           Process
         </motion.p>
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="font-['Inter',sans-serif] font-black text-[40px] lg:text-[64px] text-white tracking-[-0.04em] leading-[0.9]"
+          viewport={{ once: true, margin: "-100px" }}
+          className="font-['Inter',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center"
         >
-          HOW IT <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/20">WORKS.</span>
+          How It Works
         </motion.h2>
       </div>
       <div className="flex flex-col lg:flex-row items-start justify-center gap-20 lg:gap-12">
@@ -538,7 +549,7 @@ import { products as staticProducts } from '../../app/data/products';
 
 function OurProducts() {
   return (
-    <section className="w-full max-w-[1440px] z-10 py-20 px-6" data-name="Our Products">
+    <section className="relative w-full max-w-[1440px] z-10 py-20 px-6" data-name="Our Products">
       <p data-sr data-delay="0" className="font-['Inter',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
         Our Products
       </p>
@@ -581,7 +592,7 @@ function FeatureItem({ icon, title, delay }: { icon: React.ReactNode; title: Rea
 
 function OneCard() {
   return (
-    <section className="w-full max-w-[1440px] z-10 py-20 px-6" data-name="One Card">
+    <section className="relative w-full max-w-[1440px] z-10 py-20 px-6" data-name="One Card">
       <p data-sr data-delay="0" className="font-['Inter',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
         One Card - Many Functions
       </p>
@@ -601,7 +612,7 @@ function OneCard() {
 
 function ProfileCustomizationSection() {
   return (
-    <section className="w-full max-w-[1440px] z-10 py-20 px-6" data-name="Profile Customization">
+    <section className="relative w-full max-w-[1440px] z-10 py-20 px-6" data-name="Profile Customization">
       <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-0 justify-between">
         {/* Left Text */}
         <div className="flex flex-col gap-4 max-w-[380px] order-2 lg:order-1 text-center lg:text-left">
@@ -669,7 +680,7 @@ function ProfileCustomizationSection() {
 
 function CalculatorSection() {
   return (
-    <section className="w-full max-w-[1440px] z-10 py-20 px-6" data-name="Calculator Section">
+    <section className="relative w-full max-w-[1440px] z-10 py-20 px-6" data-name="Calculator Section">
       <p data-sr data-delay="0" className="font-['Inter',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
         Networking Made Eco-friendly
       </p>
@@ -771,7 +782,7 @@ function Group25() {
   ];
 
   return (
-    <section data-sr data-delay="0" className="w-full max-w-[1270px] z-10 py-20 px-6" data-name="FAQ">
+    <section data-sr data-delay="0" className="relative w-full max-w-[1270px] z-10 py-20 px-6" data-name="FAQ">
       <p className="font-['Inter',sans-serif] font-bold text-[32px] lg:text-[40px] text-white leading-tight mb-3">
         Frequently Asked Questions
       </p>

@@ -3,13 +3,21 @@
 @import './theme.css';
 @import './animations.css';
 
-:root {
-  font-family: 'Inter', sans-serif;
+html {
+  overflow-x: visible;
 }
 
 body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
   font-family: 'Inter', sans-serif;
+  background-color: #020617;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+  font-family: 'Inter', sans-serif;
 }

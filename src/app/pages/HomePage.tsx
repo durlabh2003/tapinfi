@@ -20,22 +20,42 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div
-      style={{
-        backgroundColor: '#020617',
-        overflowX: 'hidden',
-        minHeight: '100vh',
-        width: '100%',
-      }}
-    >
+    <div className="bg-[#020617] min-h-screen relative">
       <Header />
       
-      {/* Dynamic Background Glows - Adjusted to Cyan/Blue branding */}
+      {/* Dynamic Background Glows - Ultimate Premium Edition */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#5AA4F4]/10 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#0E2D6E]/20 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-[30%] left-[60%] w-[40%] h-[40%] bg-cyan-500/5 blur-[130px] rounded-full animate-pulse" style={{ animationDelay: '4s' }} />
-        <div className="absolute top-[60%] left-[-10%] w-[45%] h-[45%] bg-[#5AA4F4]/5 blur-[140px] rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+        {/* Deep Ambient Base */}
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#5AA4F4]/25 blur-[140px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#0E2D6E]/40 blur-[180px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+        
+        {/* Intense Focal Glows */}
+        <div className="absolute top-[20%] left-[15%] w-[30%] h-[30%] bg-cyan-400/30 blur-[100px] rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-[45%] right-[10%] w-[25%] h-[25%] bg-[#5AA4F4]/25 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '3s' }} />
+        <div className="absolute bottom-[20%] left-[10%] w-[35%] h-[35%] bg-blue-600/20 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '5s' }} />
+        
+        {/* Pure White 'Star' Highlights */}
+        <div className="absolute top-[15%] right-[25%] w-[4px] h-[4px] bg-white rounded-full shadow-[0_0_15px_#fff]" />
+        <div className="absolute top-[40%] left-[10%] w-[3px] h-[3px] bg-cyan-300 rounded-full shadow-[0_0_12px_#5AA4F4]" />
+        <div className="absolute bottom-[40%] right-[30%] w-[3px] h-[3px] bg-white rounded-full shadow-[0_0_10px_#fff]" />
+        <div className="absolute bottom-[15%] left-[20%] w-[4px] h-[4px] bg-cyan-200 rounded-full shadow-[0_0_15px_#5AA4F4]" />
+        
+        {/* Floating Digital Particles */}
+        {[...Array(12)].map((_, i) => (
+          <div 
+            key={i}
+            className="absolute bg-white rounded-full opacity-20 animate-float"
+            style={{
+              width: Math.random() * 3 + 1 + 'px',
+              height: Math.random() * 3 + 1 + 'px',
+              top: Math.random() * 100 + '%',
+              left: Math.random() * 100 + '%',
+              animationDuration: (Math.random() * 10 + 10) + 's',
+              animationDelay: (Math.random() * 5) + 's',
+              filter: 'blur(1px)'
+            }}
+          />
+        ))}
       </div>
 
       <div

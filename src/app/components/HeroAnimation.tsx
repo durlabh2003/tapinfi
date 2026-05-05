@@ -89,9 +89,10 @@ export default function HeroAnimation() {
     <div ref={containerRef} className="relative text-white selection:bg-violet-500/30">
 
       {/* Hero Animation Track */}
-      <div className="relative h-[2000px] sm:h-[2400px] z-10">
+      <div className="relative h-[1800px] sm:h-[2000px] z-10">
         <motion.div
           className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-[100px] sm:pt-[120px]"
+          style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}
         >
           {/* Top Branding / Intro Space */}
           <motion.div
@@ -264,7 +265,7 @@ export default function HeroAnimation() {
               <span className="text-[10px] sm:text-[11px] font-bold text-cyan-200 uppercase tracking-[0.25em]">Effortless Onboarding</span>
             </motion.div>
 
-            <h2 className="text-white text-[32px] leading-[1.1] sm:text-[48px] md:text-[64px] lg:text-[72px] xl:text-[84px] font-black tracking-[-0.04em] mb-4 sm:mb-8 italic uppercase">
+            <h2 className="text-white text-[32px] leading-[1.1] sm:text-[48px] md:text-[64px] lg:text-[72px] xl:text-[80px] font-bold tracking-tight mb-4 sm:mb-8">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E]">Tap with </span>
               <span className="text-white"> Tapinfi.</span>
               <br/>
