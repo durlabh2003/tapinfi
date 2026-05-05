@@ -222,27 +222,31 @@ export default function HeroAnimation() {
             <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0%,transparent_50%)]" />
             
             <div className="flex justify-between items-start relative z-10">
-              <div className="space-y-4">
-                <div className="w-12 h-12 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 flex items-center justify-center">
-                  <div className="w-7 h-7 bg-gradient-to-tr from-violet-500 to-indigo-600 rounded-md flex items-center justify-center">
-                    <Cpu className="text-white w-4 h-4" />
+              <div className="space-y-5">
+                <div className="w-14 h-14 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex items-center justify-center shadow-2xl">
+                  <div className="w-9 h-9 bg-gradient-to-tr from-slate-400 via-slate-200 to-slate-500 rounded-lg flex items-center justify-center shadow-inner">
+                    <Cpu className="text-slate-900 w-5 h-5" />
                   </div>
                 </div>
                 <div>
-                  <p className="text-[8px] text-white/30 tracking-[0.4em] font-black uppercase">Stealth Edition</p>
-                  <h4 className="text-white text-lg font-bold tracking-tight">NEXUS CARD</h4>
+                  <p className="text-[9px] text-slate-400 tracking-[0.5em] font-black uppercase mb-1">Matte Black Series</p>
+                  <h4 className="text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 text-2xl font-black tracking-tighter italic">STEALTH PRO</h4>
                 </div>
               </div>
               <div className="text-right">
-                <div className="flex items-center gap-1.5 justify-end">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                  <span className="text-[9px] text-emerald-500 font-black uppercase tracking-[0.1em]">Ready</span>
+                <div className="flex items-center gap-2 justify-end bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_12px_#34d399]" />
+                  <span className="text-[10px] text-emerald-400 font-black uppercase tracking-widest">READY</span>
                 </div>
               </div>
             </div>
             
-            <div className="mt-auto relative z-10">
-              <p className="text-white/80 font-mono tracking-[0.25em] text-sm">•••• •••• •••• 2026</p>
+            <div className="mt-auto relative z-10 flex items-center justify-between">
+              <p className="text-slate-400 font-mono tracking-[0.4em] text-xs">•••• •••• •••• 2026</p>
+              <div className="flex -space-x-1">
+                <div className="w-6 h-6 rounded-full bg-slate-800 border border-white/10 shadow-lg" />
+                <div className="w-6 h-6 rounded-full bg-slate-700 border border-white/10 shadow-lg" />
+              </div>
             </div>
           </motion.div>
 
