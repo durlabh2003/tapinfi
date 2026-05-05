@@ -197,15 +197,19 @@ export default function OrdersPage() {
                       <div className="space-y-3">
                         <div className="flex justify-between">
                           <span className="text-sm text-gray-500">Card Theme</span>
-                          <span className="text-sm font-bold text-[#100425]">{selectedOrder.card_theme_name}</span>
+                          <span className="text-sm font-bold text-[#100425]">
+                            {selectedOrder.card_theme_name || (selectedOrder.card_theme_id === 'white-gloss' ? 'PVC GLOSSY' : selectedOrder.card_theme_id === 'matte-black' ? 'MATTE BLACK' : selectedOrder.card_theme_id === 'wooden' ? 'WOODEN' : 'Standard Card')}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-sm text-gray-500">Material</span>
-                          <span className="text-sm font-bold text-[#100425]">{selectedOrder.card_material}</span>
+                          <span className="text-sm font-bold text-[#100425]">
+                            {selectedOrder.card_material || (selectedOrder.card_theme_id === 'white-gloss' ? 'PVC Glossy' : selectedOrder.card_theme_id === 'matte-black' ? 'Matte Black' : selectedOrder.card_theme_id === 'wooden' ? 'Wooden' : 'Standard')}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-sm text-gray-500">Profile Theme</span>
-                          <span className="text-sm font-bold text-[#100425]">{selectedOrder.profile_theme_name}</span>
+                          <span className="text-sm font-bold text-[#100425]">{selectedOrder.profile_theme_name || 'Personalized Profile'}</span>
                         </div>
                         {selectedOrder.company_logo_link && (
                           <div className="mt-4">
