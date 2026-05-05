@@ -506,24 +506,24 @@ function ProductCard({ title, price, image, delay, comingSoon, linkTo }: { title
       className="relative w-full max-w-[355px] h-[455px] rounded-[25px] border-2 border-white bg-white/20 backdrop-blur-xl p-8 flex flex-col items-center transition-all hover:scale-[1.02]"
     >
       <div className="w-full text-left mb-4">
-        <p className="font-['Inter:Regular',sans-serif] text-[20px] text-white uppercase">{title}</p>
+        <p className="font-['Inter',sans-serif] text-[20px] text-white uppercase">{title}</p>
       </div>
       <div className="flex-1 w-full flex items-center justify-center p-4">
         <img alt={title} className="max-w-full max-h-full object-contain pointer-events-none" src={image} />
       </div>
       <div className="w-full flex items-center justify-between mt-auto">
         <div className="text-white">
-          <span className="font-['Inter:Regular',sans-serif] text-[20px]">INR </span>
-          <span className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[32px]">{price}</span>
+          <span className="font-['Inter',sans-serif] text-[20px]">INR </span>
+          <span className="font-['Inter',sans-serif] font-semibold text-[32px]">{price}</span>
         </div>
         {comingSoon ? (
-          <div className="bg-gray-500 rounded-full px-6 py-2 font-['Inter:Semi_Bold',sans-serif] text-white text-[14px] opacity-70 cursor-not-allowed">
+          <div className="bg-gray-500 rounded-full px-6 py-2 font-['Inter',sans-serif] text-white text-[14px] opacity-70 cursor-not-allowed">
             COMING SOON
           </div>
         ) : (
           <Link
             to={linkTo}
-            className="bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] rounded-full px-6 py-2 font-['Inter:Semi_Bold',sans-serif] text-white text-[14px] shadow-lg hover:shadow-[#5AA4F4]/50 transition-shadow relative z-20"
+            className="bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] rounded-full px-6 py-2 font-['Inter',sans-serif] text-white text-[14px] shadow-lg hover:shadow-[#5AA4F4]/50 transition-shadow relative z-20"
           >
             SHOP NOW
           </Link>
@@ -539,7 +539,7 @@ import { products as staticProducts } from '../../app/data/products';
 function OurProducts() {
   return (
     <section className="w-full max-w-[1440px] z-10 py-20 px-6" data-name="Our Products">
-      <p data-sr data-delay="0" className="font-['Inter:Bold',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
+      <p data-sr data-delay="0" className="font-['Inter',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
         Our Products
       </p>
       <div className="flex flex-col md:flex-row gap-8 w-full justify-center items-center min-h-[455px]">
@@ -572,7 +572,7 @@ function FeatureItem({ icon, title, delay }: { icon: React.ReactNode; title: Rea
       <div className="relative size-[90px] mb-6 flex items-center justify-center">
         {icon}
       </div>
-      <p className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[18px] md:text-[20px] text-white leading-tight">
+      <p className="font-['Inter',sans-serif] font-semibold text-[18px] md:text-[20px] text-white leading-tight">
         {title}
       </p>
     </div>
@@ -582,7 +582,7 @@ function FeatureItem({ icon, title, delay }: { icon: React.ReactNode; title: Rea
 function OneCard() {
   return (
     <section className="w-full max-w-[1440px] z-10 py-20 px-6" data-name="One Card">
-      <p data-sr data-delay="0" className="font-['Inter:Bold',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
+      <p data-sr data-delay="0" className="font-['Inter',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
         One Card - Many Functions
       </p>
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-y-12 gap-x-4 lg:gap-x-8 justify-items-center w-full max-w-[1200px] mx-auto">
@@ -606,15 +606,15 @@ function ProfileCustomizationSection() {
         {/* Left Text */}
         <div className="flex flex-col gap-4 max-w-[380px] order-2 lg:order-1 text-center lg:text-left">
           <div className="bg-[#5aa4f4] h-[6px] w-[119px] mx-auto lg:mx-0" />
-          <div className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[26px] lg:text-[32px] text-white leading-tight">
+          <div className="font-['Inter',sans-serif] font-semibold text-[26px] lg:text-[32px] text-white leading-tight">
             <p>To Say Who You Are</p>
             <p>And What You Do</p>
           </div>
-          <div className="font-['Inter:Bold',sans-serif] font-bold text-[26px] lg:text-[32px] text-white leading-tight">
+          <div className="font-['Inter',sans-serif] font-bold text-[26px] lg:text-[32px] text-white leading-tight">
             <p>Customize Your</p>
             <p>Profile</p>
           </div>
-          <p className="font-['Inter:Regular',sans-serif] font-normal text-[16px] text-white/80 leading-normal">
+          <p className="font-['Inter',sans-serif] font-normal text-[16px] text-white/80 leading-normal">
             To Share All Your Important Information, Social Links, Payment Links and Much More
           </p>
         </div>
@@ -629,7 +629,7 @@ function ProfileCustomizationSection() {
 
         {/* Right Text */}
         <div className="order-3 flex flex-col gap-5 max-w-[300px] text-center lg:text-left">
-          <div className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[17px] text-white leading-normal">
+          <div className="font-['Inter',sans-serif] font-semibold text-[17px] text-white leading-normal">
             <p>Leave A Lasting First Impression,</p>
             <p>Stand Out From The Crowd And</p>
             <p>Become Unforgettable.</p>
@@ -637,21 +637,21 @@ function ProfileCustomizationSection() {
           <div className="flex flex-col items-start gap-4 text-left">
             <div className="flex items-start gap-3">
               <IconCheckDouble />
-              <p className="font-['Inter:Regular',sans-serif] text-[13px] text-white/70 leading-relaxed">Empowering Entrepreneurs and businesses with all in one networking tool.</p>
+              <p className="font-['Inter',sans-serif] text-[13px] text-white/70 leading-relaxed">Empowering Entrepreneurs and businesses with all in one networking tool.</p>
             </div>
             <div className="flex items-start gap-3">
               <IconCheckDouble />
-              <p className="font-['Inter:Regular',sans-serif] text-[13px] text-white/70 leading-relaxed">Ready for scale. Whether you are a start up or a fortune 500 company.</p>
+              <p className="font-['Inter',sans-serif] text-[13px] text-white/70 leading-relaxed">Ready for scale. Whether you are a start up or a fortune 500 company.</p>
             </div>
             <div className="flex items-start gap-3">
               <IconCheckDouble />
-              <p className="font-['Inter:Regular',sans-serif] text-[13px] text-white/70 leading-relaxed">Stay Ahead, Stay Successful, Stay Connected</p>
+              <p className="font-['Inter',sans-serif] text-[13px] text-white/70 leading-relaxed">Stay Ahead, Stay Successful, Stay Connected</p>
             </div>
           </div>
           <div className="mt-6">
             <Link
               to="/shop"
-              className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] rounded-full px-8 py-3.5 font-['Inter:Bold',sans-serif] font-bold text-[16px] text-white shadow-lg hover:scale-105 hover:shadow-[#5AA4F4]/40 transition-all active:scale-95 group"
+              className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] rounded-full px-8 py-3.5 font-['Inter',sans-serif] font-bold text-[16px] text-white shadow-lg hover:scale-105 hover:shadow-[#5AA4F4]/40 transition-all active:scale-95 group"
             >
               GET STARTED
               <div className="transition-transform group-hover:translate-x-1">
@@ -670,13 +670,13 @@ function ProfileCustomizationSection() {
 function CalculatorSection() {
   return (
     <section className="w-full max-w-[1440px] z-10 py-20 px-6" data-name="Calculator Section">
-      <p data-sr data-delay="0" className="font-['Inter:Bold',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
+      <p data-sr data-delay="0" className="font-['Inter',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
         Networking Made Eco-friendly
       </p>
       <div className="flex flex-col lg:flex-row gap-16 w-full items-center justify-center">
         {/* Left Controls */}
         <div className="w-full max-w-[540px] flex flex-col gap-10">
-          <div className="font-['Inter:Semi_Bold',sans-serif] font-semibold text-[26px] lg:text-[32px] text-white leading-tight text-center lg:text-left">
+          <div className="font-['Inter',sans-serif] font-semibold text-[26px] lg:text-[32px] text-white leading-tight text-center lg:text-left">
             <p>Calculate Your Benefits</p>
             <p>With Tapinfi</p>
           </div>
@@ -772,7 +772,7 @@ function Group25() {
 
   return (
     <section data-sr data-delay="0" className="w-full max-w-[1270px] z-10 py-20 px-6" data-name="FAQ">
-      <p className="font-['Inter:Bold',sans-serif] font-bold text-[32px] lg:text-[40px] text-white leading-tight mb-3">
+      <p className="font-['Inter',sans-serif] font-bold text-[32px] lg:text-[40px] text-white leading-tight mb-3">
         Frequently Asked Questions
       </p>
       <p className="font-['Inter:Medium',sans-serif] font-medium text-[18px] lg:text-[24px] text-white/70 leading-normal mb-12">
@@ -786,7 +786,7 @@ function Group25() {
               onClick={() => setOpenIdx(openIdx === i ? null : i)}
               aria-expanded={openIdx === i}
             >
-              <p className="font-['Inter:Regular',sans-serif] text-[17px] lg:text-[22px] text-white group-hover:text-[#5AA4F4] transition-colors pr-4">
+              <p className="font-['Inter',sans-serif] text-[17px] lg:text-[22px] text-white group-hover:text-[#5AA4F4] transition-colors pr-4">
                 {faq.q}
               </p>
               <span className={`flex-shrink-0 transition-transform duration-300 ${openIdx === i ? 'rotate-180' : ''}`}>
@@ -796,7 +796,7 @@ function Group25() {
               </span>
             </button>
             <div className={`overflow-hidden transition-all duration-300 ${openIdx === i ? 'max-h-[300px] opacity-100 pb-6' : 'max-h-0 opacity-0'}`}>
-              <p className="font-['Inter:Regular',sans-serif] text-[14px] lg:text-[16px] text-white/60 leading-relaxed">
+              <p className="font-['Inter',sans-serif] text-[14px] lg:text-[16px] text-white/60 leading-relaxed">
                 {faq.a}
               </p>
             </div>
