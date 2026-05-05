@@ -428,7 +428,7 @@ function HowItWorksStep({ number, title, description, image, delay }: { number: 
             <div className="absolute inset-0 border border-white/10 rounded-full" />
             <span className="absolute inset-0 flex items-center justify-center font-black text-lg text-[#5AA4F4] group-hover:text-white transition-colors">{number}</span>
           </div>
-          <h3 className="font-['Inter',sans-serif] font-black text-2xl lg:text-3xl text-white tracking-tighter italic group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-yellow-200 group-hover:to-amber-500 transition-all duration-300">
+          <h3 className="font-['Inter',sans-serif] font-black text-2xl lg:text-3xl text-white tracking-tighter italic group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#5AA4F4] group-hover:to-white transition-all duration-300">
             {title}
           </h3>
         </div>
