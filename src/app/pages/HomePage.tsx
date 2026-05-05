@@ -23,20 +23,19 @@ export default function HomePage() {
     <div
       style={{
         backgroundColor: '#020617',
-        overflowX: 'clip',
+        overflowX: 'hidden',
         minHeight: '100vh',
-        width: '100vw',
+        width: '100%',
       }}
     >
       <Header />
       
-      {/* Dynamic Background Glows */}
+      {/* Dynamic Background Glows - Adjusted to Cyan/Blue branding */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-yellow-500/15 blur-[120px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-amber-600/15 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-[30%] left-[60%] w-[40%] h-[40%] bg-pink-500/10 blur-[130px] rounded-full animate-pulse" style={{ animationDelay: '4s' }} />
-        <div className="absolute top-[60%] left-[-10%] w-[45%] h-[45%] bg-cyan-500/10 blur-[140px] rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-[20%] left-[20%] w-[25%] h-[25%] bg-yellow-400/10 blur-[100px] rounded-full" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#5AA4F4]/10 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#0E2D6E]/20 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[30%] left-[60%] w-[40%] h-[40%] bg-cyan-500/5 blur-[130px] rounded-full animate-pulse" style={{ animationDelay: '4s' }} />
+        <div className="absolute top-[60%] left-[-10%] w-[45%] h-[45%] bg-[#5AA4F4]/5 blur-[140px] rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
       <div
