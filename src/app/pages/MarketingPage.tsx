@@ -107,13 +107,9 @@ export default function MarketingPage() {
                 No campaigns uploaded yet.
               </div>
             )}
-          </div>
         </div>
-        </div>
-        
       </div>
       <Footer />
     </div>
-  </div>
   );
 }
