@@ -19,6 +19,9 @@ export default function Footer() {
               <Link to="/orders" className="font-['Inter:Medium',sans-serif] font-medium text-[16px] text-white hover:text-[#5aa4f4] transition-colors">
                 Your Orders
               </Link>
+              <Link to="/contact" className="font-['Inter:Medium',sans-serif] font-medium text-[16px] text-white hover:text-[#5aa4f4] transition-colors">
+                Contact Us
+              </Link>
               <Link to="/plan" className="font-['Inter:Medium',sans-serif] font-medium text-[16px] text-white hover:text-[#5aa4f4] transition-colors">
                 My Plan
               </Link>
