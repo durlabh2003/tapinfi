@@ -3,12 +3,14 @@ import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 import Header from '../components/Header';
 import ScrollReveal from '../components/ScrollReveal';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function OrdersPage() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
   useEffect(() => {
     async function checkAuthAndFetch() {
@@ -42,6 +44,18 @@ export default function OrdersPage() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/');
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'completed':
+      case 'delivered': return 'bg-green-100 text-green-700';
+      case 'pending': return 'bg-yellow-100 text-yellow-700';
+      case 'preparing': return 'bg-blue-100 text-blue-700';
+      case 'out for delivery': return 'bg-purple-100 text-purple-700';
+      case 'cancelled': return 'bg-red-100 text-red-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
   };
 
   if (!user) {
@@ -79,31 +93,36 @@ export default function OrdersPage() {
             ) : orders.length > 0 ? (
               <div className="space-y-6">
                 {orders.map((order) => (
-                  <div key={order.id} className="border border-gray-100 bg-gray-50/50 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                  <div 
+                    key={order.id} 
+                    onClick={() => setSelectedOrder(order)}
+                    className="border border-gray-100 bg-gray-50/50 rounded-2xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 cursor-pointer hover:border-[#5aa4f4]/50 transition-all group"
+                  >
                     <div>
                       <div className="flex items-center gap-3 mb-2">
-                        <span className={`text-xs font-bold px-3 py-1 rounded-full uppercase ${
-                          order.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                        }`}>
+                        <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest ${getStatusColor(order.status)}`}>
                           {order.status || 'Pending'}
                         </span>
                         <span className="text-sm text-gray-400 font-medium">
                           {new Date(order.created_at).toLocaleDateString()}
                         </span>
                       </div>
-                      <h3 className="text-lg font-bold text-[#0e2d6e] font-['Inter'] mb-1">
+                      <h3 className="text-lg font-bold text-[#0e2d6e] font-['Inter'] mb-1 group-hover:text-[#5aa4f4] transition-colors">
                         {order.card_theme_name || 'Custom NFC Card'}
                       </h3>
                       <p className="text-sm text-gray-600 mb-1 font-['Inter']">
-                        Profile Theme: <span className="font-semibold">{order.profile_theme_name || 'Standard'}</span>
+                        Order ID: <span className="font-semibold uppercase text-[10px] tracking-widest">{order.id.slice(0, 8)}</span>
                       </p>
-                      <p className="text-sm text-gray-600 font-['Inter']">
-                        Delivery to: <span className="font-semibold">{order.delivery_name}</span> ({order.delivery_city})
+                      <p className="text-sm text-gray-400 font-['Inter'] mt-2 flex items-center gap-1">
+                        Click to view full details
+                        <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                       </p>
                     </div>
                     <div className="text-left md:text-right w-full md:w-auto border-t md:border-none pt-4 md:pt-0 border-gray-200">
                       <p className="text-sm text-gray-500 mb-1 font-['Inter']">Total Amount</p>
-                      <p className="text-2xl font-bold text-[#0e2d6e] font-['Inter']">₹{order.final_amount}</p>
+                      <p className="text-2xl font-bold text-[#0e2d6e] font-['Inter']">₹{order.final_amount.toLocaleString()}</p>
                     </div>
                   </div>
                 ))}
@@ -125,6 +144,142 @@ export default function OrdersPage() {
           </div>
         </ScrollReveal>
       </main>
+
+      {/* Detailed View Modal */}
+      <AnimatePresence>
+        {selectedOrder && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedOrder(null)}
+              className="absolute inset-0 bg-[#100425]/80 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-2xl bg-white rounded-[32px] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+            >
+              <div className="p-8 overflow-y-auto custom-scrollbar">
+                <div className="flex justify-between items-start mb-8">
+                  <div>
+                    <h2 className="text-2xl font-bold text-[#100425] mb-1">Order Details</h2>
+                    <p className="text-sm text-gray-500 font-medium">#{selectedOrder.id.toUpperCase()}</p>
+                  </div>
+                  <button onClick={() => setSelectedOrder(null)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                    <svg className="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="space-y-8">
+                  {/* Status & Date */}
+                  <div className="flex flex-wrap gap-4 justify-between items-center bg-gray-50 p-4 rounded-2xl">
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Order Status</p>
+                      <span className={`inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest ${getStatusColor(selectedOrder.status)}`}>
+                        {selectedOrder.status || 'Pending'}
+                      </span>
+                    </div>
+                    <div className="space-y-1 text-right">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Order Placed</p>
+                      <p className="text-sm font-bold text-[#100425]">{new Date(selectedOrder.created_at).toLocaleString()}</p>
+                    </div>
+                  </div>
+
+                  {/* Product Info */}
+                  <div className="grid sm:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                      <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Product Config</h4>
+                      <div className="space-y-3">
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Card Theme</span>
+                          <span className="text-sm font-bold text-[#100425]">{selectedOrder.card_theme_name}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Material</span>
+                          <span className="text-sm font-bold text-[#100425]">{selectedOrder.card_material}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm text-gray-500">Profile Theme</span>
+                          <span className="text-sm font-bold text-[#100425]">{selectedOrder.profile_theme_name}</span>
+                        </div>
+                        {selectedOrder.company_logo_link && (
+                          <div className="mt-4">
+                            <p className="text-xs text-gray-400 mb-2">Uploaded Logo</p>
+                            <img src={selectedOrder.company_logo_link} alt="Logo" className="w-20 h-20 object-contain rounded-lg border border-gray-100 p-2" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Shipping To</h4>
+                      <div className="space-y-1">
+                        <p className="text-sm font-bold text-[#100425]">{selectedOrder.delivery_name}</p>
+                        <p className="text-sm text-gray-500 leading-relaxed">{selectedOrder.delivery_address}</p>
+                        <p className="text-sm text-gray-500">{selectedOrder.delivery_city}, {selectedOrder.delivery_state} - {selectedOrder.delivery_pincode}</p>
+                        <p className="text-sm text-gray-500 mt-2">{selectedOrder.delivery_phone}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Payment Info */}
+                  <div className="border-t border-gray-100 pt-8">
+                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Payment Summary</h4>
+                    <div className="space-y-3">
+                      <div className="flex justify-between text-sm text-gray-500">
+                        <span>Items Total</span>
+                        <span>₹{(selectedOrder.final_amount + (selectedOrder.discount_amount || 0) - (selectedOrder.delivery_charges || 0)).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between text-sm text-gray-500">
+                        <span>Shipping</span>
+                        <span>₹{selectedOrder.delivery_charges?.toLocaleString() || '0'}</span>
+                      </div>
+                      {selectedOrder.discount_amount > 0 && (
+                        <div className="flex justify-between text-sm text-red-500 font-medium">
+                          <span>Discount ({selectedOrder.applied_coupon_code})</span>
+                          <span>- ₹{selectedOrder.discount_amount.toLocaleString()}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between items-center pt-3 border-t border-gray-50 mt-2">
+                        <span className="text-lg font-bold text-[#100425]">Total Paid</span>
+                        <span className="text-2xl font-bold text-[#0e2d6e]">₹{selectedOrder.final_amount.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-10 flex gap-4">
+                  <button onClick={() => setSelectedOrder(null)} className="flex-1 py-4 bg-gray-100 text-gray-600 rounded-2xl font-bold text-sm hover:bg-gray-200 transition-colors">
+                    Close
+                  </button>
+                  <button className="flex-1 py-4 bg-[#0e2d6e] text-white rounded-2xl font-bold text-sm hover:brightness-110 transition-all shadow-lg shadow-[#0e2d6e]/20">
+                    Track Order
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f9fafb;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #e5e7eb;
+          border-radius: 10px;
+        }
+      `}} />
     </div>
   );
 }
+
