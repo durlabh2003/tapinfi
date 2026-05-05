@@ -45,7 +45,7 @@ export default function Header() {
         className={`h-[90px] flex items-center ${
           isHome
             ? 'bg-transparent'
-            : 'bg-[#100425] mx-4 sm:mx-8 rounded-bl-[25px] rounded-br-[25px]'
+            : 'bg-[#000000] mx-4 sm:mx-8 rounded-bl-[25px] rounded-br-[25px] border-b border-white/5'
         }`}
       >
         <div className="w-full max-w-[1440px] mx-auto flex items-center justify-between px-6 lg:px-[86px]">
@@ -144,7 +144,7 @@ export default function Header() {
       {/* Mobile dropdown menu */}
       {menuOpen && (
         <div
-          className="lg:hidden bg-[#100425] border-t border-white/10 px-6 py-6 flex flex-col gap-5"
+          className="lg:hidden bg-[#000000] border-t border-white/10 px-6 py-6 flex flex-col gap-5"
           style={NAV_FONT}
         >
           <Link to="/" className={linkClass('/')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>HOME</Link>

@@ -2,14 +2,14 @@ import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#100425] py-16 px-4 sm:px-8 lg:px-20 border-t border-white/5">
+    <footer className="bg-[#000000] py-16 px-4 sm:px-8 lg:px-20 border-t border-white/5">
       <div className="max-w-[1280px] mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-20 mb-16">
           {/* Column 1: Brand & Contact */}
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#5aa4f4] to-[#0e2d6e]" />
-              <span className="text-xl font-bold tracking-tighter text-white font-['Poppins']">TAPINFI</span>
+              <span className="text-xl font-black tracking-tighter text-white font-['Poppins']">TAPINFI</span>
             </div>
             <p className="text-white/60 text-sm leading-relaxed font-['Inter'] max-w-xs">
               Redefining networking with eco-friendly smart business cards. Make every connection sustainable and powerful.
@@ -23,19 +23,19 @@ export default function Footer() {
           {/* Column 2: Quick Links */}
           <div className="grid grid-cols-2 gap-8">
             <div className="space-y-4">
-              <h4 className="text-white font-bold text-sm font-['Poppins'] uppercase tracking-widest">Platform</h4>
+              <h4 className="text-[#5aa4f4] font-black text-sm font-['Poppins'] uppercase tracking-[0.2em]">Platform</h4>
               <nav className="flex flex-col gap-3">
-                <Link to="/shop" className="text-white/60 hover:text-[#5aa4f4] text-sm transition-colors font-['Inter']">Shop</Link>
-                <Link to="/blogs" className="text-white/60 hover:text-[#5aa4f4] text-sm transition-colors font-['Inter']">Blogs</Link>
-                <Link to="/about" className="text-white/60 hover:text-[#5aa4f4] text-sm transition-colors font-['Inter']">About Us</Link>
-                <Link to="/contact" className="text-white/60 hover:text-[#5aa4f4] text-sm transition-colors font-['Inter']">Contact Us</Link>
+                <Link to="/shop" className="text-white/60 hover:text-white text-sm transition-colors font-['Inter']">Shop</Link>
+                <Link to="/blogs" className="text-white/60 hover:text-white text-sm transition-colors font-['Inter']">Blogs</Link>
+                <Link to="/about" className="text-white/60 hover:text-white text-sm transition-colors font-['Inter']">About Us</Link>
+                <Link to="/contact" className="text-white/60 hover:text-white text-sm transition-colors font-['Inter']">Contact Us</Link>
               </nav>
             </div>
             <div className="space-y-4">
-              <h4 className="text-white font-bold text-sm font-['Poppins'] uppercase tracking-widest">Account</h4>
+              <h4 className="text-[#5aa4f4] font-black text-sm font-['Poppins'] uppercase tracking-[0.2em]">Account</h4>
               <nav className="flex flex-col gap-3">
-                <Link to="/orders" className="text-white/60 hover:text-[#5aa4f4] text-sm transition-colors font-['Inter']">My Orders</Link>
-                <Link to="/login" className="text-white/60 hover:text-[#5aa4f4] text-sm transition-colors font-['Inter']">Login / Sign Up</Link>
+                <Link to="/orders" className="text-white/60 hover:text-white text-sm transition-colors font-['Inter']">My Orders</Link>
+                <Link to="/login" className="text-white/60 hover:text-white text-sm transition-colors font-['Inter']">Login / Sign Up</Link>
               </nav>
             </div>
           </div>
