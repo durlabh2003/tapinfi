@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import FigmaFrame1 from '../../imports/Frame1-1/Frame1';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 export default function HomePage() {
   const [entered, setEntered] = useState(false);
@@ -33,6 +34,7 @@ export default function HomePage() {
       >
         <FigmaFrame1 />
       </div>
+      <Footer />
     </div>
   );
 }

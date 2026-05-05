@@ -5,6 +5,8 @@ import ScrollReveal from '../components/ScrollReveal';
 import { supabase } from '../../lib/supabase';
 import { Product } from '../data/products';
 
+import Footer from '../components/Footer';
+
 const SHOP_BTN = 'linear-gradient(63.8351deg, rgb(90, 164, 244) 14.564%, rgb(14, 45, 110) 74.668%)';
 
 const features = [
@@ -200,37 +202,7 @@ export default function ShopPage() {
           </div>
         </div>
 
-        {/* ── Footer ────────────────────────────────────────── */}
-        <div className="bg-[#100425] py-12 px-4 sm:px-8 lg:px-20">
-          <div className="max-w-[1280px] mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
-              {[
-                { heading: 'Customer Care', content: <p className="text-[15px] text-white/70" style={{ fontFamily: "'Inter', sans-serif" }}>+91 0000 0000</p> },
-                { heading: 'Quick Links', content: (
-                  <div className="space-y-2">
-                    <Link to="/shop" className="block text-[15px] text-white/70 hover:text-[#5aa4f4] transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>Shop</Link>
-                    <p className="text-[15px] text-white/70" style={{ fontFamily: "'Inter', sans-serif" }}>Analytics</p>
-                    <p className="text-[15px] text-white/70" style={{ fontFamily: "'Inter', sans-serif" }}>Your Orders</p>
-                  </div>
-                )},
-                { heading: 'Contact', content: <p className="text-[15px] text-white/70 sm:text-right" style={{ fontFamily: "'Inter', sans-serif" }}>tapinfi@gmail.com</p> },
-              ].map((col) => (
-                <div key={col.heading} className={col.heading === 'Contact' ? 'sm:text-right' : ''}>
-                  <h3 className="text-[16px] text-white mb-3 font-medium" style={{ fontFamily: "'Inter', sans-serif" }}>{col.heading}</h3>
-                  {col.content}
-                </div>
-              ))}
-            </div>
-            <div className="border-t border-white/20 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-              <p className="text-[14px] text-white/60" style={{ fontFamily: "'Inter', sans-serif" }}>Tapinfi 2025. All Rights Reserved</p>
-              <div className="flex gap-6">
-                {['Refund Policy', 'Privacy Policy', 'Terms & Conditions'].map((t) => (
-                  <p key={t} className="text-[13px] text-white/60 hover:text-white cursor-pointer transition-colors" style={{ fontFamily: "'Inter', sans-serif" }}>{t}</p>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        <Footer />
       </main>
     </div>
   );

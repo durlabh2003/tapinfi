@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 import UploadSection from '../components/UploadSection';
 
 type Campaign = {
@@ -108,8 +109,10 @@ export default function MarketingPage() {
             )}
           </div>
         </div>
+        </div>
         
       </div>
+      <Footer />
     </div>
   </div>
   );
