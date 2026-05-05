@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import imgLogo from '../../imports/Frame1-1/f00b995e56d83fe3818dbb20f3489f43c9842118.png';
 import { useCart } from '../context/CartContext';
+import LoginModal from './LoginModal';
 
 const NAV_FONT: React.CSSProperties = {
   fontFamily: "'Inter', sans-serif",
@@ -14,6 +15,7 @@ export default function Header() {
   const location = useLocation();
   const isHome = location.pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [session, setSession] = useState<any>(null);
   const { cartCount, setIsCartOpen } = useCart();
 
@@ -93,13 +95,13 @@ export default function Header() {
                 ORDERS
               </Link>
             ) : (
-              <Link
-                to="/login"
+              <button
+                onClick={() => setIsLoginOpen(true)}
                 className="border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 whitespace-nowrap"
                 style={NAV_FONT}
               >
                 LOGIN
-              </Link>
+              </button>
             )}
           </nav>
 
@@ -160,17 +162,21 @@ export default function Header() {
               ORDERS
             </Link>
           ) : (
-            <Link
-              to="/login"
+            <button
+              onClick={() => {
+                setIsLoginOpen(true);
+                setMenuOpen(false);
+              }}
               className="text-center border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 mt-2"
               style={NAV_FONT}
-              onClick={() => setMenuOpen(false)}
             >
               LOGIN
-            </Link>
+            </button>
           )}
         </div>
       )}
+      
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </div>
   );
 }
