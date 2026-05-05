@@ -114,6 +114,5 @@ export default function MarketingPage() {
       </div>
       <Footer />
     </div>
-  </div >
   );
 }
