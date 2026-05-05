@@ -261,8 +261,11 @@ export default function OrdersPage() {
                   <button onClick={() => setSelectedOrder(null)} className="flex-1 py-4 bg-gray-100 text-gray-600 rounded-2xl font-bold text-sm hover:bg-gray-200 transition-colors">
                     Close
                   </button>
-                  <button className="flex-1 py-4 bg-[#0e2d6e] text-white rounded-2xl font-bold text-sm hover:brightness-110 transition-all shadow-lg shadow-[#0e2d6e]/20">
-                    Track Order
+                  <button 
+                    onClick={() => navigate('/contact', { state: { orderId: selectedOrder.id } })}
+                    className="flex-1 py-4 bg-[#0e2d6e] text-white rounded-2xl font-bold text-sm hover:brightness-110 transition-all shadow-lg shadow-[#0e2d6e]/20"
+                  >
+                    Raise a Query
                   </button>
                 </div>
               </div>

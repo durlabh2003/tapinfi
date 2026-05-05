@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { supabase } from '../../lib/supabase';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MessageSquare, Send, CheckCircle } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 const QUERY_TYPES = [
   "General Inquiry",
@@ -17,6 +18,7 @@ const QUERY_TYPES = [
 ];
 
 export default function ContactPage() {
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -27,6 +29,16 @@ export default function ContactPage() {
     order_id: '',
     message: ''
   });
+
+  useEffect(() => {
+    if (location.state?.orderId) {
+      setFormData(prev => ({
+        ...prev,
+        order_id: location.state.orderId,
+        query_type: 'Order Related Query'
+      }));
+    }
+  }, [location.state]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
