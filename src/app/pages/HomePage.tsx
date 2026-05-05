@@ -29,8 +29,16 @@ export default function HomePage() {
       }}
     >
       <Header />
+      
+      {/* Dynamic Background Glows */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-yellow-500/10 blur-[120px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-amber-600/10 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[30%] left-[60%] w-[30%] h-[30%] bg-yellow-400/5 blur-[100px] rounded-full" />
+      </div>
+
       <div
-        className={`w-full ${entered ? 'page-enter' : 'opacity-0'}`}
+        className={`w-full relative z-10 ${entered ? 'page-enter' : 'opacity-0'}`}
       >
         <FigmaFrame1 />
       </div>
