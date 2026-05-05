@@ -258,7 +258,6 @@ export default function HeroAnimation() {
           >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              className="mb-5 sm:mb-6 inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 bg-violet-500/10 border border-violet-500/25 rounded-full backdrop-blur-xl"
               className="mb-5 sm:mb-6 inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 bg-[#5AA4F4]/10 border border-[#5AA4F4]/25 rounded-full backdrop-blur-xl"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />

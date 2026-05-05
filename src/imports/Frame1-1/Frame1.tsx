@@ -403,53 +403,93 @@ function HeroSection() {
 }
 
 
+import { motion } from 'framer-motion';
+
 // ── How It Works ──────────────────────────────────────────────────────────────
 
-function HowItWorksStep({ number, title, description, image }: { number: string; title: string; description: string; image: string }) {
+function HowItWorksStep({ number, title, description, image, delay }: { number: string; title: string; description: string; image: string; delay: number }) {
   return (
-    <div className="flex flex-col items-center text-center w-full max-w-[380px]">
-      <div className="w-[260px] h-[220px] flex items-center justify-center mb-6">
-        <img alt={title} className="max-w-full max-h-full object-contain" src={image} />
+    <motion.div 
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, delay }}
+      whileHover={{ y: -5 }}
+      className="flex flex-col items-center text-center w-full max-w-[380px] group"
+    >
+      <div className="relative w-[260px] h-[220px] flex items-center justify-center mb-8">
+        <div className="absolute inset-0 bg-cyan-500/5 blur-3xl rounded-full scale-0 group-hover:scale-110 transition-transform duration-700" />
+        <img alt={title} className="max-w-full max-h-full object-contain relative z-10 drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" src={image} />
       </div>
-      <div className="flex items-center justify-center gap-3 mb-3 w-full">
-        <div className="relative size-[30px] flex-shrink-0">
-          <svg className="absolute block size-full" fill="none" viewBox="0 0 30 30">
-            <circle cx="15" cy="15" r="14" stroke="#5AA4F4" strokeWidth="2" />
-          </svg>
-          <span className="absolute inset-0 flex items-center justify-center font-bold text-[16px] text-white">{number}</span>
+      <div className="flex flex-col items-center gap-4 w-full">
+        <div className="flex items-center gap-4">
+          <div className="relative size-10 flex-shrink-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#5AA4F4] to-[#0E2D6E] rounded-full opacity-20 group-hover:opacity-40 transition-opacity" />
+            <div className="absolute inset-0 border border-white/10 rounded-full" />
+            <span className="absolute inset-0 flex items-center justify-center font-black text-lg text-[#5AA4F4] group-hover:text-white transition-colors">{number}</span>
+          </div>
+          <h3 className="font-['Inter',sans-serif] font-black text-2xl lg:text-3xl text-white tracking-tighter italic group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-yellow-200 group-hover:to-amber-500 transition-all duration-300">
+            {title}
+          </h3>
         </div>
-        <p className="font-['Inter:Bold',sans-serif] font-bold text-[22px] lg:text-[24px] text-white leading-tight text-center">{title}</p>
+        <div className="w-16 h-1 bg-[#5AA4F4]/30 rounded-full overflow-hidden">
+          <motion.div 
+            initial={{ x: "-100%" }}
+            whileInView={{ x: "0%" }}
+            transition={{ duration: 1, delay: delay + 0.3 }}
+            className="w-full h-full bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E]"
+          />
+        </div>
+        <p className="font-['Inter',sans-serif] text-sm lg:text-[15px] text-white/50 leading-relaxed max-w-[300px] mx-auto font-medium">
+          {description}
+        </p>
       </div>
-      <div className="bg-[#5aa4f4] h-[3px] w-[220px] mb-4" />
-      <p className="font-['Inter:Regular',sans-serif] text-[15px] lg:text-[16px] text-white/80 leading-relaxed max-w-[320px] mx-auto">{description}</p>
-    </div>
+    </motion.div>
   );
 }
 
 function HowItWorks() {
   return (
-    <section className="w-full max-w-[1440px] z-10 py-20 px-6" data-name="How It Works">
-      <p data-sr data-delay="0" className="font-['Inter:Bold',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
-        How It Works
-      </p>
-      <div className="flex flex-col lg:flex-row items-start justify-center gap-12 lg:gap-8">
+    <section className="w-full max-w-[1440px] z-10 py-32 px-6 overflow-hidden" data-name="How It Works">
+      <div className="text-center mb-24">
+        <motion.p 
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="text-[#5AA4F4] font-black uppercase tracking-[0.4em] text-xs mb-4"
+        >
+          Process
+        </motion.p>
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="font-['Inter',sans-serif] font-black text-[40px] lg:text-[64px] text-white tracking-[-0.04em] leading-[0.9]"
+        >
+          HOW IT <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/20">WORKS.</span>
+        </motion.h2>
+      </div>
+      <div className="flex flex-col lg:flex-row items-start justify-center gap-20 lg:gap-12">
         <HowItWorksStep
           number="1"
-          title="Choose a Tapinfi Card"
-          description="Choose between our range of Tapinfi basics for a card that suits your style, or design a custom card. The choice is yours."
+          title="CHOOSE"
+          description="Select your premium Tapinfi card from our executive collection or create a fully bespoke custom design."
           image={img1400}
+          delay={0.1}
         />
         <HowItWorksStep
           number="2"
-          title="Set Up Your Profile"
-          description="Tap your Tapinfi card to your phone to activate the link, follow the instructions to create your profile."
+          title="ACTIVATE"
+          description="Simply tap your card to your smartphone to initialize your secure digital identity link instantly."
           image={imgHowItWorkPhotoroom11}
+          delay={0.3}
         />
         <HowItWorksStep
           number="3"
-          title="Network Like A Pro"
-          description="You can now tap and share your contact info, social media handles, and so much more with your own Tapinfi."
+          title="CONNECT"
+          description="Share your profile, contacts, and social media with a single tap. Network with zero friction."
           image={imgShareConnectivityPhotoroom11}
+          delay={0.5}
         />
       </div>
     </section>
