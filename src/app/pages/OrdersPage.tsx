@@ -11,6 +11,8 @@ export default function OrdersPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [trackingData, setTrackingData] = useState<any>(null);
+  const [isLoadingTracking, setIsLoadingTracking] = useState(false);
 
   useEffect(() => {
     async function checkAuthAndFetch() {
@@ -45,6 +47,32 @@ export default function OrdersPage() {
     await supabase.auth.signOut();
     navigate('/');
   };
+
+  const fetchTracking = async (waybill: string) => {
+    if (!waybill) return;
+    setIsLoadingTracking(true);
+    try {
+      const baseUrl = import.meta.env.VITE_DASHBOARD_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${baseUrl}/api/delhivery/track?waybill=${waybill}`);
+      if (response.ok) {
+        const data = await response.json();
+        // Delhivery tracking returns an object with a 'ShipmentData' array
+        setTrackingData(data.ShipmentData?.[0]?.Shipment || null);
+      }
+    } catch (err) {
+      console.error('Error fetching tracking:', err);
+    } finally {
+      setIsLoadingTracking(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedOrder?.waybill) {
+      fetchTracking(selectedOrder.waybill);
+    } else {
+      setTrackingData(null);
+    }
+  }, [selectedOrder]);
 
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
@@ -255,6 +283,52 @@ export default function OrdersPage() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Tracking Section */}
+                  {selectedOrder.waybill && (
+                    <div className="border-t border-gray-100 pt-8">
+                      <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">Track Shipment</h4>
+                      {isLoadingTracking ? (
+                        <div className="space-y-4 animate-pulse">
+                          <div className="h-4 bg-gray-100 rounded w-1/2" />
+                          <div className="h-20 bg-gray-50 rounded-2xl" />
+                        </div>
+                      ) : trackingData ? (
+                        <div className="space-y-6">
+                          <div className="bg-[#0e2d6e]/5 border border-[#0e2d6e]/10 p-4 rounded-2xl">
+                             <div className="flex justify-between items-center mb-1">
+                                <span className="text-xs text-gray-500 font-medium">Waybill: {selectedOrder.waybill}</span>
+                                <span className="text-[10px] font-bold text-[#5aa4f4] uppercase tracking-widest bg-white px-2 py-0.5 rounded-full border border-[#5aa4f4]/20">
+                                   {trackingData.Status?.Status || 'In Transit'}
+                                </span>
+                             </div>
+                             <p className="text-sm font-bold text-[#100425]">
+                                {trackingData.Status?.Instructions || trackingData.Status?.StatusLocation || 'Package is being processed'}
+                             </p>
+                          </div>
+
+                          {/* Timeline */}
+                          <div className="relative pl-6 space-y-6 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-100">
+                            {trackingData.Scans?.slice(0, 4).map((scan: any, idx: number) => (
+                              <div key={idx} className="relative">
+                                <div className={`absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full border-2 border-white shadow-sm ${idx === 0 ? 'bg-[#5aa4f4]' : 'bg-gray-300'}`} />
+                                <div>
+                                  <p className="text-sm font-bold text-[#100425] leading-tight">{scan.ScanDetail?.Instructions || scan.ScanDetail?.Scan}</p>
+                                  <p className="text-[10px] text-gray-400 font-medium mt-1">
+                                    {new Date(scan.ScanDetail?.ScanDateTime).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: 'numeric' })} • {scan.ScanDetail?.ScannedLocation}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="bg-orange-50 border border-orange-100 p-4 rounded-2xl">
+                          <p className="text-sm text-orange-700 font-medium">Tracking info is being generated. Please check back in a few hours.</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 <div className="mt-10 flex gap-4">

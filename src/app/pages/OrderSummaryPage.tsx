@@ -24,6 +24,9 @@ export default function OrderSummaryPage() {
   const [isApplied, setIsApplied] = React.useState(false);
   const [appliedCoupon, setAppliedCoupon] = React.useState<any>(null);
   const [themesData, setThemesData] = React.useState<Record<string, any>>({});
+  const [shipping, setShipping] = React.useState(80); // Default/Fallback
+  const [loadingShipping, setLoadingShipping] = React.useState(false);
+  const [expectedDelivery, setExpectedDelivery] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     async function fetchThemes() {
@@ -55,6 +58,36 @@ export default function OrderSummaryPage() {
     fetchThemes();
   }, [cartItems]);
 
+  const totalQuantity = React.useMemo(() => 
+    cartItems.reduce((sum, item) => sum + item.quantity, 0),
+  [cartItems]);
+
+  React.useEffect(() => {
+    async function fetchShippingCost() {
+      if (!deliveryDetails?.zipCode || totalQuantity === 0) return;
+
+      setLoadingShipping(true);
+      try {
+        const baseUrl = import.meta.env.VITE_DASHBOARD_API_URL || 'http://localhost:3001';
+        const response = await fetch(`${baseUrl}/api/delhivery/cost?d_pin=${deliveryDetails.zipCode}&count=${totalQuantity}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          setShipping(parseFloat(data.total_amount));
+          setExpectedDelivery(data.expected_delivery);
+        } else {
+          console.error('Failed to fetch shipping cost, using fallback');
+        }
+      } catch (err) {
+        console.error('Error fetching shipping cost:', err);
+      } finally {
+        setLoadingShipping(false);
+      }
+    }
+    fetchShippingCost();
+  }, [deliveryDetails?.zipCode, totalQuantity]);
+
+
 
   // If there are no delivery details or cart items, redirect back
   if (cartItems.length === 0 || !deliveryDetails) {
@@ -68,7 +101,7 @@ export default function OrderSummaryPage() {
     );
   }
 
-  const shipping = 80; // Delivery charges set to 80
+  // Dynamic shipping from state
   const taxes = 0; // Removed GST
   const finalTotal = (cartTotal - discount) + shipping;
 
@@ -183,6 +216,7 @@ export default function OrderSummaryPage() {
             delivery_city: deliveryDetails?.city,
             delivery_state: deliveryDetails?.state,
             delivery_pincode: deliveryDetails?.zipCode,
+            delivery_charges: shipping,
             final_amount: finalTotal,
             status: 'Pending',
             print_qr: firstItem?.customization?.printQR || false,
@@ -356,8 +390,19 @@ export default function OrderSummaryPage() {
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
-                    <span className="font-medium text-gray-900">₹{shipping}</span>
+                    <span className="font-medium text-gray-900">
+                      {loadingShipping ? (
+                        <span className="text-xs text-gray-400 animate-pulse">Calculating...</span>
+                      ) : (
+                        `₹${shipping}`
+                      )}
+                    </span>
                   </div>
+                  {!loadingShipping && expectedDelivery && (
+                    <p className="text-[10px] text-[#5aa4f4] mt-[-12px] font-medium">
+                      Estimated delivery: {new Date(expectedDelivery).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                    </p>
+                  )}
                   {isApplied && appliedCoupon && (
                     <div className="flex justify-between text-green-600 font-medium animate-in fade-in slide-in-from-top-2 duration-300 font-['Inter']">
                       <div className="flex items-center gap-1">

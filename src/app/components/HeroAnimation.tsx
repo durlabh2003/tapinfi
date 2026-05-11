@@ -84,7 +84,6 @@ export default function HeroAnimation() {
   const ctaX = useTransform(smoothY, [0.62, 0.70], [0, 0]);
   const ctaY = useTransform(smoothY, [0.62, 0.70], [0, 0]);
 
-
   return (
     <div ref={containerRef} className="relative text-white selection:bg-violet-500/30">
 
@@ -101,8 +100,11 @@ export default function HeroAnimation() {
             style={{ opacity: useTransform(smoothY, [0, 0.05], [1, 0]) }}
             className="absolute top-12 z-50 text-center"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_0_20px_rgba(90,164,244,0.15)]">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+              </span>
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/70">The New Standard</span>
             </div>
           </motion.div>
@@ -110,7 +112,7 @@ export default function HeroAnimation() {
           {/* Initial Card Center Glow */}
           <motion.div
             style={{ opacity: initialGlowOpacity }}
-            className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] lg:w-[450px] lg:h-[450px] bg-violet-500/25 blur-[90px] sm:blur-[110px] rounded-full pointer-events-none"
+            className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] lg:w-[450px] lg:h-[450px] bg-cyan-500/20 blur-[90px] sm:blur-[110px] rounded-full pointer-events-none"
           />
 
           {/* iPhone 15 Pro Mockup */}
@@ -146,7 +148,7 @@ export default function HeroAnimation() {
                 style={{ y: notifY, opacity: notifOpacity }}
                 className="absolute top-4 inset-x-3 bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[1.5rem] p-4 z-[110] flex items-center gap-4 shadow-2xl"
               >
-                <div className="w-11 h-11 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-2xl flex items-center justify-center">
+                <div className="w-11 h-11 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-[0_4px_12px_rgba(6,182,212,0.3)]">
                   <Rss className="text-white w-6 h-6" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -175,7 +177,7 @@ export default function HeroAnimation() {
 
                   <div className="flex-1 pt-14 px-6 text-center">
                     <h3 className="text-slate-900 text-2xl font-black tracking-tighter">Marcus Sterling</h3>
-                    <p className="text-violet-600 text-[10px] font-black uppercase tracking-[0.2em] mt-1">Founding Partner • Creative</p>
+                    <p className="text-cyan-600 text-[10px] font-black uppercase tracking-[0.2em] mt-1">Founding Partner • Creative</p>
 
                     <div className="flex justify-center gap-3 my-6">
                       {[1, 2, 3].map(i => (
@@ -203,7 +205,7 @@ export default function HeroAnimation() {
               x: isMobile ? 55 : isTablet ? 100 : 185,
               y: isMobile ? -170 : isTablet ? -220 : -310
             }}
-            className="absolute z-20 w-44 h-44 md:w-56 md:h-56 border border-violet-400/50 rounded-full pointer-events-none shadow-[0_0_40px_rgba(139,92,246,0.3)]"
+            className="absolute z-20 w-44 h-44 md:w-56 md:h-56 border border-cyan-400/50 rounded-full pointer-events-none shadow-[0_0_40px_rgba(34,211,238,0.3)]"
           />
 
           {/* Premium NFC Card */}
@@ -225,7 +227,7 @@ export default function HeroAnimation() {
             <div className="flex justify-between items-start relative z-10">
               <div className="space-y-4">
                 <div className="w-12 h-12 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 flex items-center justify-center">
-                  <div className="w-7 h-7 bg-gradient-to-tr from-violet-500 to-indigo-600 rounded-md flex items-center justify-center">
+                  <div className="w-7 h-7 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-md flex items-center justify-center">
                     <Cpu className="text-white w-4 h-4" />
                   </div>
                 </div>
@@ -289,7 +291,7 @@ export default function HeroAnimation() {
               <div className="flex items-center gap-3 text-white/70 text-[13px] font-medium">
                 <div className="flex -space-x-2">
                   {[1, 2, 3].map(i => (
-                    <div key={i} className="w-6 h-6 rounded-full border border-[#020617] bg-gradient-to-br from-violet-600 to-indigo-600" />
+                    <div key={i} className="w-6 h-6 rounded-full border border-[#020617] bg-gradient-to-br from-cyan-600 to-blue-600" />
                   ))}
                 </div>
                 <span>12k+ professionals</span>

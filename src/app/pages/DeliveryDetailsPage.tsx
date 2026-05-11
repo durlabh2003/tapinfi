@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Header from '../components/Header';
 import { useCart } from '../context/CartContext';
 import ScrollReveal from '../components/ScrollReveal';
+
+const DASHBOARD_API_URL = import.meta.env.VITE_DASHBOARD_API_URL || 'http://localhost:3001';
 
 export default function DeliveryDetailsPage() {
   const { setDeliveryDetails, deliveryDetails, cartItems } = useCart();
@@ -18,12 +20,66 @@ export default function DeliveryDetailsPage() {
     zipCode: deliveryDetails?.zipCode || '',
   });
 
+  const [isValidating, setIsValidating] = useState(false);
+  const [pincodeError, setPincodeError] = useState('');
+  const [isServiceable, setIsServiceable] = useState<boolean | null>(null);
+
+  const validatePincode = async (zip: string) => {
+    if (zip.length !== 6) {
+      setPincodeError('Pincode must be 6 digits');
+      setIsServiceable(null);
+      return;
+    }
+
+    setIsValidating(true);
+    setPincodeError('');
+    
+    try {
+      const response = await fetch(`${DASHBOARD_API_URL}/api/delhivery/pincode?pincode=${zip}`);
+      const result = await response.json();
+
+      if (result.serviceable) {
+        setIsServiceable(true);
+        setPincodeError('');
+        // Always update city and state from the API result
+        setFormData(prev => ({
+          ...prev,
+          city: result.data.city || prev.city,
+          state: result.data.state || prev.state
+        }));
+      } else {
+        setIsServiceable(false);
+        setPincodeError('Sorry, we do not deliver to this pincode yet.');
+      }
+    } catch (error) {
+      console.error('Validation error:', error);
+      // Don't block if API fails, just proceed
+      setIsServiceable(true); 
+    } finally {
+      setIsValidating(false);
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    if (name === 'zipCode') {
+      if (value.length === 6) {
+        validatePincode(value);
+      } else {
+        setIsServiceable(null);
+        setPincodeError('');
+      }
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isServiceable === false) {
+      setPincodeError('Please enter a serviceable pincode to continue.');
+      return;
+    }
     setDeliveryDetails(formData);
     navigate('/checkout/summary');
   };
@@ -69,6 +125,7 @@ export default function DeliveryDetailsPage() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
+                    placeholder="10-digit mobile number"
                     className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#0A0A0A] focus:border-[#0A0A0A] outline-none font-['Inter'] transition-shadow bg-gray-50"
                   />
                 </div>
@@ -101,6 +158,27 @@ export default function DeliveryDetailsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-2">ZIP Code</label>
+                  <div className="relative">
+                    <input 
+                      required
+                      type="text" 
+                      name="zipCode"
+                      maxLength={6}
+                      value={formData.zipCode}
+                      onChange={handleChange}
+                      className={`w-full px-4 py-3 rounded-xl border ${pincodeError ? 'border-red-500' : isServiceable === true ? 'border-green-500' : 'border-gray-300'} focus:ring-2 focus:ring-[#0A0A0A] focus:border-[#0A0A0A] outline-none font-['Inter'] transition-shadow bg-gray-50`}
+                    />
+                    {isValidating && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        <div className="w-4 h-4 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                      </div>
+                    )}
+                  </div>
+                  {pincodeError && <p className="text-red-500 text-xs mt-1 font-['Inter']">{pincodeError}</p>}
+                  {isServiceable === true && !isValidating && <p className="text-green-600 text-xs mt-1 font-['Inter'] flex items-center">✓ Serviceable Area</p>}
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-2">City</label>
                   <input 
                     required
@@ -122,25 +200,15 @@ export default function DeliveryDetailsPage() {
                     className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#0A0A0A] focus:border-[#0A0A0A] outline-none font-['Inter'] transition-shadow bg-gray-50"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-2">ZIP Code</label>
-                  <input 
-                    required
-                    type="text" 
-                    name="zipCode"
-                    value={formData.zipCode}
-                    onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#0A0A0A] focus:border-[#0A0A0A] outline-none font-['Inter'] transition-shadow bg-gray-50"
-                  />
-                </div>
               </div>
 
               <div className="pt-6 flex justify-end border-t border-gray-100">
                 <button 
                   type="submit"
-                  className="h-14 px-12 rounded-full bg-[#0A0A0A] text-white font-semibold font-['Inter'] text-lg transition-transform hover:scale-[1.02] active:scale-[0.98] shadow-xl"
+                  disabled={isValidating || isServiceable === false}
+                  className={`h-14 px-12 rounded-full bg-[#0A0A0A] text-white font-semibold font-['Inter'] text-lg transition-transform hover:scale-[1.02] active:scale-[0.98] shadow-xl ${ (isValidating || isServiceable === false) ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  Continue to Summary
+                  {isValidating ? 'Validating...' : 'Continue to Summary'}
                 </button>
               </div>
             </form>
@@ -150,3 +218,4 @@ export default function DeliveryDetailsPage() {
     </div>
   );
 }
+
