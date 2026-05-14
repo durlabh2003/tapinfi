@@ -38,8 +38,9 @@ export default function OrderSummaryPage() {
 
       try {
         const { data, error } = await supabase
-          .from('user_themes')
+          .from('products')
           .select('id, name, cover_photo')
+          .eq('product_category', 'profile_theme')
           .in('id', themeIds);
 
         if (error) throw error;

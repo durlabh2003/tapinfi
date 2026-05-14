@@ -1,48 +1,80 @@
 import { useParams, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { supabase } from '../../lib/supabase';
 
-const blogContent: { [key: number]: { title: string; date: string; category: string; content: string } } = {
-  1: {
-    title: 'The Future of Business Networking: Why NFC Cards Are Taking Over',
-    date: 'March 15, 2026',
-    category: 'Technology',
-    content: `
-The landscape of professional networking is undergoing a revolutionary transformation. Gone are the days when exchanging business cards meant fumbling through pockets for a crumpled piece of paper. Today, NFC (Near Field Communication) technology is reshaping how professionals connect, share information, and build meaningful relationships.
+interface BlogPost {
+  id: string;
+  title: string;
+  category: string;
+  preview_text: string;
+  tags: string;
+  content: string;
+  cover_photo: string;
+  status: string;
+  created_at: string;
+}
 
-## What is NFC Technology?
-
-NFC technology enables wireless communication between devices when they're brought within a few centimeters of each other. This same technology powers contactless payments and is now making waves in the business card industry. With a simple tap of an NFC-enabled card to a smartphone, you can instantly share your complete professional profile.
-
-## Why Traditional Business Cards Are Becoming Obsolete
-
-The average professional receives hundreds of business cards annually. Studies show that 88% of business cards are thrown away within a week. This not only represents a massive waste of resources but also countless lost networking opportunities. Traditional cards can get damaged, lost, or simply forgotten in a drawer.
-
-## The Rise of Smart Business Cards
-
-NFC business cards solve these problems elegantly. They're:
-- Instantly shareable with a simple tap
-- Always up-to-date (update your profile anytime)
-- Environmentally friendly (one card lasts forever)
-- More informative (link to portfolios, social media, videos)
-- Trackable (see who viewed your profile)
-
-## The Future is Here
-
-As we move further into 2026, the adoption of NFC business cards is accelerating. Major corporations are switching their entire workforce to digital cards, and freelancers are discovering the competitive advantage they provide. The question is no longer "Should I switch?" but rather "When will I make the switch?"
-
-## Making the Transition
-
-Transitioning to NFC cards is simpler than you might think. Companies like Tapinfi offer ready-made solutions that can be customized to match your brand identity. The investment pays for itself quickly through saved printing costs and improved networking results.
-
-The future of networking is here, and it fits in your wallet. Are you ready to make the switch?
-    `
-  }
-};
 
 export default function BlogPostPage() {
   const { id } = useParams<{ id: string }>();
-  const post = blogContent[Number(id)] || blogContent[1];
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchPost() {
+      if (!id) return;
+      try {
+        const { data, error } = await supabase
+          .from('blogs')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) throw error;
+        setPost(data);
+      } catch (err) {
+        console.error('Error fetching post:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPost();
+  }, [id]);
+
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="pt-[200px] text-center font-['Poppins',sans-serif] text-gray-500">
+          Loading post...
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Header />
+        <div className="pt-[200px] text-center font-['Poppins',sans-serif]">
+          <h2 className="text-2xl font-bold mb-4">Article Not Found</h2>
+          <Link to="/blogs" className="text-[#5aa4f4] hover:underline">Return to Blogs</Link>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -61,18 +93,48 @@ export default function BlogPostPage() {
             <div className="inline-block bg-[#5aa4f4] text-white px-6 py-2 rounded-full font-['Inter:SemiBold',sans-serif] text-[14px] mb-4">
               {post.category}
             </div>
-            <h1 className="font-['Poppins:Bold',sans-serif] text-[48px] text-[#100425] mb-4">
+            <h1 className="font-['Poppins:Bold',sans-serif] text-[32px] sm:text-[40px] lg:text-[48px] text-[#100425] mb-4 leading-tight">
               {post.title}
             </h1>
-            <p className="font-['Inter:Regular',sans-serif] text-[16px] text-[#656565]">
-              Published on {post.date}
-            </p>
+            {post.preview_text && (
+              <p className="font-['Poppins',sans-serif] text-[18px] sm:text-[20px] text-[#444] font-semibold italic leading-relaxed mb-4 border-l-4 border-[#5aa4f4] pl-4">
+                "{post.preview_text}"
+              </p>
+            )}
+            <div className="flex flex-wrap items-center gap-4">
+              <p className="font-['Inter:Regular',sans-serif] text-[14px] text-[#999]">
+                Published on {formatDate(post.created_at)}
+              </p>
+              {post.tags && (
+                <div className="flex flex-wrap gap-2">
+                  {post.tags.split(',').map((tag: string) => (
+                    <span
+                      key={tag}
+                      className="px-3 py-1 bg-[#eef5ff] text-[#5aa4f4] rounded-full text-[12px] font-semibold"
+                      style={{ fontFamily: "'Inter', sans-serif" }}
+                    >
+                      #{tag.trim()}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className="h-[400px] bg-gradient-to-br from-[#5aa4f4] to-[#0e2d6e] rounded-3xl mb-12"></div>
+          <div className="w-full aspect-video bg-gray-100 rounded-3xl mb-12 overflow-hidden shadow-sm">
+            {post.cover_photo ? (
+              <img 
+                src={post.cover_photo} 
+                alt={post.title}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-[#5aa4f4] to-[#0e2d6e]" />
+            )}
+          </div>
 
           <div className="prose prose-lg max-w-none">
-            <div className="font-['Poppins:Regular',sans-serif] text-[18px] text-[#656565] leading-relaxed whitespace-pre-line">
+            <div className="font-['Poppins:Regular',sans-serif] text-[16px] sm:text-[18px] text-[#333] leading-relaxed whitespace-pre-line">
               {post.content}
             </div>
           </div>

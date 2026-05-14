@@ -37,8 +37,9 @@ export default function ShopPage() {
     async function fetchProducts() {
       try {
         const { data, error } = await supabase
-          .from('card_themes')
+          .from('products')
           .select('*')
+          .eq('theme_type', 'Card')
           .eq('status', 'Active');
 
         if (error) throw error;

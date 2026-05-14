@@ -33,8 +33,9 @@ export default function CustomizeCardPage() {
       if (!id) return;
       try {
         const { data, error } = await supabase
-          .from('card_themes')
+          .from('products')
           .select('*')
+          .eq('theme_type', 'Card')
           .eq('id', id)
           .single();
         

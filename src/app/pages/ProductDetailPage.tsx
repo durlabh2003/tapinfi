@@ -35,8 +35,9 @@ export default function ProductDetailPage() {
       
       try {
         const { data, error } = await supabase
-          .from('card_themes')
+          .from('products')
           .select('*')
+          .eq('theme_type', 'Card')
           .eq('id', id)
           .single();
         
@@ -74,8 +75,9 @@ export default function ProductDetailPage() {
     async function fetchThemes() {
       try {
         const { data, error } = await supabase
-          .from('user_themes')
+          .from('products')
           .select('*')
+          .eq('theme_type', 'Profile')
           .eq('status', 'Active');
         
         if (error) throw error;
