@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import ScrollReveal from '../components/ScrollReveal';
 import { supabase } from '../../lib/supabase';
-import { Product } from '../data/products';
 
 import Footer from '../components/Footer';
 
@@ -20,7 +19,7 @@ export default function ShopPage() {
   const searchParams = new URLSearchParams(location.search);
   const initialMaterial = searchParams.get('material') || 'All';
 
-  const [dbProducts, setDbProducts] = useState<Product[]>([]);
+  const [dbProducts, setDbProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedMaterial, setSelectedMaterial] = useState(initialMaterial);
 
@@ -40,19 +39,21 @@ export default function ShopPage() {
           .from('products')
           .select('*')
           .eq('theme_type', 'Card')
-          .eq('status', 'Active');
+          .order('created_at', { ascending: false });
 
         if (error) throw error;
 
         if (data) {
-          const mappedProducts: Product[] = data.map((p: any) => ({
+          const mappedProducts = data.map((p: any) => ({
             id: p.id,
             name: p.name,
             price: p.selling_price || 0,
             img: p.cover_photo || '',
             shortDesc: p.description?.slice(0, 100) || 'Premium Smart Business Card',
             description: p.description || 'No description available.',
-            card_type: p.card_type
+            card_type: p.card_type,
+            front_mock_photo: p.front_mock_photo,
+            back_photo: p.back_photo,
           }));
           setDbProducts(mappedProducts);
         }

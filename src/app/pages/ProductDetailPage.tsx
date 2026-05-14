@@ -78,7 +78,7 @@ export default function ProductDetailPage() {
           .from('products')
           .select('*')
           .eq('theme_type', 'Profile')
-          .eq('status', 'Active');
+          .order('created_at', { ascending: false });
         
         if (error) throw error;
         setProfileThemes(data || []);
