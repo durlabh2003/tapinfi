@@ -135,9 +135,30 @@ export default function OrdersPage() {
                           {new Date(order.created_at).toLocaleDateString()}
                         </span>
                       </div>
-                      <h3 className="text-lg font-bold text-[#0e2d6e] font-['Inter'] mb-1 group-hover:text-[#5aa4f4] transition-colors">
+                      <h3 className="text-lg font-bold text-[#0e2d6e] font-['Inter'] mb-2 group-hover:text-[#5aa4f4] transition-colors">
                         {order.card_theme_name || 'Custom NFC Card'}
                       </h3>
+
+                      {/* Material & Profile Theme badges */}
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        {(order.card_material || order.card_type) && (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#eef5ff] text-[#0e2d6e] border border-[#5aa4f4]/20 uppercase tracking-widest">
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 6h18M3 14h18M3 18h18" />
+                            </svg>
+                            {order.card_material || order.card_type}
+                          </span>
+                        )}
+                        {(order.profile_theme_name || order.profile_theme_id) && (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-100 uppercase tracking-widest">
+                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            {order.profile_theme_name || order.profile_theme_id}
+                          </span>
+                        )}
+                      </div>
+
                       <p className="text-sm text-gray-600 mb-1 font-['Inter']">
                         Order ID: <span className="font-semibold uppercase text-[10px] tracking-widest">{order.id.slice(0, 8)}</span>
                       </p>
