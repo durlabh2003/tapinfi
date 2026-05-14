@@ -70,15 +70,14 @@ export default function ProductDetailPage() {
   }, [id, productStatic]);
 
 
-  // Fetch themes from Supabase
+  // Fetch profile themes from available_themes table
   React.useEffect(() => {
     async function fetchThemes() {
       try {
         const { data, error } = await supabase
-          .from('products')
-          .select('*')
-          .eq('theme_type', 'Profile')
-          .order('created_at', { ascending: false });
+          .from('available_themes')
+          .select('id, name, image_url')
+          .order('created_at', { ascending: true });
         
         if (error) throw error;
         setProfileThemes(data || []);
@@ -261,9 +260,9 @@ export default function ProductDetailPage() {
                     {/* Screen Content */}
                     <div className="flex-1 w-full transition-all duration-700 relative flex flex-col overflow-hidden bg-gray-50">
                        {/* Background Image - Object Contain to avoid cropping */}
-                       {selectedTheme?.cover_photo ? (
+                       {selectedTheme?.image_url ? (
                           <img 
-                            src={selectedTheme.cover_photo} 
+                            src={selectedTheme.image_url} 
                             alt="Theme Preview" 
                             className="absolute inset-0 w-full h-full object-contain animate-in fade-in duration-700 p-2"
                           />
@@ -299,8 +298,8 @@ export default function ProductDetailPage() {
                             }}
                             className={`w-full aspect-square rounded-[36px] bg-gray-50 shadow-xl transition-all duration-500 relative group overflow-hidden ${selectedThemeId === theme.id ? 'ring-[6px] ring-[#5aa4f4] ring-offset-[6px] scale-105' : 'hover:scale-105 hover:shadow-2xl'} ${showThemeError && !selectedThemeId ? 'ring-2 ring-red-400 animate-pulse' : ''}`}
                           >
-                            {theme.cover_photo ? (
-                              <img src={theme.cover_photo} alt={theme.name} className="absolute inset-0 w-full h-full object-contain p-1" />
+                            {theme.image_url ? (
+                              <img src={theme.image_url} alt={theme.name} className="absolute inset-0 w-full h-full object-contain p-1" />
                             ) : (
                               <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-400 flex items-center justify-center text-white font-bold">No Image</div>
                             )}
