@@ -818,44 +818,7 @@ function Group25() {
   );
 }
 
-// ── Footer ────────────────────────────────────────────────────────────────────
 
-function Footer() {
-  return (
-    <footer className="relative w-full max-w-[1440px] z-10 py-16 px-6 lg:px-20 border-t border-white/20 overflow-hidden" data-name="Footer">
-      {/* Footer Glow Effect */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#5AA4F4]/15 blur-[120px] pointer-events-none z-[-1]" />
-      
-      <div className="relative flex flex-col md:flex-row justify-between gap-10 mb-12">
-        <div className="flex flex-col gap-4">
-          <p className="font-['Inter:Medium',sans-serif] font-medium text-[14px] text-white/50 uppercase tracking-wider">Customer Care</p>
-          <p className="font-['Inter:Medium',sans-serif] font-medium text-[16px] text-white">+91 0000 0000</p>
-        </div>
-        <div className="flex flex-col gap-4">
-          <p className="font-['Inter:Medium',sans-serif] font-medium text-[14px] text-white/50 uppercase tracking-wider text-left md:text-center">Quick Links</p>
-          <div className="flex flex-wrap gap-6 text-[15px]">
-            <Link to="/shop" className="text-white hover:text-[#5AA4F4] transition-colors">Shop</Link>
-            <Link to="/analytics" className="text-white hover:text-[#5AA4F4] transition-colors">Analytics</Link>
-            <Link to="/orders" className="text-white hover:text-[#5AA4F4] transition-colors">Your Orders</Link>
-            <Link to="/plan" className="text-white hover:text-[#5AA4F4] transition-colors">My Plan</Link>
-          </div>
-        </div>
-        <div className="flex flex-col gap-4 text-left md:text-right">
-          <p className="font-['Inter:Medium',sans-serif] font-medium text-[14px] text-white/50 uppercase tracking-wider">Contact Information</p>
-          <p className="font-['Inter:Medium',sans-serif] font-medium text-[16px] text-white">tapinfi@gmail.com</p>
-        </div>
-      </div>
-      <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-white/10">
-        <p className="text-white/40 text-[14px]">Tapinfi 2025. All Rights Reserved</p>
-        <div className="flex flex-wrap justify-center gap-6 text-[14px] text-white/60">
-          <Link to="/refund" className="hover:text-white transition-colors">Refund Policy</Link>
-          <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-          <Link to="/terms" className="hover:text-white transition-colors">Terms &amp; Conditions</Link>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 // ── Main Website Container ────────────────────────────────────────────────────
 
@@ -877,7 +840,7 @@ function Website() {
       <ProfileCustomizationSection />
       <CalculatorSection />
       <Group25 />
-      <Footer />
+
     </div>
   );
 }

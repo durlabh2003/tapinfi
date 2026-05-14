@@ -35,7 +35,7 @@ export default function ProductDetailPage() {
       
       try {
         const { data, error } = await supabase
-          .from('products')
+          .from('card_themes')
           .select('*')
           .eq('id', id)
           .single();
@@ -74,9 +74,8 @@ export default function ProductDetailPage() {
     async function fetchThemes() {
       try {
         const { data, error } = await supabase
-          .from('products')
+          .from('user_themes')
           .select('*')
-          .eq('theme_type', 'Profile')
           .eq('status', 'Active');
         
         if (error) throw error;
@@ -225,15 +224,15 @@ export default function ProductDetailPage() {
                       const element = document.getElementById('customize-section');
                       element?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="flex-1 h-16 rounded-2xl bg-[#0e2d6e] text-white font-bold font-['Poppins'] flex items-center justify-center gap-3 shadow-xl shadow-[#0e2d6e]/20 hover:scale-[1.02] transition-all active:scale-[0.98]"
+                    className="w-full sm:flex-1 h-14 sm:h-16 rounded-full bg-[#0e2d6e] text-white font-bold font-['Poppins'] flex items-center justify-center gap-3 shadow-xl shadow-[#0e2d6e]/30 hover:scale-[1.02] transition-all active:scale-[0.98] text-base sm:text-lg"
                     style={{ backgroundImage: "linear-gradient(60.0131deg, rgb(90, 164, 244) 12.824%, rgb(14, 45, 110) 91.128%)" }}
                   >
                     <Zap className="w-5 h-5 fill-current" />
-                    Customize & Buy
+                    Customize Now
                   </button>
                   <button 
                     onClick={handleAddToCart}
-                    className="flex-1 h-16 rounded-2xl border-2 border-[#0e2d6e] text-[#0e2d6e] font-bold font-['Poppins'] flex items-center justify-center gap-3 hover:bg-[#0e2d6e]/5 transition-colors"
+                    className="w-full sm:flex-1 h-14 sm:h-16 rounded-full border-2 border-[#0e2d6e] text-[#0e2d6e] font-bold font-['Poppins'] flex items-center justify-center gap-3 hover:bg-[#0e2d6e]/5 transition-all shadow-xl shadow-[#0e2d6e]/10 active:scale-[0.98] text-base sm:text-lg"
                   >
                     <ShoppingCart className="w-5 h-5" />
                     Add to Cart
@@ -335,16 +334,15 @@ export default function ProductDetailPage() {
                     <button className="w-10 h-10 rounded-2xl border border-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-50 transition-colors"><ChevronRight className="w-5 h-5" /></button>
                   </div>
 
-                  {/* Continue Button */}
                   <div className="mt-auto flex justify-center lg:justify-end">
                     <button 
                       onClick={handleBuyNow}
-                      className="group relative flex items-center justify-center px-20 h-20 rounded-[28px] text-white font-bold font-['Poppins'] overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-[#0e2d6e]/30 w-full sm:w-auto"
+                      className="group relative flex items-center justify-center px-10 sm:px-20 h-14 sm:h-16 rounded-2xl text-white font-bold font-['Poppins'] overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-2xl shadow-[#0e2d6e]/30 w-full sm:w-auto"
                     >
                       <div className="absolute inset-0 bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] transition-transform duration-500 group-hover:scale-110" />
-                      <span className="relative z-10 flex items-center gap-4 text-xl tracking-tight">
+                      <span className="relative z-10 flex items-center gap-3 sm:gap-4 text-base sm:text-xl tracking-tight">
                         Continue to Personalize
-                        <ChevronRight className="w-6 h-6 transition-transform group-hover:translate-x-2" />
+                        <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 transition-transform group-hover:translate-x-2" />
                       </span>
                     </button>
                   </div>

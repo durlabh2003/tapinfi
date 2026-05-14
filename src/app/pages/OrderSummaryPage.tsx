@@ -38,7 +38,7 @@ export default function OrderSummaryPage() {
 
       try {
         const { data, error } = await supabase
-          .from('products')
+          .from('user_themes')
           .select('id, name, cover_photo')
           .in('id', themeIds);
 
@@ -444,13 +444,21 @@ export default function OrderSummaryPage() {
 
                 <button 
                   onClick={handleConfirmAndPay}
-                  className="w-full h-14 rounded-full flex items-center justify-center shadow-lg shadow-[#0e2d6e]/20 transition-transform hover:-translate-y-1"
+                  className="w-full h-14 rounded-full flex items-center justify-center shadow-lg shadow-[#0e2d6e]/20 transition-transform hover:-translate-y-1 mb-4"
                   style={{ backgroundImage: "linear-gradient(60.0131deg, rgb(90, 164, 244) 12.824%, rgb(14, 45, 110) 91.128%)" }}
                 >
                   <span className="text-white font-['Poppins'] font-semibold text-lg">
                     Confirm and Pay
                   </span>
                 </button>
+
+                <button 
+                  onClick={() => navigate('/shop')}
+                  className="w-full h-14 rounded-full flex items-center justify-center border border-gray-200 text-gray-600 font-semibold hover:bg-gray-50 transition-colors"
+                >
+                  Continue Shopping
+                </button>
+
                 <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-400 font-['Inter']">
                    <Lock className="w-4 h-4" />
                    Secure checkout powered by Razorpay

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import Header from '../components/Header';
 import { useCart } from '../context/CartContext';
 import ScrollReveal from '../components/ScrollReveal';
@@ -202,11 +203,20 @@ export default function DeliveryDetailsPage() {
                 </div>
               </div>
 
-              <div className="pt-6 flex justify-end border-t border-gray-100">
+              <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-gray-100">
+                <button 
+                  type="button"
+                  onClick={() => navigate('/shop')}
+                  className="w-full sm:w-auto h-14 px-10 rounded-full border-2 border-gray-200 text-gray-500 font-bold font-['Poppins'] hover:bg-gray-50 transition-all hover:border-[#5aa4f4] hover:text-[#5aa4f4] flex items-center justify-center gap-2"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                  Continue Shopping
+                </button>
                 <button 
                   type="submit"
                   disabled={isValidating || isServiceable === false}
-                  className={`h-14 px-12 rounded-full bg-[#0A0A0A] text-white font-semibold font-['Inter'] text-lg transition-transform hover:scale-[1.02] active:scale-[0.98] shadow-xl ${ (isValidating || isServiceable === false) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`w-full sm:w-auto h-14 px-12 rounded-full bg-[#0e2d6e] text-white font-bold font-['Poppins'] text-lg transition-all hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-[#0e2d6e]/20 ${ (isValidating || isServiceable === false) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  style={{ backgroundImage: "linear-gradient(60.0131deg, rgb(90, 164, 244) 12.824%, rgb(14, 45, 110) 91.128%)" }}
                 >
                   {isValidating ? 'Validating...' : 'Continue to Summary'}
                 </button>

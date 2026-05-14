@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import { useCart } from '../context/CartContext';
 import { CheckCircle, ShoppingBag, ArrowRight } from 'lucide-react';
@@ -7,6 +7,7 @@ import ScrollReveal from '../components/ScrollReveal';
 
 export default function OrderSuccessPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { clearCart } = useCart();
   const { paymentId, total } = location.state || { paymentId: 'N/A', total: 0 };
 
@@ -42,21 +43,21 @@ export default function OrderSuccessPage() {
               </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link 
-                to="/shop"
+            <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-20">
+              <button 
+                onClick={() => navigate('/shop')}
                 className="h-14 px-8 rounded-full bg-[#0e2d6e] text-white font-semibold flex items-center justify-center gap-2 transition-transform hover:scale-105"
               >
                 <ShoppingBag className="w-5 h-5" />
                 Continue Shopping
-              </Link>
-              <Link 
-                to="/"
+              </button>
+              <button 
+                onClick={() => navigate('/')}
                 className="h-14 px-8 rounded-full border-2 border-gray-100 text-gray-600 font-semibold flex items-center justify-center gap-2 transition-transform hover:scale-105"
               >
                 Back to Home
                 <ArrowRight className="w-5 h-5" />
-              </Link>
+              </button>
             </div>
           </div>
         </ScrollReveal>

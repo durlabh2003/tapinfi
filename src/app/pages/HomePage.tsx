@@ -62,6 +62,7 @@ export default function HomePage() {
         className={`w-full relative z-10 ${entered ? 'page-enter' : 'opacity-0'}`}
       >
         <FigmaFrame1 />
+        <Footer />
       </div>
     </div>
   );

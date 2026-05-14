@@ -17,9 +17,8 @@ export default function ThemeSelectionStep({ selectedThemeId, onSelectTheme, onN
     async function fetchThemes() {
       try {
         const { data, error } = await supabase
-          .from('products')
+          .from('user_themes')
           .select('*')
-          .eq('theme_type', 'Profile')
           .eq('status', 'Active');
         
         if (error) throw error;
