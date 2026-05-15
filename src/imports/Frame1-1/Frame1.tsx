@@ -514,10 +514,10 @@ function ProductCard({ title, price, image, delay, comingSoon, linkTo }: { title
     <div
       data-sr-card
       data-delay={delay}
-      className="relative w-full max-w-[380px] h-[480px] rounded-[32px] border-2 border-white/80 bg-[#0F172A]/40 backdrop-blur-2xl p-10 flex flex-col items-center transition-all duration-500 hover:scale-[1.03] hover:bg-[#0F172A]/60 group shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+      className="relative w-full max-w-[420px] h-[540px] rounded-[40px] border-2 border-white/80 bg-[#0F172A]/40 backdrop-blur-2xl p-12 flex flex-col items-center transition-all duration-500 hover:scale-[1.03] hover:bg-[#0F172A]/60 group shadow-[0_30px_70px_rgba(0,0,0,0.4)]"
     >
-      <div className="w-full text-left mb-6">
-        <h3 className="font-['Poppins',sans-serif] font-black text-[24px] text-white uppercase tracking-wider">{title}</h3>
+      <div className="w-full text-left mb-8">
+        <h3 className="font-['Poppins',sans-serif] font-black text-[28px] text-white uppercase tracking-wider">{title}</h3>
       </div>
       
       <div className="flex-1 w-full flex items-center justify-center p-2 relative">
