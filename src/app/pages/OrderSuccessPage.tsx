@@ -43,21 +43,21 @@ export default function OrderSuccessPage() {
               </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-20">
-              <button 
-                onClick={() => navigate('/shop')}
-                className="h-14 px-8 rounded-full bg-[#0e2d6e] text-white font-semibold flex items-center justify-center gap-2 transition-transform hover:scale-105"
+            <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-30">
+              <Link 
+                to="/shop"
+                className="h-14 px-8 rounded-full bg-[#0e2d6e] text-white font-semibold flex items-center justify-center gap-2 transition-all hover:scale-105 shadow-lg shadow-[#0e2d6e]/20"
               >
                 <ShoppingBag className="w-5 h-5" />
                 Continue Shopping
-              </button>
-              <button 
-                onClick={() => navigate('/')}
-                className="h-14 px-8 rounded-full border-2 border-gray-100 text-gray-600 font-semibold flex items-center justify-center gap-2 transition-transform hover:scale-105"
+              </Link>
+              <Link 
+                to="/"
+                className="h-14 px-8 rounded-full border-2 border-gray-100 text-gray-600 font-semibold flex items-center justify-center gap-2 transition-all hover:scale-105"
               >
                 Back to Home
                 <ArrowRight className="w-5 h-5" />
-              </button>
+              </Link>
             </div>
           </div>
         </ScrollReveal>
