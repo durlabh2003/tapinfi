@@ -42,7 +42,10 @@ export default function CartDrawer() {
               </div>
               <p className="text-gray-500 font-['Inter']">Your cart is empty.</p>
               <button 
-                onClick={() => setIsCartOpen(false)}
+                onClick={() => {
+                  setIsCartOpen(false);
+                  navigate('/shop');
+                }}
                 className="text-[#5aa4f4] font-medium font-['Inter'] hover:underline"
               >
                 Continue Shopping
@@ -116,7 +119,10 @@ export default function CartDrawer() {
             </button>
             <button
               className="w-full h-12 mt-3 rounded-full border-2 border-[#5aa4f4] text-[#0e2d6e] font-semibold font-['Inter'] text-base transition-all hover:bg-[#5aa4f4]/10 active:scale-[0.98]"
-              onClick={() => setIsCartOpen(false)}
+              onClick={() => {
+                setIsCartOpen(false);
+                navigate('/shop');
+              }}
             >
               Continue Shopping
             </button>

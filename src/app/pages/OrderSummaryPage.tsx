@@ -96,7 +96,7 @@ export default function OrderSummaryPage() {
         <Header />
         <h1 className="text-3xl font-bold text-[#0e2d6e] mb-4">Something went wrong</h1>
         <p className="text-gray-500 mb-6">Please ensure you have items in your cart and have entered delivery details.</p>
-        <Link to="/shop" className="text-[#5aa4f4] hover:underline">Back to Shop</Link>
+        <Link to="/shop" className="text-[#5aa4f4] hover:underline">Continue Shopping</Link>
       </div>
     );
   }
