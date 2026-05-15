@@ -208,7 +208,7 @@ export default function HeroAnimation() {
             className="absolute z-20 w-44 h-44 md:w-56 md:h-56 border border-cyan-400/50 rounded-full pointer-events-none shadow-[0_0_40px_rgba(34,211,238,0.3)]"
           />
 
-          {/* Premium PVC GLOSSY Card */}
+          {/* Premium NFC Card */}
           <motion.div
             style={{
               x: cardX,
@@ -219,15 +219,33 @@ export default function HeroAnimation() {
               opacity: cardOpacity,
               transformStyle: "preserve-3d"
             }}
-            className="absolute z-50 w-[280px] h-[175px] sm:w-[310px] sm:h-[192px] lg:w-[340px] lg:h-[210px] rounded-2xl shadow-[0_25px_60px_-12px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden group"
+            className="absolute z-50 w-[280px] h-[175px] sm:w-[310px] sm:h-[192px] lg:w-[340px] lg:h-[210px] bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-black border border-white/10 rounded-2xl shadow-[0_25px_60px_-12px_rgba(0,0,0,0.8)] flex flex-col p-6 sm:p-7 lg:p-8 overflow-hidden group"
           >
-            {/* Front of Card */}
-            <div className="absolute inset-0 bg-white backface-hidden z-10">
-              <img src="/src/app/components/pvc-front.png" alt="PVC Glossy Front" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/brushed-alum.png')]" />
+            <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0%,transparent_50%)]" />
+
+            <div className="flex justify-between items-start relative z-10">
+              <div className="space-y-4">
+                <div className="w-12 h-12 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 flex items-center justify-center">
+                  <div className="w-7 h-7 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-md flex items-center justify-center">
+                    <Cpu className="text-white w-4 h-4" />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[8px] text-white/30 tracking-[0.4em] font-black uppercase">Stealth Edition</p>
+                  <h4 className="text-white text-lg font-bold tracking-tight">NEXUS CARD</h4>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="flex items-center gap-1.5 justify-end">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                  <span className="text-[9px] text-emerald-500 font-black uppercase tracking-[0.1em]">Ready</span>
+                </div>
+              </div>
             </div>
-            {/* Back of Card (visible when rotated) */}
-            <div className="absolute inset-0 bg-white backface-hidden z-0 rotate-y-180">
-              <img src="/src/app/components/pvc-back.png" alt="PVC Glossy Back" className="w-full h-full object-cover" />
+
+            <div className="mt-auto relative z-10">
+              <p className="text-white/80 font-mono tracking-[0.25em] text-sm">•••• •••• •••• 2026</p>
             </div>
           </motion.div>
 
@@ -243,13 +261,10 @@ export default function HeroAnimation() {
           >
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              className="mb-5 sm:mb-6 inline-flex flex-col gap-2"
+              className="mb-5 sm:mb-6 inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 bg-[#5AA4F4]/10 border border-[#5AA4F4]/25 rounded-full backdrop-blur-xl"
             >
-              <span className="text-[24px] sm:text-[32px] font-black text-white uppercase tracking-[0.1em] font-['Poppins']">PVC GLOSSY</span>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 bg-[#5AA4F4]/10 border border-[#5AA4F4]/25 rounded-full backdrop-blur-xl w-fit">
-                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                <span className="text-[10px] sm:text-[11px] font-bold text-cyan-200 uppercase tracking-[0.25em]">Premium Edition</span>
-              </div>
+              <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="text-[10px] sm:text-[11px] font-bold text-cyan-200 uppercase tracking-[0.25em]">Effortless Onboarding</span>
             </motion.div>
 
             <h2 className="text-white text-[32px] leading-[1.1] sm:text-[48px] md:text-[64px] lg:text-[72px] xl:text-[80px] font-bold tracking-tight mb-4 sm:mb-8">
@@ -262,28 +277,29 @@ export default function HeroAnimation() {
               </span>
             </h2>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-8 mb-8 sm:mb-10">
-              <div className="flex flex-col">
-                <span className="text-white/50 text-xs font-bold uppercase tracking-widest mb-1">Price</span>
-                <div className="flex items-baseline gap-2">
-                   <span className="text-white text-xl font-medium">INR</span>
-                   <span className="text-white text-4xl font-black">499</span>
-                </div>
-              </div>
-
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 mb-8 sm:mb-10">
               <Link
-                to="/shop?material=PVC"
-                className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] rounded-full px-10 py-4 font-['Inter',sans-serif] font-bold text-[18px] text-white shadow-lg hover:scale-105 hover:shadow-[#5AA4F4]/40 transition-all active:scale-95 group pointer-events-auto"
+                to="/shop"
+                className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] rounded-full px-8 py-3.5 font-['Inter',sans-serif] font-bold text-[16px] text-white shadow-lg hover:scale-105 hover:shadow-[#5AA4F4]/40 transition-all active:scale-95 group pointer-events-auto"
               >
                 SHOP NOW
                 <div className="transition-transform group-hover:translate-x-1">
                   <ArrowRight className="w-5 h-5" />
                 </div>
               </Link>
+
+              <div className="flex items-center gap-3 text-white/70 text-[13px] font-medium">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="w-6 h-6 rounded-full border border-[#020617] bg-gradient-to-br from-cyan-600 to-blue-600" />
+                  ))}
+                </div>
+                <span>12k+ professionals</span>
+              </div>
             </div>
 
             <p className="text-white/60 text-[15px] sm:text-[17px] leading-relaxed max-w-[480px] mx-auto lg:mx-0 font-medium">
-              One tap. Zero friction. Your entire professional identity, instantly shared on a premium glossy finish.
+              One tap. Zero friction. Your entire professional identity, instantly shared.
             </p>
           </motion.div>
 
