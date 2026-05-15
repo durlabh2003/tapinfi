@@ -520,11 +520,11 @@ function ProductCard({ title, price, image, delay, comingSoon, linkTo }: { title
         <h3 className="font-['Poppins',sans-serif] font-black text-[32px] text-white uppercase tracking-wider">{title}</h3>
       </div>
       
-      <div className="flex-1 w-full flex items-center justify-center p-4 relative">
-        <div className="absolute inset-0 bg-blue-500/15 blur-[80px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      <div className="flex-1 w-full flex items-center justify-center p-0 relative">
+        <div className="absolute inset-0 bg-blue-500/15 blur-[100px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
         <img 
           alt={title} 
-          className="max-w-full max-h-full object-contain pointer-events-none drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)] transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3" 
+          className="w-[90%] h-[90%] object-contain pointer-events-none drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)] transition-all duration-500 scale-110 group-hover:scale-125 group-hover:-rotate-3" 
           src={image} 
         />
       </div>
