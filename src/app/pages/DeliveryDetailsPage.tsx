@@ -76,20 +76,47 @@ export default function DeliveryDetailsPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-
-    if (name === 'zipCode') {
-      if (value.length === 6) {
-        validatePincode(value);
+    
+    if (name === 'fullName') {
+      // Name: Only letters and spaces allowed
+      const filteredValue = value.replace(/[^a-zA-Z\s]/g, '');
+      setFormData({ ...formData, [name]: filteredValue });
+    } 
+    else if (name === 'phone') {
+      // Phone: Only digits, max 10
+      const filteredValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData({ ...formData, [name]: filteredValue });
+    }
+    else if (name === 'zipCode') {
+      // Pincode: Only digits, max 6
+      const filteredValue = value.replace(/\D/g, '').slice(0, 6);
+      setFormData({ ...formData, zipCode: filteredValue });
+      
+      if (filteredValue.length === 6) {
+        validatePincode(filteredValue);
       } else {
         setIsServiceable(null);
-        setPincodeError('');
+        setPincodeError(filteredValue.length > 0 ? 'Pincode must be 6 digits' : '');
       }
+    }
+    else {
+      setFormData({ ...formData, [name]: value });
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (formData.phone.length !== 10) {
+      alert('Phone number must be exactly 10 digits');
+      return;
+    }
+    
+    if (formData.zipCode.length !== 6) {
+      setPincodeError('Pincode must be 6 digits');
+      return;
+    }
+
     if (isServiceable === false) {
       setPincodeError('Please enter a serviceable pincode to continue.');
       return;
@@ -137,6 +164,7 @@ export default function DeliveryDetailsPage() {
                     required
                     type="tel" 
                     name="phone"
+                    maxLength={10}
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="10-digit mobile number"
