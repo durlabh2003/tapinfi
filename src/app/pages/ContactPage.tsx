@@ -48,7 +48,6 @@ export default function ContactPage() {
         .from('support_queries')
         .insert([{
           ...formData,
-          source: 'Contact Form',
           status: 'pending'
         }]);
 
