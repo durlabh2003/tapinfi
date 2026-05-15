@@ -25,7 +25,7 @@ export default function ProductDetailPage() {
   const [selectedThemeId, setSelectedThemeId] = useState<string | null>(null);
   const [isLoadingProduct, setIsLoadingProduct] = useState(!productStatic);
   const [isLoadingThemes, setIsLoadingThemes] = useState(true);
-  const [activeView, setActiveView] = useState<'front' | 'back' | 'profile'>('front');
+  const [activeView, setActiveView] = useState<'front' | 'profile'>('front');
   const [showThemeError, setShowThemeError] = useState(false);
 
   // Fetch product from Supabase if not in static list
@@ -152,35 +152,10 @@ export default function ProductDetailPage() {
               <div className="space-y-6">
                 <div className="aspect-[4/3] bg-gray-50 rounded-[40px] overflow-hidden border border-gray-100 relative group shadow-inner flex items-center justify-center p-8 lg:p-12 transition-all duration-500">
                   <img 
-                    src={activeView === 'front' ? (product.img || product.front_mock_photo) : (product.back_photo || product.img)} 
+                    src={product.img || product.front_mock_photo} 
                     alt={product.name} 
-                    className={`max-w-full max-h-full object-contain transition-transform duration-700`} 
+                    className="max-w-full max-h-full object-contain transition-transform duration-700" 
                   />
-                  
-                  {/* View Toggles */}
-                  <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
-                    <button 
-                      onClick={() => setActiveView('front')}
-                      className={`px-4 py-2 rounded-full text-[10px] font-bold tracking-widest transition-all ${activeView === 'front' ? 'bg-[#0e2d6e] text-white shadow-lg' : 'bg-white text-gray-500 shadow-sm'}`}
-                    >
-                      FRONT
-                    </button>
-                    <button 
-                      onClick={() => setActiveView('back')}
-                      className={`px-4 py-2 rounded-full text-[10px] font-bold tracking-widest transition-all ${activeView === 'back' ? 'bg-[#0e2d6e] text-white shadow-lg' : 'bg-white text-gray-500 shadow-sm'}`}
-                    >
-                      BACK
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="flex gap-4 justify-center">
-                  <div className={`w-20 h-20 rounded-2xl border-2 cursor-pointer transition-all ${activeView === 'front' ? 'border-[#5aa4f4]' : 'border-gray-100 hover:border-gray-200'} bg-gray-50 p-2 flex items-center justify-center`} onClick={() => setActiveView('front')}>
-                    <img src={product.img || product.front_mock_photo} alt="Front" className="w-full h-full object-contain" />
-                  </div>
-                  <div className={`w-20 h-20 rounded-2xl border-2 cursor-pointer transition-all ${activeView === 'back' ? 'border-[#5aa4f4]' : 'border-gray-100 hover:border-gray-200'} bg-gray-50 p-2 flex items-center justify-center`} onClick={() => setActiveView('back')}>
-                    <img src={product.back_photo || product.img} alt="Back" className="w-full h-full object-contain" />
-                  </div>
                 </div>
               </div>
             </ScrollReveal>
