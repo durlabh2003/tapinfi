@@ -212,7 +212,7 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
         <button 
           onClick={onFinish}
           disabled={data.frontOption === 'details' && !data.fullName}
-          className="mt-auto h-[54px] w-full rounded-full flex items-center justify-center shadow-lg shadow-[#0e2d6e]/20 transition-transform hover:-translate-y-1 disabled:opacity-50 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
+          className="mt-auto mt-6 h-[54px] w-full rounded-full flex items-center justify-center shadow-lg shadow-[#0e2d6e]/20 transition-transform hover:-translate-y-1 disabled:opacity-50 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
           style={{ backgroundImage: "linear-gradient(60.0131deg, rgb(90, 164, 244) 12.824%, rgb(14, 45, 110) 91.128%)" }}
         >
           <span className="text-white font-['Poppins'] font-semibold text-lg">

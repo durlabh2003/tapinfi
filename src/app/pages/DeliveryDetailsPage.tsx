@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import { useCart } from '../context/CartContext';
 import ScrollReveal from '../components/ScrollReveal';
 
-const DASHBOARD_API_URL = import.meta.env.VITE_DASHBOARD_API_URL || 'http://localhost:3001';
+
 
 export default function DeliveryDetailsPage() {
   const { setDeliveryDetails, deliveryDetails, cartItems } = useCart();
@@ -36,7 +36,7 @@ export default function DeliveryDetailsPage() {
     setPincodeError('');
     
     try {
-      const response = await fetch(`${DASHBOARD_API_URL}/api/delhivery/pincode?pincode=${zip}`);
+      const response = await fetch(`/api/delhivery/pincode?pincode=${zip}`);
       const result = await response.json();
 
       if (result.serviceable) {
@@ -203,15 +203,7 @@ export default function DeliveryDetailsPage() {
                 </div>
               </div>
 
-              <div className="pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-gray-100">
-                <button 
-                  type="button"
-                  onClick={() => navigate('/shop')}
-                  className="w-full sm:w-auto h-14 px-10 rounded-full border-2 border-gray-200 text-gray-500 font-bold font-['Poppins'] hover:bg-gray-50 transition-all hover:border-[#5aa4f4] hover:text-[#5aa4f4] flex items-center justify-center gap-2"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                  Continue Shopping
-                </button>
+              <div className="pt-6 flex justify-end border-t border-gray-100">
                 <button 
                   type="submit"
                   disabled={isValidating || isServiceable === false}

@@ -114,6 +114,12 @@ export default function CartDrawer() {
             >
               Checkout Now
             </button>
+            <button
+              className="w-full h-12 mt-3 rounded-full border-2 border-[#5aa4f4] text-[#0e2d6e] font-semibold font-['Inter'] text-base transition-all hover:bg-[#5aa4f4]/10 active:scale-[0.98]"
+              onClick={() => setIsCartOpen(false)}
+            >
+              Continue Shopping
+            </button>
             <p className="text-center text-xs text-gray-400 mt-4 font-['Inter']">Shipping and taxes calculated at checkout.</p>
           </div>
         )}

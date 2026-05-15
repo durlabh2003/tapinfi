@@ -69,8 +69,7 @@ export default function OrderSummaryPage() {
 
       setLoadingShipping(true);
       try {
-        const baseUrl = import.meta.env.VITE_DASHBOARD_API_URL || 'http://localhost:3001';
-        const response = await fetch(`${baseUrl}/api/delhivery/cost?d_pin=${deliveryDetails.zipCode}&count=${totalQuantity}`);
+        const response = await fetch(`/api/delhivery/cost?d_pin=${deliveryDetails.zipCode}&count=${totalQuantity}`);;
         
         if (response.ok) {
           const data = await response.json();
@@ -451,13 +450,6 @@ export default function OrderSummaryPage() {
                   <span className="text-white font-['Poppins'] font-semibold text-lg">
                     Confirm and Pay
                   </span>
-                </button>
-
-                <button 
-                  onClick={() => navigate('/shop')}
-                  className="w-full h-14 rounded-full flex items-center justify-center border border-gray-200 text-gray-600 font-semibold hover:bg-gray-50 transition-colors"
-                >
-                  Continue Shopping
                 </button>
 
                 <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-400 font-['Inter']">
