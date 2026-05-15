@@ -514,35 +514,35 @@ function ProductCard({ title, price, image, delay, comingSoon, linkTo }: { title
     <div
       data-sr-card
       data-delay={delay}
-      className="relative w-full max-w-[420px] h-[540px] rounded-[40px] border-2 border-white/80 bg-[#0F172A]/40 backdrop-blur-2xl p-12 flex flex-col items-center transition-all duration-500 hover:scale-[1.03] hover:bg-[#0F172A]/60 group shadow-[0_30px_70px_rgba(0,0,0,0.4)]"
+      className="relative w-full max-w-[500px] h-[650px] rounded-[48px] border-2 border-white/80 bg-[#0F172A]/40 backdrop-blur-3xl p-14 flex flex-col items-center transition-all duration-500 hover:scale-[1.03] hover:bg-[#0F172A]/60 group shadow-[0_40px_100px_rgba(0,0,0,0.5)]"
     >
-      <div className="w-full text-left mb-8">
-        <h3 className="font-['Poppins',sans-serif] font-black text-[28px] text-white uppercase tracking-wider">{title}</h3>
+      <div className="w-full text-left mb-10">
+        <h3 className="font-['Poppins',sans-serif] font-black text-[32px] text-white uppercase tracking-wider">{title}</h3>
       </div>
       
-      <div className="flex-1 w-full flex items-center justify-center p-2 relative">
-        <div className="absolute inset-0 bg-blue-500/10 blur-[60px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      <div className="flex-1 w-full flex items-center justify-center p-4 relative">
+        <div className="absolute inset-0 bg-blue-500/15 blur-[80px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
         <img 
           alt={title} 
-          className="max-w-full max-h-full object-contain pointer-events-none drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)] transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-2" 
+          className="max-w-full max-h-full object-contain pointer-events-none drop-shadow-[0_30px_60px_rgba(0,0,0,0.5)] transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-3" 
           src={image} 
         />
       </div>
 
-      <div className="w-full flex items-center justify-between mt-auto pt-6 border-t border-white/10">
-        <div className="text-white flex items-baseline gap-2">
-          <span className="font-['Poppins',sans-serif] font-bold text-lg text-white/60">INR</span>
-          <span className="font-['Poppins',sans-serif] font-black text-[36px] tracking-tight">{price}</span>
+      <div className="w-full flex items-center justify-between mt-auto pt-10 border-t border-white/10">
+        <div className="text-white flex items-baseline gap-3">
+          <span className="font-['Poppins',sans-serif] font-bold text-xl text-white/60">INR</span>
+          <span className="font-['Poppins',sans-serif] font-black text-[48px] tracking-tight">{price}</span>
         </div>
         
         {comingSoon ? (
-          <div className="bg-white/10 border border-white/20 rounded-full px-6 py-2.5 font-['Inter',sans-serif] font-bold text-white/40 text-[14px] cursor-not-allowed backdrop-blur-sm">
+          <div className="bg-white/10 border border-white/20 rounded-full px-8 py-3.5 font-['Inter',sans-serif] font-bold text-white/40 text-[16px] cursor-not-allowed backdrop-blur-sm">
             COMING SOON
           </div>
         ) : (
           <Link
             to={linkTo}
-            className="bg-gradient-to-r from-[#5AA4F4] via-[#3B82F6] to-[#1E40AF] rounded-full px-8 py-3 font-['Inter',sans-serif] font-black text-white text-[14px] shadow-[0_10px_20px_rgba(59,130,246,0.3)] hover:shadow-[0_15px_30px_rgba(59,130,246,0.5)] transition-all hover:scale-105 active:scale-95 relative z-20 uppercase tracking-widest"
+            className="bg-gradient-to-r from-[#5AA4F4] via-[#3B82F6] to-[#1E40AF] rounded-full px-12 py-4 font-['Inter',sans-serif] font-black text-white text-[16px] shadow-[0_15px_30px_rgba(59,130,246,0.3)] hover:shadow-[0_20px_40px_rgba(59,130,246,0.5)] transition-all hover:scale-105 active:scale-95 relative z-20 uppercase tracking-widest"
           >
             SHOP NOW
           </Link>
@@ -557,11 +557,11 @@ import { products as staticProducts } from '../../app/data/products';
 
 function OurProducts() {
   return (
-    <section className="relative w-full max-w-[1440px] z-10 py-20 px-6" data-name="Our Products">
+    <section className="relative w-full max-w-[1600px] z-10 py-20 px-6 mx-auto" data-name="Our Products">
       <p data-sr data-delay="0" className="font-['Inter',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
         Our Products
       </p>
-      <div className="flex flex-col md:flex-row gap-8 w-full justify-center items-center min-h-[455px]">
+      <div className="flex flex-col xl:flex-row gap-12 w-full justify-center items-center">
         {staticProducts.slice(0, 3).map((p, i) => {
           let toLink = `/product/${p.id}`;
           if (p.id === 'white-gloss') toLink = '/shop?material=PVC';
