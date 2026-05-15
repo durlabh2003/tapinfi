@@ -37,25 +37,38 @@ export default function DeliveryDetailsPage() {
     
     try {
       const response = await fetch(`/api/delhivery/pincode?pincode=${zip}`);
+
+      // If the API itself failed (server error / missing env vars), allow proceeding
+      if (!response.ok) {
+        console.warn('Pincode API returned error status:', response.status);
+        setIsServiceable(true);
+        setIsValidating(false);
+        return;
+      }
+
       const result = await response.json();
 
       if (result.serviceable) {
         setIsServiceable(true);
         setPincodeError('');
-        // Always update city and state from the API result
+        // Auto-fill city and state from Delhivery data
         setFormData(prev => ({
           ...prev,
-          city: result.data.city || prev.city,
-          state: result.data.state || prev.state
+          city: result.data?.city || prev.city,
+          state: result.data?.state || prev.state
         }));
-      } else {
+      } else if (result.serviceable === false) {
+        // Only block if Delhivery explicitly says not serviceable
         setIsServiceable(false);
         setPincodeError('Sorry, we do not deliver to this pincode yet.');
+      } else {
+        // Ambiguous response — allow through
+        setIsServiceable(true);
       }
     } catch (error) {
       console.error('Validation error:', error);
-      // Don't block if API fails, just proceed
-      setIsServiceable(true); 
+      // Network/parse error — don't block the user
+      setIsServiceable(true);
     } finally {
       setIsValidating(false);
     }
