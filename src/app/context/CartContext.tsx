@@ -10,6 +10,7 @@ export interface CustomizationData {
   phone: string;
   email: string;
   logoUrl: string | null;
+  avatarUrl: string | null;
   printQR: boolean;
 }
 

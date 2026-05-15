@@ -25,8 +25,10 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
                     frontFields.includes('company_name') || 
                     frontFields.includes('designation') || 
                     frontFields.includes('phone') || 
-                    frontFields.includes('email');
+                    frontFields.includes('email') ||
+                    frontFields.includes('profile_avatar');
   const hasLogo = frontFields.includes('company_logo') || frontFields.includes('logo');
+  const hasAvatar = frontFields.includes('profile_avatar');
   const hasQR = backFields.includes('qr_code');
 
   const validate = () => {
@@ -75,6 +77,13 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
           newErrors.email = 'Please enter a valid email address';
         }
       }
+
+      // Avatar
+      if (hasAvatar) {
+        if (!data.avatarUrl) {
+          newErrors.avatar = 'Profile avatar is required';
+        }
+      }
     } else {
       if (!data.logoUrl) {
         newErrors.logo = 'Please upload a logo';
@@ -108,7 +117,7 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
       setUploading(true);
       try {
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
+        const fileName = `logo_${Math.random()}.${fileExt}`;
         const filePath = `logos/${fileName}`;
 
         const { error: uploadError } = await supabase.storage
@@ -117,11 +126,37 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
 
         if (uploadError) throw uploadError;
 
-        const { data } = supabase.storage.from('uploads').getPublicUrl(filePath);
-        onChange({ logoUrl: data.publicUrl });
+        const { data: publicUrlData } = supabase.storage.from('uploads').getPublicUrl(filePath);
+        onChange({ logoUrl: publicUrlData.publicUrl });
       } catch (err) {
         console.error('Error uploading logo:', err);
         alert('Failed to upload logo. Please try again.');
+      } finally {
+        setUploading(false);
+      }
+    }
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploading(true);
+      try {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `avatar_${Math.random()}.${fileExt}`;
+        const filePath = `avatars/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('uploads')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabase.storage.from('uploads').getPublicUrl(filePath);
+        onChange({ avatarUrl: publicUrlData.publicUrl });
+      } catch (err) {
+        console.error('Error uploading avatar:', err);
+        alert('Failed to upload profile image. Please try again.');
       } finally {
         setUploading(false);
       }
@@ -267,6 +302,43 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
                          <p className="text-red-500 text-[10px] font-bold flex items-center gap-1 mt-1 ml-1">
                            <AlertCircle className="w-3 h-3" /> {currentErrors.email}
                          </p>
+                       )}
+                    </div>
+                  )}
+
+                  {hasAvatar && (
+                    <div className="pt-2">
+                       <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-2">Profile Avatar Image *</label>
+                       <div 
+                          className="relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer overflow-hidden group"
+                          onClick={() => {
+                            const input = document.createElement('input');
+                            input.type = 'file';
+                            input.accept = 'image/*';
+                            input.onchange = (e: any) => handleAvatarUpload(e);
+                            input.click();
+                          }}
+                       >
+                          {data.avatarUrl ? (
+                             <img src={data.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+                          ) : (
+                             <div className="flex flex-col items-center">
+                                <svg className="w-6 h-6 text-gray-400 group-hover:text-[#5aa4f4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                </svg>
+                                <span className="text-[8px] font-bold text-gray-400 uppercase mt-1">Upload</span>
+                             </div>
+                          )}
+                          {uploading && (
+                             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                             </div>
+                          )}
+                       </div>
+                       {currentErrors.avatar && !data.avatarUrl && (
+                          <p className="text-red-500 text-[10px] font-bold flex items-center gap-1 mt-1 ml-1">
+                            <AlertCircle className="w-3 h-3" /> {currentErrors.avatar}
+                          </p>
                        )}
                     </div>
                   )}
