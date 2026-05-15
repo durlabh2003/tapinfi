@@ -140,6 +140,12 @@ export default function OrderSummaryPage() {
         return;
       }
 
+      // Check expiration if column exists
+      if (data.expiration_date && new Date(data.expiration_date) < new Date()) {
+        setCouponError('This coupon has expired');
+        return;
+      }
+
       let discountAmount = 0;
       if (data.discount_type === 'percentage') {
         discountAmount = Math.round(cartTotal * (data.discount_value / 100));
@@ -422,9 +428,12 @@ export default function OrderSummaryPage() {
                       <input 
                         type="text" 
                         value={couponCode}
-                        onChange={(e) => setCouponCode(e.target.value)}
-                        placeholder="Enter code (Try TAPINFI10)"
-                        className={`flex-1 h-12 px-4 rounded-xl border ${couponError ? 'border-red-300' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-[#5aa4f4]/20 focus:border-[#5aa4f4] transition-all font-['Inter'] text-sm uppercase`}
+                        onChange={(e) => {
+                          setCouponCode(e.target.value);
+                          if (couponError) setCouponError('');
+                        }}
+                        placeholder="Enter code"
+                        className={`flex-1 h-12 px-4 rounded-xl border ${couponError ? 'border-red-500 bg-red-50' : 'border-gray-200'} focus:outline-none focus:ring-2 focus:ring-[#5aa4f4]/20 focus:border-[#5aa4f4] transition-all font-['Inter'] text-sm uppercase`}
                       />
                       <button 
                         onClick={handleApplyCoupon}
@@ -433,7 +442,11 @@ export default function OrderSummaryPage() {
                         Apply
                       </button>
                     </div>
-                    {couponError && <p className="text-xs text-red-500 font-medium ml-1">{couponError}</p>}
+                    {couponError && (
+                      <p className="text-sm text-red-600 font-bold ml-1 animate-pulse">
+                        ⚠ {couponError}
+                      </p>
+                    )}
                   </div>
                 )}
                 
