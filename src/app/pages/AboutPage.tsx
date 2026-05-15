@@ -1,6 +1,7 @@
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ScrollReveal from '../components/ScrollReveal';
+import { Link } from 'react-router-dom';
 
 const stats = [
   { value: '10K+', label: 'Happy Customers' },
@@ -190,22 +191,22 @@ export default function AboutPage() {
                 Join thousands of professionals who trust Tapinfi for their digital networking needs
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="/shop"
+                <Link
+                  to="/shop"
                   className="bg-gradient-to-r from-[#5aa4f4] to-[#0e2d6e] text-white px-10 py-4 rounded-full text-[16px] font-semibold
                     hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-200 btn-shimmer"
                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   Get Started
-                </a>
-                <a
-                  href="mailto:tapinfi@gmail.com"
+                </Link>
+                <Link
+                  to="/contact"
                   className="border-2 border-[#5aa4f4] text-[#5aa4f4] px-10 py-4 rounded-full text-[16px] font-semibold
                     hover:bg-[#5aa4f4] hover:text-white hover:scale-105 active:scale-95 transition-all duration-200"
                   style={{ fontFamily: "'Poppins', sans-serif" }}
                 >
                   Contact Us
-                </a>
+                </Link>
               </div>
             </div>
           </ScrollReveal>

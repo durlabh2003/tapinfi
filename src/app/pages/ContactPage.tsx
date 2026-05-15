@@ -3,7 +3,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { supabase } from '../../lib/supabase';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MessageSquare, Send, CheckCircle } from 'lucide-react';
+import { Mail, Phone, MessageSquare, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
 const QUERY_TYPES = [
@@ -29,6 +29,42 @@ export default function ContactPage() {
     order_id: '',
     message: ''
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+
+    // Name validation: 2-50 chars, letters and spaces only
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (!/^[a-zA-Z\s]{2,50}$/.test(formData.name)) {
+      newErrors.name = 'Please enter a valid name';
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    // Phone validation: 10 digits starting with 6-9
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
+    } else if (!/^[6-9]\d{9}$/.test(formData.phone)) {
+      newErrors.phone = 'Please enter a valid 10-digit phone number';
+    }
+
+    // Message validation
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters long';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   useEffect(() => {
     if (location.state?.orderId) {
@@ -42,6 +78,8 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
+    
     setLoading(true);
     try {
       const { error } = await supabase
@@ -113,7 +151,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Email Us</p>
-                  <a href="mailto:tapinfi@gmail.com" className="text-lg font-bold text-[#100425] group-hover:text-[#5aa4f4] transition-colors">tapinfi@gmail.com</a>
+                  <a href="mailto:support@tapinfi.com" className="text-lg font-bold text-[#100425] group-hover:text-[#5aa4f4] transition-colors">support@tapinfi.com</a>
                 </div>
               </div>
 
@@ -123,7 +161,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Call Us</p>
-                  <a href="tel:+919887824058" className="text-lg font-bold text-[#100425] group-hover:text-[#5aa4f4] transition-colors">+91 9887824058</a>
+                  <a href="tel:+917340181915" className="text-lg font-bold text-[#100425] group-hover:text-[#5aa4f4] transition-colors">+91 7340181915</a>
                 </div>
               </div>
             </div>
@@ -139,10 +177,18 @@ export default function ContactPage() {
                     type="text" 
                     required
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={(e) => {
+                      setFormData({...formData, name: e.target.value});
+                      if (errors.name) setErrors(prev => ({...prev, name: ''}));
+                    }}
                     placeholder="John Doe"
-                    className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-[#5aa4f4] outline-none transition-all text-sm"
+                    className={`w-full px-5 py-3.5 rounded-xl border ${errors.name ? 'border-red-500' : 'border-gray-200'} focus:border-[#5aa4f4] outline-none transition-all text-sm`}
                   />
+                  {errors.name && (
+                    <p className="text-red-500 text-[10px] font-bold flex items-center gap-1 mt-1 ml-1">
+                      <AlertCircle className="w-3 h-3" /> {errors.name}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-[#100425] uppercase tracking-widest ml-1">Email Address</label>
@@ -150,10 +196,18 @@ export default function ContactPage() {
                     type="email" 
                     required
                     value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    onChange={(e) => {
+                      setFormData({...formData, email: e.target.value});
+                      if (errors.email) setErrors(prev => ({...prev, email: ''}));
+                    }}
                     placeholder="john@example.com"
-                    className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-[#5aa4f4] outline-none transition-all text-sm"
+                    className={`w-full px-5 py-3.5 rounded-xl border ${errors.email ? 'border-red-500' : 'border-gray-200'} focus:border-[#5aa4f4] outline-none transition-all text-sm`}
                   />
+                  {errors.email && (
+                    <p className="text-red-500 text-[10px] font-bold flex items-center gap-1 mt-1 ml-1">
+                      <AlertCircle className="w-3 h-3" /> {errors.email}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -164,10 +218,21 @@ export default function ContactPage() {
                     type="tel" 
                     required
                     value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    placeholder="+91 0000000000"
-                    className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-[#5aa4f4] outline-none transition-all text-sm"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+                      if (value.length <= 10) {
+                        setFormData({...formData, phone: value});
+                        if (errors.phone) setErrors(prev => ({...prev, phone: ''}));
+                      }
+                    }}
+                    placeholder="9876543210"
+                    className={`w-full px-5 py-3.5 rounded-xl border ${errors.phone ? 'border-red-500' : 'border-gray-200'} focus:border-[#5aa4f4] outline-none transition-all text-sm`}
                   />
+                  {errors.phone && (
+                    <p className="text-red-500 text-[10px] font-bold flex items-center gap-1 mt-1 ml-1">
+                      <AlertCircle className="w-3 h-3" /> {errors.phone}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-[#100425] uppercase tracking-widest ml-1">Query Type</label>
@@ -201,10 +266,18 @@ export default function ContactPage() {
                   required
                   rows={4}
                   value={formData.message}
-                  onChange={(e) => setFormData({...formData, message: e.target.value})}
+                  onChange={(e) => {
+                    setFormData({...formData, message: e.target.value});
+                    if (errors.message) setErrors(prev => ({...prev, message: ''}));
+                  }}
                   placeholder="How can we help you?"
-                  className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-[#5aa4f4] outline-none transition-all text-sm resize-none"
+                  className={`w-full px-5 py-3.5 rounded-xl border ${errors.message ? 'border-red-500' : 'border-gray-200'} focus:border-[#5aa4f4] outline-none transition-all text-sm resize-none`}
                 ></textarea>
+                {errors.message && (
+                  <p className="text-red-500 text-[10px] font-bold flex items-center gap-1 mt-1 ml-1">
+                    <AlertCircle className="w-3 h-3" /> {errors.message}
+                  </p>
+                )}
               </div>
 
               <button 

@@ -5,6 +5,8 @@ export interface CustomizationData {
   themeId: string;
   frontOption: 'details' | 'logo';
   fullName: string;
+  companyName: string;
+  designation: string;
   phone: string;
   email: string;
   logoUrl: string | null;

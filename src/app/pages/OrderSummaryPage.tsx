@@ -38,9 +38,8 @@ export default function OrderSummaryPage() {
 
       try {
         const { data, error } = await supabase
-          .from('products')
-          .select('id, name, cover_photo')
-          .eq('product_category', 'profile_theme')
+          .from('available_themes')
+          .select('id, name, image_url')
           .in('id', themeIds);
 
         if (error) throw error;
@@ -237,11 +236,17 @@ export default function OrderSummaryPage() {
             
             // Increment coupon usage
             if (isApplied && appliedCoupon) {
+              // Fetch latest count to be more accurate
+              const { data: latestCoupon } = await supabase
+                .from('coupons')
+                .select('used_count')
+                .eq('id', appliedCoupon.id)
+                .single();
+
               await supabase
                 .from('coupons')
                 .update({ 
-                  used: (appliedCoupon.used || 0) + 1,
-                  used_count: (appliedCoupon.used_count || 0) + 1 
+                  used_count: ((latestCoupon?.used_count || appliedCoupon.used_count) || 0) + 1 
                 })
                 .eq('id', appliedCoupon.id);
             }
@@ -303,8 +308,6 @@ export default function OrderSummaryPage() {
                 <h2 className="text-xl font-bold text-[#0A0A0A] font-['Poppins'] mb-6">Items in your order</h2>
                 <div className="space-y-6">
                   {cartItems.map((item) => {
-                    // Static theme fallback removed in favor of DB fetch
-
                     
                     return (
                       <div key={item.id} className="flex flex-col sm:flex-row gap-6 p-4 rounded-2xl border border-gray-100 bg-gray-50/50">
@@ -329,7 +332,9 @@ export default function OrderSummaryPage() {
                                <div>
                                   <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1">Card Details</p>
                                   <p className="text-sm text-gray-700 font-medium">{item.customization.frontOption === 'details' ? item.customization.fullName : 'Custom Logo'}</p>
-                                  {item.customization.printQR && <p className="text-xs text-[#5aa4f4] mt-1">✓ QR Code Included</p>}
+                                  {item.customization.companyName && <p className="text-xs text-gray-500">{item.customization.companyName}</p>}
+                                  {item.customization.designation && <p className="text-xs text-gray-400 italic">{item.customization.designation}</p>}
+                                  {item.customization.printQR && <p className="text-xs text-[#5aa4f4] mt-1 font-semibold">✓ QR Code Included</p>}
                                </div>
                                 <div>
                                    <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-2">Selected Profile Theme</p>
@@ -338,7 +343,7 @@ export default function OrderSummaryPage() {
                                      <div className="flex items-center gap-3">
                                         <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 flex-shrink-0">
                                            <img 
-                                             src={themesData[item.customization.themeId].cover_photo} 
+                                             src={themesData[item.customization.themeId].image_url} 
                                              alt="Theme" 
                                              className="w-full h-full object-contain p-1" 
                                            />

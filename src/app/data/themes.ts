@@ -5,10 +5,9 @@ export interface ThemeOption {
 }
 
 export const THEMES: ThemeOption[] = [
-  { id: 'theme-1', name: 'XYZ Profile Name', color: 'bg-[#1e293b]' },
-  { id: 'theme-2', name: 'ABC Profile Name', color: 'bg-[#0f172a]' },
-  { id: 'theme-3', name: 'PQR Profile Name', color: 'bg-[#334155]' },
-  { id: 'theme-4', name: 'LMN Profile Name', color: 'bg-[#475569]' },
-  { id: 'theme-5', name: 'RST Profile Name', color: 'bg-[#64748b]' },
-  { id: 'theme-6', name: 'UVW Profile Name', color: 'bg-[#94a3b8]' },
+  { id: 'DirectorProfileTheme', name: 'Director Profile', color: 'bg-[#1e293b]' },
+  { id: 'PinkBusinessCardTheme', name: 'Pink Business Card', color: 'bg-[#0f172a]' },
+  { id: 'BusinessTheme', name: 'Business Theme', color: 'bg-[#334155]' },
+  { id: 'EngineerTheme', name: 'Engineer Theme', color: 'bg-[#475569]' },
+  { id: 'TapinfiTheme', name: 'Tapinfi Theme (Default)', color: 'bg-[#64748b]' },
 ];

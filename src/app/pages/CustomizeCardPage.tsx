@@ -22,10 +22,12 @@ export default function CustomizeCardPage() {
     themeId: themeId,
     frontOption: 'details',
     fullName: '',
+    companyName: '',
+    designation: '',
     phone: '',
     email: '',
     logoUrl: null,
-    printQR: false
+    printQR: true
   });
 
   useEffect(() => {

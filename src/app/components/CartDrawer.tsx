@@ -1,6 +1,7 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { THEMES } from '../data/themes';
 
 export default function CartDrawer() {
   const { isCartOpen, setIsCartOpen, cartItems, removeFromCart, updateQuantity, cartTotal } = useCart();
@@ -63,9 +64,16 @@ export default function CartDrawer() {
                       <div>
                         <h3 className="font-['Inter'] font-semibold text-[#0e2d6e] text-lg leading-tight">{item.name}</h3>
                         {item.customization && (
-                          <span className="inline-block px-2 py-0.5 mt-1 text-[10px] font-semibold tracking-wider text-white bg-[#5aa4f4] rounded-full uppercase">
-                            Customized
-                          </span>
+                          <div className="flex flex-col gap-1 mt-1">
+                            <span className="inline-block px-2 py-0.5 w-fit text-[10px] font-semibold tracking-wider text-white bg-[#5aa4f4] rounded-full uppercase">
+                              Customized
+                            </span>
+                            {item.customization.themeId && (
+                              <p className="text-[10px] text-gray-500 font-medium">
+                                Theme: {THEMES.find(t => t.id === item.customization?.themeId)?.name || 'Custom Theme'}
+                              </p>
+                            )}
+                          </div>
                         )}
                       </div>
                       <button 

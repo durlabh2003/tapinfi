@@ -51,7 +51,7 @@ function IconChevronRight() {
 
 function IconNoApp() {
   return (
-    <div className="size-[90px] relative flex items-center justify-center">
+    <div className="size-full relative flex items-center justify-center">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 109 109">
         <g>
           <g filter="url(#f_noapp_d)">
@@ -82,7 +82,7 @@ function IconNoApp() {
 
 function IconNFC() {
   return (
-    <div className="size-[90px] relative flex items-center justify-center">
+    <div className="size-full relative flex items-center justify-center">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 109 109">
         <g>
           <g filter="url(#f_nfc_d)">
@@ -117,7 +117,7 @@ function IconNFC() {
 
 function IconAndroid() {
   return (
-    <div className="size-[90px] relative flex items-center justify-center">
+    <div className="size-full relative flex items-center justify-center">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 109 109">
         <g>
           <g filter="url(#f_and_d)"><circle cx="50.5" cy="50.5" fill="white" r="34.5" /></g>
@@ -149,7 +149,7 @@ function IconAndroid() {
 
 function IconSecured() {
   return (
-    <div className="size-[90px] relative flex items-center justify-center">
+    <div className="size-full relative flex items-center justify-center">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 109 109">
         <g>
           <g filter="url(#f_sec_d)"><circle cx="50.5" cy="50.5" fill="white" r="34.5" /></g>
@@ -176,11 +176,11 @@ function IconSecured() {
 
 function IconSaveTrees() {
   return (
-    <div className="size-[90px] relative flex items-center justify-center">
+    <div className="size-full relative flex items-center justify-center">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 109 109">
         <g>
           <g filter="url(#f_tree_d)"><circle cx="50.5" cy="50.5" fill="white" r="34.5" /></g>
-          <g transform="translate(28, 22) scale(1.0)">
+          <g transform="translate(27, 27) scale(0.9)">
             <svg width="52" height="52" viewBox="0 0 46 47" fill="none">
               <path d={svgPaths.p3b48ec00} fill="url(#f_tree_g0)" />
               <path d={svgPaths.p1ed53530} fill="url(#f_tree_g1)" />
@@ -217,11 +217,11 @@ function IconSaveTrees() {
 
 function IconCustomThemes() {
   return (
-    <div className="size-[90px] relative flex items-center justify-center">
+    <div className="size-full relative flex items-center justify-center">
       <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 109 109">
         <g>
           <g filter="url(#f_theme_d)"><circle cx="50.5" cy="50.5" fill="white" r="34.5" /></g>
-          <g transform="translate(29, 27)">
+          <g transform="translate(28, 28) scale(0.9)">
             <svg width="50" height="50" viewBox="0 0 47 47" fill="none">
               <path d={svgPaths.p3bdef000} fill="url(#f_theme_g0)" />
               <path d={svgPaths.pa7c6800} fill="url(#f_theme_g1)" />
@@ -587,11 +587,11 @@ function OurProducts() {
 
 function FeatureItem({ icon, title, delay }: { icon: React.ReactNode; title: React.ReactNode; delay: string }) {
   return (
-    <div data-sr data-delay={delay} className="flex flex-col items-center text-center w-[180px] md:w-[220px]">
-      <div className="relative size-[90px] mb-6 flex items-center justify-center">
+    <div data-sr data-delay={delay} className="flex flex-col items-center text-center w-[180px] md:w-[220px] group cursor-pointer">
+      <div className="relative size-[95px] mb-6 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:drop-shadow-[0_0_25px_rgba(90,164,244,0.4)]">
         {icon}
       </div>
-      <p className="font-['Inter',sans-serif] font-semibold text-[18px] md:text-[20px] text-white leading-tight">
+      <p className="font-['Inter',sans-serif] font-semibold text-[18px] md:text-[20px] text-white leading-tight transition-colors duration-300 group-hover:text-[#5AA4F4]">
         {title}
       </p>
     </div>

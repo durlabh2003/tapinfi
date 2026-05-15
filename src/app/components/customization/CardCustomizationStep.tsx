@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import { AlertCircle } from 'lucide-react';
 import ScrollReveal from '../ScrollReveal';
 import { CustomizationData } from '../../context/CartContext';
 
@@ -18,9 +19,72 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
 
   const frontFields = product.customization_options?.frontFields || ['personal_details'];
   const backFields = product.customization_options?.backFields || [];
-  const hasDetails = frontFields.includes('personal_details');
-  const hasLogo = frontFields.includes('company_logo');
+  const hasDetails = frontFields.includes('personal_details') || 
+                    frontFields.includes('name') || 
+                    frontFields.includes('fullName') || 
+                    frontFields.includes('company_name') || 
+                    frontFields.includes('designation') || 
+                    frontFields.includes('phone') || 
+                    frontFields.includes('email');
+  const hasLogo = frontFields.includes('company_logo') || frontFields.includes('logo');
   const hasQR = backFields.includes('qr_code');
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (data.frontOption === 'details') {
+      const isFieldActive = (field: string) => frontFields.includes(field) || frontFields.includes('personal_details');
+
+      // Name
+      if (isFieldActive('name') || isFieldActive('fullName')) {
+        if (!data.fullName.trim()) {
+          newErrors.fullName = 'Full name is required';
+        } else if (!/^[a-zA-Z\s]{2,50}$/.test(data.fullName)) {
+          newErrors.fullName = 'Please enter a valid name';
+        }
+      }
+
+      // Company Name
+      if (isFieldActive('company_name') || isFieldActive('companyName')) {
+        if (!data.companyName.trim()) {
+          newErrors.companyName = 'Company name is required';
+        }
+      }
+
+      // Designation
+      if (isFieldActive('designation')) {
+        if (!data.designation.trim()) {
+          newErrors.designation = 'Designation is required';
+        }
+      }
+
+      // Phone
+      if (isFieldActive('phone') || isFieldActive('personal_details')) {
+        if (!data.phone.trim()) {
+          newErrors.phone = 'Phone number is required';
+        } else if (!/^[6-9]\d{9}$/.test(data.phone)) {
+          newErrors.phone = 'Please enter a valid 10-digit phone number';
+        }
+      }
+
+      // Email
+      if (isFieldActive('email') || isFieldActive('personal_details')) {
+        if (!data.email.trim()) {
+          newErrors.email = 'Email address is required';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+          newErrors.email = 'Please enter a valid email address';
+        }
+      }
+    } else {
+      if (!data.logoUrl) {
+        newErrors.logo = 'Please upload a logo';
+      }
+    }
+
+    return newErrors;
+  };
+
+  const currentErrors = validate();
 
   // If only logo is available, force it
   React.useEffect(() => {
@@ -31,12 +95,12 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
     }
   }, [hasDetails, hasLogo, data.frontOption, onChange]);
 
-  // If QR is in backFields, it's mandatory
+  // QR is mandatory in all cases
   React.useEffect(() => {
-    if (hasQR && !data.printQR) {
+    if (!data.printQR) {
       onChange({ printQR: true });
     }
-  }, [hasQR, data.printQR, onChange]);
+  }, [data.printQR, onChange]);
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -114,36 +178,98 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
         <div className="flex-1">
            {data.frontOption === 'details' ? (
               <div className="space-y-4">
-                 <div>
-                    <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-1">Full Name *</label>
-                    <input 
-                       type="text" 
-                       value={data.fullName}
-                       onChange={e => onChange({ fullName: e.target.value })}
-                       placeholder="John Doe"
-                       className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5aa4f4] focus:border-[#5aa4f4] outline-none font-['Inter'] transition-shadow"
-                    />
-                 </div>
-                 <div>
-                    <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-1">Phone Number</label>
-                    <input 
-                       type="tel" 
-                       value={data.phone}
-                       onChange={e => onChange({ phone: e.target.value })}
-                       placeholder="+1 (555) 000-0000"
-                       className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5aa4f4] focus:border-[#5aa4f4] outline-none font-['Inter'] transition-shadow"
-                    />
-                 </div>
-                 <div>
-                    <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-1">Email Address</label>
-                    <input 
-                       type="email" 
-                       value={data.email}
-                       onChange={e => onChange({ email: e.target.value })}
-                       placeholder="john@example.com"
-                       className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#5aa4f4] focus:border-[#5aa4f4] outline-none font-['Inter'] transition-shadow"
-                    />
-                 </div>
+                  {(frontFields.includes('name') || frontFields.includes('fullName') || frontFields.includes('personal_details')) && (
+                    <div>
+                       <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-1">Full Name *</label>
+                       <input 
+                          type="text" 
+                          value={data.fullName}
+                          onChange={e => onChange({ fullName: e.target.value })}
+                          placeholder="John Doe"
+                          className={`w-full px-4 py-3 rounded-xl border ${currentErrors.fullName && data.fullName ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-[#5aa4f4] focus:border-[#5aa4f4] outline-none font-['Inter'] transition-shadow`}
+                       />
+                       {currentErrors.fullName && data.fullName && (
+                         <p className="text-red-500 text-[10px] font-bold flex items-center gap-1 mt-1 ml-1">
+                           <AlertCircle className="w-3 h-3" /> {currentErrors.fullName}
+                         </p>
+                       )}
+                    </div>
+                  )}
+
+                  {(frontFields.includes('company_name') || frontFields.includes('companyName')) && (
+                    <div>
+                       <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-1">Company Name *</label>
+                       <input 
+                          type="text" 
+                          value={data.companyName}
+                          onChange={e => onChange({ companyName: e.target.value })}
+                          placeholder="Tapinfi Inc."
+                          className={`w-full px-4 py-3 rounded-xl border ${currentErrors.companyName && data.companyName ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-[#5aa4f4] focus:border-[#5aa4f4] outline-none font-['Inter'] transition-shadow`}
+                       />
+                       {currentErrors.companyName && data.companyName && (
+                         <p className="text-red-500 text-[10px] font-bold flex items-center gap-1 mt-1 ml-1">
+                           <AlertCircle className="w-3 h-3" /> {currentErrors.companyName}
+                         </p>
+                       )}
+                    </div>
+                  )}
+
+                  {(frontFields.includes('designation')) && (
+                    <div>
+                       <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-1">Designation *</label>
+                       <input 
+                          type="text" 
+                          value={data.designation}
+                          onChange={e => onChange({ designation: e.target.value })}
+                          placeholder="CEO & Founder"
+                          className={`w-full px-4 py-3 rounded-xl border ${currentErrors.designation && data.designation ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-[#5aa4f4] focus:border-[#5aa4f4] outline-none font-['Inter'] transition-shadow`}
+                       />
+                       {currentErrors.designation && data.designation && (
+                         <p className="text-red-500 text-[10px] font-bold flex items-center gap-1 mt-1 ml-1">
+                           <AlertCircle className="w-3 h-3" /> {currentErrors.designation}
+                         </p>
+                       )}
+                    </div>
+                  )}
+
+                  {(frontFields.includes('phone') || frontFields.includes('personal_details')) && (
+                    <div>
+                       <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-1">Phone Number *</label>
+                       <input 
+                          type="tel" 
+                          value={data.phone}
+                          onChange={e => {
+                            const value = e.target.value.replace(/\D/g, '');
+                            if (value.length <= 10) onChange({ phone: value });
+                          }}
+                          placeholder="9876543210"
+                          className={`w-full px-4 py-3 rounded-xl border ${currentErrors.phone && data.phone ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-[#5aa4f4] focus:border-[#5aa4f4] outline-none font-['Inter'] transition-shadow`}
+                       />
+                       {currentErrors.phone && data.phone && (
+                         <p className="text-red-500 text-[10px] font-bold flex items-center gap-1 mt-1 ml-1">
+                           <AlertCircle className="w-3 h-3" /> {currentErrors.phone}
+                         </p>
+                       )}
+                    </div>
+                  )}
+
+                  {(frontFields.includes('email') || frontFields.includes('personal_details')) && (
+                    <div>
+                       <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-1">Email Address *</label>
+                       <input 
+                          type="email" 
+                          value={data.email}
+                          onChange={e => onChange({ email: e.target.value })}
+                          placeholder="john@example.com"
+                          className={`w-full px-4 py-3 rounded-xl border ${currentErrors.email && data.email ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-[#5aa4f4] focus:border-[#5aa4f4] outline-none font-['Inter'] transition-shadow`}
+                       />
+                       {currentErrors.email && data.email && (
+                         <p className="text-red-500 text-[10px] font-bold flex items-center gap-1 mt-1 ml-1">
+                           <AlertCircle className="w-3 h-3" /> {currentErrors.email}
+                         </p>
+                       )}
+                    </div>
+                  )}
               </div>
            ) : (
               <div className="space-y-4">
@@ -174,44 +300,19 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
            )}
         </div>
 
-        {/* Backside Customization - Only show if not mandatory QR */}
-        {backFields.length > 0 && !hasQR && (
-          <div className="mt-8 mb-10 pt-8 border-t border-gray-200">
-            <h3 className="text-lg font-bold text-[#100425] font-['Poppins'] mb-4">Backside Settings</h3>
-            <label className="flex items-start gap-3 cursor-pointer group">
-                <div className="relative flex items-center justify-center mt-0.5">
-                  <input 
-                      type="checkbox" 
-                      checked={data.printQR}
-                      onChange={e => onChange({ printQR: e.target.checked })}
-                      className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-md checked:bg-[#5aa4f4] checked:border-[#5aa4f4] transition-colors cursor-pointer"
-                  />
-                  <svg className="absolute w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-[#0e2d6e] font-semibold font-['Inter'] group-hover:text-[#5aa4f4] transition-colors">Print Profile QR ?</p>
-                  <p className="text-sm text-gray-500 font-['Inter']">Enable this to print a QR code linking to your digital profile on the back of the card.</p>
-                </div>
-            </label>
-          </div>
-        )}
-
-        {hasQR && (
-           <div className="mt-8 mb-10 pt-8 border-t border-gray-200">
-              <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100 flex items-center gap-4">
-                 <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#5aa4f4] shadow-sm">
-                    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2z" /></svg>
-                 </div>
-                 <p className="text-sm font-medium text-[#0e2d6e] font-['Inter']">Profile QR code will be printed on the back of this card.</p>
+        {/* Backside Customization - QR is mandatory now, so we just show the message */}
+        <div className="mt-8 mb-10 pt-8 border-t border-gray-200">
+           <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100 flex items-center gap-4">
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#5aa4f4] shadow-sm">
+                 <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-3 0h2v2h-2v-2z" /></svg>
               </div>
+              <p className="text-sm font-medium text-[#0e2d6e] font-['Inter']">Profile QR code will be printed on the back of this card.</p>
            </div>
-        )}
+        </div>
 
         <button 
           onClick={onFinish}
-          disabled={data.frontOption === 'details' && !data.fullName}
+          disabled={Object.keys(currentErrors).length > 0}
           className="mt-auto mt-6 h-[54px] w-full rounded-full flex items-center justify-center shadow-lg shadow-[#0e2d6e]/20 transition-transform hover:-translate-y-1 disabled:opacity-50 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
           style={{ backgroundImage: "linear-gradient(60.0131deg, rgb(90, 164, 244) 12.824%, rgb(14, 45, 110) 91.128%)" }}
         >

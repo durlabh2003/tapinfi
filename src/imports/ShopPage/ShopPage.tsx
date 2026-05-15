@@ -62,7 +62,7 @@ function Footer() {
       </div>
       <div className="absolute font-['Inter:Medium',sans-serif] font-medium leading-[0] not-italic right-[85px] text-[16px] text-right text-white top-[1963px] whitespace-nowrap">
         <p className="leading-[normal] mb-[15px]">Contact Information</p>
-        <p className="leading-[normal]">tapinfi@gmail.com</p>
+        <p className="leading-[normal]">support@tapinfi.com</p>
       </div>
       <div className="absolute font-['Inter:Medium',sans-serif] font-medium leading-[0] left-[85px] not-italic text-[16px] text-justify text-white top-[1963px] whitespace-nowrap">
         <p className="leading-[normal] mb-[15px]">Quick Links</p>

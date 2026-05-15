@@ -93,21 +93,7 @@ export default function HeroAnimation() {
           className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-[100px] sm:pt-[120px]"
           style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}
         >
-          {/* Top Branding / Intro Space */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            style={{ opacity: useTransform(smoothY, [0, 0.05], [1, 0]) }}
-            className="absolute top-12 z-50 text-center"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md shadow-[0_0_20px_rgba(90,164,244,0.15)]">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-              </span>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/70">The New Standard</span>
-            </div>
-          </motion.div>
+
 
           {/* Initial Card Center Glow */}
           <motion.div

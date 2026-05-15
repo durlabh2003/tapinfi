@@ -15,8 +15,8 @@ export default function Footer() {
               Redefining networking with eco-friendly smart business cards. Make every connection sustainable and powerful.
             </p>
             <div className="space-y-3">
-              <p className="text-white/80 text-sm font-bold font-['Poppins'] uppercase tracking-widest">Support Hotline</p>
-              <p className="text-white text-lg font-bold font-['Inter']">+91 98878 24058</p>
+              <p className="text-white/80 text-sm font-bold font-['Poppins'] uppercase tracking-widest">Support Helpline</p>
+              <p className="text-white text-lg font-bold font-['Inter']">+91 73401 81915</p>
             </div>
           </div>
 
@@ -44,7 +44,7 @@ export default function Footer() {
           <div className="space-y-6 sm:text-left lg:text-right">
             <div className="space-y-4">
               <h4 className="text-white font-bold text-sm font-['Poppins'] uppercase tracking-widest">Official Inquiry</h4>
-              <a href="mailto:tapinfi@gmail.com" className="text-[#5aa4f4] text-lg font-bold hover:underline font-['Inter']">tapinfi@gmail.com</a>
+              <a href="mailto:support@tapinfi.com" className="text-[#5aa4f4] text-lg font-bold hover:underline font-['Inter']">support@tapinfi.com</a>
             </div>
             <div className="space-y-2">
               <p className="text-white/40 text-xs font-['Inter']">Powered By</p>
