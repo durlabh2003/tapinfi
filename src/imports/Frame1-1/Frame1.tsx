@@ -524,7 +524,7 @@ function ProductCard({ title, price, image, delay, comingSoon, linkTo }: { title
         <div className="absolute inset-0 bg-blue-500/15 blur-[80px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
         <img 
           alt={title} 
-          className="w-[90%] h-[90%] object-contain pointer-events-none drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)] transition-all duration-500 scale-110 group-hover:scale-125 group-hover:-rotate-3" 
+          className="w-[98%] h-[98%] object-contain pointer-events-none drop-shadow-[0_40px_80px_rgba(0,0,0,0.6)] transition-all duration-500 scale-120 group-hover:scale-135 group-hover:-rotate-3" 
           src={image} 
         />
       </div>
