@@ -310,7 +310,7 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
                     <div className="pt-2">
                        <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-2">Profile Avatar Image *</label>
                        <div 
-                          className="relative w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer overflow-hidden group"
+                          className="relative w-full aspect-[2/1] rounded-2xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer overflow-hidden group"
                           onClick={() => {
                             const input = document.createElement('input');
                             input.type = 'file';
@@ -322,16 +322,21 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
                           {data.avatarUrl ? (
                              <img src={data.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                           ) : (
-                             <div className="flex flex-col items-center">
-                                <svg className="w-6 h-6 text-gray-400 group-hover:text-[#5aa4f4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                </svg>
-                                <span className="text-[8px] font-bold text-gray-400 uppercase mt-1">Upload</span>
+                             <div className="flex flex-col items-center gap-2">
+                                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-[#5aa4f4]">
+                                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                   </svg>
+                                </div>
+                                <div className="flex flex-col items-center">
+                                   <span className="text-xs font-bold text-[#0e2d6e]">Click to Upload Photo</span>
+                                   <span className="text-[10px] text-gray-400 uppercase tracking-widest mt-1">Rectangular Preview</span>
+                                </div>
                              </div>
                           )}
                           {uploading && (
-                             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                             <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+                                <div className="w-6 h-6 border-3 border-[#5aa4f4] border-t-transparent rounded-full animate-spin"></div>
                              </div>
                           )}
                        </div>
