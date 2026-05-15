@@ -152,7 +152,7 @@ export default function ProductDetailPage() {
               <div className="space-y-6">
                 <div className="aspect-[4/3] bg-gray-50 rounded-[40px] overflow-hidden border border-gray-100 relative group shadow-inner flex items-center justify-center p-8 lg:p-12 transition-all duration-500">
                   <img 
-                    src={activeView === 'front' ? (product.front_mock_photo || product.img) : (product.back_photo || product.img)} 
+                    src={activeView === 'front' ? (product.img || product.front_mock_photo) : (product.back_photo || product.img)} 
                     alt={product.name} 
                     className={`max-w-full max-h-full object-contain transition-transform duration-700`} 
                   />
@@ -176,7 +176,7 @@ export default function ProductDetailPage() {
                 
                 <div className="flex gap-4 justify-center">
                   <div className={`w-20 h-20 rounded-2xl border-2 cursor-pointer transition-all ${activeView === 'front' ? 'border-[#5aa4f4]' : 'border-gray-100 hover:border-gray-200'} bg-gray-50 p-2 flex items-center justify-center`} onClick={() => setActiveView('front')}>
-                    <img src={product.front_mock_photo || product.img} alt="Front" className="w-full h-full object-contain" />
+                    <img src={product.img || product.front_mock_photo} alt="Front" className="w-full h-full object-contain" />
                   </div>
                   <div className={`w-20 h-20 rounded-2xl border-2 cursor-pointer transition-all ${activeView === 'back' ? 'border-[#5aa4f4]' : 'border-gray-100 hover:border-gray-200'} bg-gray-50 p-2 flex items-center justify-center`} onClick={() => setActiveView('back')}>
                     <img src={product.back_photo || product.img} alt="Back" className="w-full h-full object-contain" />
