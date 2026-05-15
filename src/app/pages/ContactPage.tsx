@@ -64,7 +64,7 @@ export default function ContactPage() {
     return (
       <div className="bg-white min-h-screen">
         <Header />
-        <div className="pt-[140px] flex flex-col items-center justify-center px-4 text-center">
+        <div className="pt-[140px] pb-32 flex flex-col items-center justify-center px-4 text-center">
           <motion.div 
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
