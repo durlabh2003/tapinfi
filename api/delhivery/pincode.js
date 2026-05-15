@@ -25,11 +25,8 @@ export default async function handler(req, res) {
     return res.status(200).json(pincodeCache[pincode].data);
   }
 
-  const API_TOKEN = process.env.DELHIVERY_API_TOKEN;
-
-  if (!API_TOKEN) {
-    return res.status(500).json({ error: 'Server configuration missing: DELHIVERY_API_TOKEN' });
-  }
+  // Fallback to hardcoded value if Vercel env var is not yet set
+  const API_TOKEN = process.env.DELHIVERY_API_TOKEN || '3ccd700e0970590c64175f0a7a4acd4e0921f0ac';
 
   try {
     const response = await fetch(

@@ -27,12 +27,9 @@ export default async function handler(req, res) {
     return res.status(200).json(costCache[cacheKey].data);
   }
 
-  const token = process.env.DELHIVERY_API_TOKEN;
-  const originPincode = process.env.DELHIVERY_ORIGIN_PINCODE;
-
-  if (!token || !originPincode) {
-    return res.status(500).json({ error: 'Server configuration missing' });
-  }
+  // Fallback to hardcoded values if Vercel env vars are not yet set
+  const token = process.env.DELHIVERY_API_TOKEN || '3ccd700e0970590c64175f0a7a4acd4e0921f0ac';
+  const originPincode = process.env.DELHIVERY_ORIGIN_PINCODE || '302004';
 
   // 150g per card
   const totalWeightInGrams = productCount * 150;
