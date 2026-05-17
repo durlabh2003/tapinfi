@@ -15,7 +15,10 @@ export default function HeroAnimation() {
   const smoothY = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
   // Responsive detection for mobile optimizations
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 1200,
+    height: typeof window !== 'undefined' ? window.innerHeight : 800
+  });
 
   useEffect(() => {
     const handleResize = () => {
@@ -91,14 +94,14 @@ export default function HeroAnimation() {
       <div className="relative h-[1800px] sm:h-[2000px] z-10">
         <motion.div
           className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-[100px] sm:pt-[120px]"
-          style={{ willChange: 'transform', backfaceVisibility: 'hidden' }}
+          style={{ willChange: 'transform, opacity', backfaceVisibility: 'hidden' }}
         >
 
 
           {/* Initial Card Center Glow */}
           <motion.div
             style={{ opacity: initialGlowOpacity }}
-            className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] lg:w-[450px] lg:h-[450px] bg-cyan-500/20 blur-[90px] sm:blur-[110px] rounded-full pointer-events-none"
+            className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] lg:w-[450px] lg:h-[450px] rounded-full pointer-events-none bg-[radial-gradient(circle,rgba(6,182,212,0.25)_0%,transparent_70%)] md:bg-none md:bg-cyan-500/20 md:blur-[90px] lg:blur-[110px]"
           />
 
           {/* iPhone 15 Pro Mockup */}
@@ -108,7 +111,8 @@ export default function HeroAnimation() {
               scale: phoneScale,
               y: phoneY,
               x: phoneX,
-              perspective: "1200px"
+              perspective: "1200px",
+              willChange: "transform, opacity"
             }}
             className="relative z-10 w-[260px] h-[530px] sm:w-[280px] sm:h-[570px] lg:w-[300px] lg:h-[610px] bg-slate-900 rounded-[2.8rem] sm:rounded-[3.2rem] lg:rounded-[3.5rem] border-[8px] sm:border-[9px] lg:border-[10px] border-slate-800 shadow-[0_30px_80px_rgba(0,0,0,0.6)] lg:shadow-[0_40px_100px_rgba(0,0,0,0.7)] flex flex-col overflow-hidden"
           >
@@ -131,8 +135,8 @@ export default function HeroAnimation() {
 
               {/* iOS Notification */}
               <motion.div
-                style={{ y: notifY, opacity: notifOpacity }}
-                className="absolute top-4 inset-x-3 bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[1.5rem] p-4 z-[110] flex items-center gap-4 shadow-2xl"
+                style={{ y: notifY, opacity: notifOpacity, willChange: "transform, opacity" }}
+                className="absolute top-4 inset-x-3 bg-slate-900/95 border border-white/10 rounded-[1.5rem] p-4 z-[110] flex items-center gap-4 shadow-2xl md:bg-white/10 md:backdrop-blur-2xl md:border-white/20"
               >
                 <div className="w-11 h-11 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-[0_4px_12px_rgba(6,182,212,0.3)]">
                   <Rss className="text-white w-6 h-6" />
@@ -189,9 +193,10 @@ export default function HeroAnimation() {
               scale: rippleScale,
               opacity: rippleOpacity,
               x: isMobile ? 55 : isTablet ? 100 : 185,
-              y: isMobile ? -170 : isTablet ? -220 : -310
+              y: isMobile ? -170 : isTablet ? -220 : -310,
+              willChange: "transform, opacity"
             }}
-            className="absolute z-20 w-44 h-44 md:w-56 md:h-56 border border-cyan-400/50 rounded-full pointer-events-none shadow-[0_0_40px_rgba(34,211,238,0.3)]"
+            className="absolute z-20 w-44 h-44 md:w-56 md:h-56 border border-cyan-400/50 rounded-full pointer-events-none shadow-[0_0_20px_rgba(34,211,238,0.25)] md:shadow-[0_0_40px_rgba(34,211,238,0.3)]"
           />
 
           {/* Premium NFC Card */}
@@ -200,10 +205,11 @@ export default function HeroAnimation() {
               x: cardX,
               y: cardY,
               rotateZ: cardRotateZ,
-              rotateY: cardRotateY,
+              rotateY: isMobile ? 0 : cardRotateY,
               scale: cardScale,
               opacity: cardOpacity,
-              transformStyle: "preserve-3d"
+              transformStyle: isMobile ? "flat" : "preserve-3d",
+              willChange: "transform, opacity"
             }}
             className="absolute z-50 w-[280px] h-[175px] sm:w-[310px] sm:h-[192px] lg:w-[340px] lg:h-[210px] bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-black border border-white/10 rounded-2xl shadow-[0_25px_60px_-12px_rgba(0,0,0,0.8)] flex flex-col p-6 sm:p-7 lg:p-8 overflow-hidden group"
           >
@@ -212,7 +218,7 @@ export default function HeroAnimation() {
 
             <div className="flex justify-between items-start relative z-10">
               <div className="space-y-4">
-                <div className="w-12 h-12 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 flex items-center justify-center">
+                <div className="w-12 h-12 bg-white/10 border border-white/10 rounded-xl flex items-center justify-center md:bg-white/5 md:backdrop-blur-md">
                   <div className="w-7 h-7 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-md flex items-center justify-center">
                     <Cpu className="text-white w-4 h-4" />
                   </div>
