@@ -19,6 +19,41 @@ export default function Header() {
   const [session, setSession] = useState<any>(null);
   const { cartCount, setIsCartOpen } = useCart();
 
+  const [visible, setVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Determine if we have scrolled down past the threshold
+      setIsScrolled(currentScrollY > 50);
+
+      // Keep navbar visible if mobile dropdown menu is open
+      if (menuOpen) {
+        setLastScrollY(currentScrollY);
+        return;
+      }
+
+      if (currentScrollY <= 50) {
+        // Always show at the very top of the page
+        setVisible(true);
+      } else if (currentScrollY > lastScrollY) {
+        // Scrolling down -> hide navbar
+        setVisible(false);
+      } else {
+        // Scrolling up -> show navbar
+        setVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY, menuOpen]);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -39,11 +74,17 @@ export default function Header() {
     }`;
 
   return (
-    <div className="absolute left-0 right-0 top-0 z-50">
+    <div
+      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
+        visible ? 'translate-y-0' : '-translate-y-full'
+      }`}
+    >
       {/* Main bar */}
       <div
-        className={`h-[90px] flex items-center ${
-          isHome
+        className={`h-[90px] flex items-center transition-all duration-300 ${
+          isScrolled
+            ? 'bg-[#000000]/90 backdrop-blur-md border-b border-white/10 mx-4 sm:mx-8 rounded-bl-[25px] rounded-br-[25px] shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
+            : isHome
             ? 'bg-transparent'
             : 'bg-[#000000] mx-4 sm:mx-8 rounded-bl-[25px] rounded-br-[25px] border-b border-white/5'
         }`}
