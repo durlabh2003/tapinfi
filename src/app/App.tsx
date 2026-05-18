@@ -20,6 +20,7 @@ import MarketingPage from './pages/MarketingPage';
 import ContactPage from './pages/ContactPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import RefundPolicyPage from './pages/RefundPolicyPage';
 
 export default function App() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/refund-policy" element={<RefundPolicyPage />} />
             <Route path="/checkout/delivery" element={<DeliveryDetailsPage />} />
             <Route path="/checkout/summary" element={<OrderSummaryPage />} />
             <Route path="/checkout/success" element={<OrderSuccessPage />} />
