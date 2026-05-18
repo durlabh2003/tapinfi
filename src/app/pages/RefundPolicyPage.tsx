@@ -376,7 +376,9 @@ export default function RefundPolicyPage() {
                     <p className="text-slate-500 text-xs mt-1">Official Legal Channel</p>
                   </div>
                   <a
-                    href="mailto:support@tapinfi.com"
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=support@tapinfi.com&su=Inquiry%20regarding%20Tapinfi%20Refund%20Policy"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="bg-gradient-to-r from-[#5aa4f4] to-[#0e2d6e] text-white px-6 py-2.5 rounded-full text-xs font-semibold hover:opacity-95 hover:scale-105 active:scale-95 transition-all duration-200"
                   >
                     Email Support
