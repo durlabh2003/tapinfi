@@ -18,6 +18,7 @@ import LoginPage from './pages/LoginPage';
 import OrdersPage from './pages/OrdersPage';
 import MarketingPage from './pages/MarketingPage';
 import ContactPage from './pages/ContactPage';
+import TermsPage from './pages/TermsPage';
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/marketing" element={<MarketingPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/terms" element={<TermsPage />} />
             <Route path="/checkout/delivery" element={<DeliveryDetailsPage />} />
             <Route path="/checkout/summary" element={<OrderSummaryPage />} />
             <Route path="/checkout/success" element={<OrderSuccessPage />} />
