@@ -136,13 +136,13 @@ export default function Header() {
                 ORDERS
               </Link>
             ) : (
-              <button
-                onClick={() => setIsLoginOpen(true)}
+              <a
+                href="https://tapinfi.vercel.app/"
                 className="border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 whitespace-nowrap"
                 style={NAV_FONT}
               >
                 LOGIN
-              </button>
+              </a>
             )}
           </nav>
 
@@ -203,16 +203,14 @@ export default function Header() {
               ORDERS
             </Link>
           ) : (
-            <button
-              onClick={() => {
-                setIsLoginOpen(true);
-                setMenuOpen(false);
-              }}
+            <a
+              href="https://tapinfi.vercel.app/"
               className="text-center border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 mt-2"
               style={NAV_FONT}
+              onClick={() => setMenuOpen(false)}
             >
               LOGIN
-            </button>
+            </a>
           )}
         </div>
       )}

@@ -618,62 +618,73 @@ function OneCard() {
 
 // ── Profile Customization ─────────────────────────────────────────────────────
 
+// ── Profile Customization ─────────────────────────────────────────────────────
+
 function ProfileCustomizationSection() {
   return (
-    <section className="relative w-full max-w-[1440px] z-10 py-20 px-6" data-name="Profile Customization">
-      <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-0 justify-between">
-        {/* Left Text */}
-        <div className="flex flex-col gap-4 max-w-[380px] order-2 lg:order-1 text-center lg:text-left">
-          <div className="bg-[#5aa4f4] h-[6px] w-[119px] mx-auto lg:mx-0" />
-          <div className="font-['Inter',sans-serif] font-semibold text-[26px] lg:text-[32px] text-white leading-tight">
-            <p>To Say Who You Are</p>
-            <p>And What You Do</p>
+    <section className="relative w-full max-w-[1440px] z-10 py-20 px-6 mx-auto" data-name="Profile Customization">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-12 gap-x-8 md:gap-x-12 lg:gap-x-6 xl:gap-x-12 max-w-[1280px] mx-auto items-center justify-items-center">
+        {/* Left Column (Main Headings) */}
+        <div className="w-full max-w-[420px] md:col-start-1 md:row-start-1 lg:col-start-1 lg:row-start-1 flex flex-col gap-5 text-center md:text-left items-center md:items-start">
+          <div className="bg-gradient-to-r from-[#5aa4f4] to-[#0e2d6e] h-[6px] w-[120px] rounded-full" />
+          <div className="font-['Inter',sans-serif] font-bold text-[28px] sm:text-[32px] lg:text-[36px] xl:text-[44px] text-white leading-[1.15] tracking-tight">
+            <span className="block font-medium opacity-90">To Say Who You Are</span>
+            <span className="block font-medium opacity-90">And What You Do</span>
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-gray-300 mt-2">Customize Your Profile</span>
           </div>
-          <div className="font-['Inter',sans-serif] font-bold text-[26px] lg:text-[32px] text-white leading-tight">
-            <p>Customize Your</p>
-            <p>Profile</p>
-          </div>
-          <p className="font-['Inter',sans-serif] font-normal text-[16px] text-white/80 leading-normal">
-            To Share All Your Important Information, Social Links, Payment Links and Much More
+          <p className="font-['Inter',sans-serif] font-normal text-[15px] sm:text-[16px] text-white/70 leading-relaxed max-w-[360px]">
+            To Share All Your Important Information, Social Links, Payment Links and Much More.
           </p>
         </div>
 
-        {/* Center Image */}
-        <div className="order-1 lg:order-2 relative size-[280px] sm:size-[380px] lg:size-[480px] flex-shrink-0">
-          <div className="rotate-180 size-full">
-            <img alt="Tapinfi Card" className="w-full h-full object-contain pointer-events-none" src={imgRb21517992821} />
+        {/* Center Visual (3D Rotation Image) */}
+        <div className="relative w-full sm:w-[380px] md:w-[420px] lg:w-[360px] xl:w-[460px] aspect-square flex-shrink-0 flex items-center justify-center md:col-span-2 md:row-start-2 lg:col-span-1 lg:col-start-2 lg:row-start-1">
+          <div className="rotate-180 w-full h-full max-w-[320px] sm:max-w-full hover:scale-105 transition-transform duration-700 ease-out">
+            <img alt="Tapinfi Card" className="w-full h-full object-contain pointer-events-none drop-shadow-[0_20px_50px_rgba(90,164,244,0.15)]" src={imgRb21517992821} />
           </div>
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-[-10px] w-[60%] h-[5px] blur-2xl bg-white/20" />
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-[-10px] w-[60%] h-[10px] blur-3xl bg-[#5aa4f4]/25 rounded-full" />
         </div>
 
-        {/* Right Text */}
-        <div className="order-3 flex flex-col gap-5 max-w-[300px] text-center lg:text-left">
-          <div className="font-['Inter',sans-serif] font-semibold text-[17px] text-white leading-normal">
-            <p>Leave A Lasting First Impression,</p>
-            <p>Stand Out From The Crowd And</p>
-            <p>Become Unforgettable.</p>
+        {/* Right Column (Feature points & Call to Action) */}
+        <div className="w-full max-w-[380px] lg:max-w-[320px] xl:max-w-[360px] md:col-start-2 md:row-start-1 lg:col-start-3 lg:row-start-1 flex flex-col gap-6 text-center md:text-left items-center md:items-start">
+          <div className="font-['Inter',sans-serif] font-medium text-[16px] sm:text-[18px] text-white/90 leading-relaxed max-w-[320px] md:max-w-none">
+            Leave A Lasting First Impression, Stand Out From The Crowd And Become Unforgettable.
           </div>
-          <div className="flex flex-col items-start gap-4 text-left">
-            <div className="flex items-start gap-3">
-              <IconCheckDouble />
-              <p className="font-['Inter',sans-serif] text-[13px] text-white/70 leading-relaxed">Empowering Entrepreneurs and businesses with all in one networking tool.</p>
+          
+          <div className="flex flex-col gap-4 text-left w-full max-w-[320px] md:max-w-none">
+            <div className="flex items-start gap-3.5 group">
+              <div className="mt-0.5 text-[#5aa4f4] group-hover:scale-110 transition-transform duration-300">
+                <IconCheckDouble />
+              </div>
+              <p className="font-['Inter',sans-serif] text-[13px] sm:text-[14px] text-white/70 leading-relaxed">
+                Empowering Entrepreneurs and businesses with an all-in-one networking tool.
+              </p>
             </div>
-            <div className="flex items-start gap-3">
-              <IconCheckDouble />
-              <p className="font-['Inter',sans-serif] text-[13px] text-white/70 leading-relaxed">Ready for scale. Whether you are a start up or a fortune 500 company.</p>
+            <div className="flex items-start gap-3.5 group">
+              <div className="mt-0.5 text-[#5aa4f4] group-hover:scale-110 transition-transform duration-300">
+                <IconCheckDouble />
+              </div>
+              <p className="font-['Inter',sans-serif] text-[13px] sm:text-[14px] text-white/70 leading-relaxed">
+                Ready for scale. Whether you are a start-up or a Fortune 500 company.
+              </p>
             </div>
-            <div className="flex items-start gap-3">
-              <IconCheckDouble />
-              <p className="font-['Inter',sans-serif] text-[13px] text-white/70 leading-relaxed">Stay Ahead, Stay Successful, Stay Connected</p>
+            <div className="flex items-start gap-3.5 group">
+              <div className="mt-0.5 text-[#5aa4f4] group-hover:scale-110 transition-transform duration-300">
+                <IconCheckDouble />
+              </div>
+              <p className="font-['Inter',sans-serif] text-[13px] sm:text-[14px] text-white/70 leading-relaxed">
+                Stay Ahead, Stay Successful, Stay Connected.
+              </p>
             </div>
           </div>
-          <div className="mt-6">
+
+          <div className="mt-4 sm:mt-6 w-full flex justify-center md:justify-start">
             <Link
               to="/shop"
-              className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] rounded-full px-8 py-3.5 font-['Inter',sans-serif] font-bold text-[16px] text-white shadow-lg hover:scale-105 hover:shadow-[#5AA4F4]/40 transition-all active:scale-95 group"
+              className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#5AA4F4] via-[#488dec] to-[#0E2D6E] rounded-full px-8 py-4 font-['Inter',sans-serif] font-extrabold text-[15px] sm:text-[16px] text-white shadow-xl hover:scale-105 hover:shadow-[#5AA4F4]/30 transition-all duration-300 active:scale-95 group uppercase tracking-wider"
             >
               GET STARTED
-              <div className="transition-transform group-hover:translate-x-1">
+              <div className="transition-transform duration-300 group-hover:translate-x-1">
                 <IconChevronRight />
               </div>
             </Link>
@@ -681,14 +692,22 @@ function ProfileCustomizationSection() {
         </div>
       </div>
     </section>
-  );
-}
+  );}
 
 // ── Calculator Section ────────────────────────────────────────────────────────
 
 function CalculatorSection() {
+  const [employees, setEmployees] = useState(10);
+  const [printingCost, setPrintingCost] = useState(1000);
+
+  const moneySaved = employees * (printingCost - 500);
+  const treesSaved = Math.round(employees * 0.05);
+
+  const empPercent = ((employees - 1) / 99) * 100;
+  const costPercent = ((printingCost - 500) / 4500) * 100;
+
   return (
-    <section className="relative w-full max-w-[1440px] z-10 py-20 px-6" data-name="Calculator Section">
+    <section className="relative w-full max-w-[1440px] z-10 py-20 px-6 mx-auto" data-name="Calculator Section">
       <p data-sr data-delay="0" className="font-['Inter',sans-serif] font-bold text-[32px] lg:text-[40px] text-white text-center mb-16">
         Networking Made Eco-friendly
       </p>
@@ -702,43 +721,67 @@ function CalculatorSection() {
           {/* Slider 1 */}
           <div className="flex flex-col gap-3">
             <div className="flex justify-between items-center text-white">
-              <span className="text-[15px]">No. of Employees in Company</span>
-              <div className="bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] px-4 py-1 rounded-[10px] font-bold text-sm">10</div>
+              <span className="text-[15px] font-medium opacity-90">No. of Employees in Company</span>
+              <div className="bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] px-4 py-1 rounded-[10px] font-bold text-sm shadow-md transition-all">
+                {employees}
+              </div>
             </div>
-            <div className="relative h-[6px] bg-[#5aa4f4]/30 rounded-full">
-              <div className="absolute top-0 left-0 h-full bg-[#5aa4f4] w-[30%] rounded-full" />
-              <div className="absolute top-1/2 -translate-y-1/2 left-[30%] size-[15px] bg-[#5aa4f4] rounded-full border-2 border-white" />
+            <div className="relative flex items-center h-[20px]">
+              <input
+                type="range"
+                min="1"
+                max="100"
+                value={employees}
+                onChange={(e) => setEmployees(Number(e.target.value))}
+                className="w-full h-[6px] bg-[#5aa4f4]/30 rounded-full appearance-none cursor-pointer accent-[#5aa4f4] outline-none transition-all duration-150"
+                style={{
+                  background: `linear-gradient(to right, #5aa4f4 0%, #5aa4f4 ${empPercent}%, rgba(90, 164, 244, 0.3) ${empPercent}%, rgba(90, 164, 244, 0.3) 100%)`
+                }}
+              />
             </div>
           </div>
           {/* Slider 2 */}
           <div className="flex flex-col gap-3">
             <div className="flex justify-between items-center text-white">
-              <span className="text-[15px]">Printing Cost (per 500 cards)</span>
-              <div className="bg-white text-black px-4 py-1 rounded-[10px] font-bold flex items-baseline gap-1 text-sm">
-                <span>1000</span><span className="text-[10px]">INR</span>
+              <span className="text-[15px] font-medium opacity-90">Printing Cost (per 500 cards)</span>
+              <div className="bg-white text-black px-4 py-1 rounded-[10px] font-bold flex items-baseline gap-1 text-sm shadow-md transition-all">
+                <span>{printingCost}</span><span className="text-[10px] text-gray-500 font-semibold">INR</span>
               </div>
             </div>
-            <div className="relative h-[6px] bg-[#5aa4f4]/30 rounded-full">
-              <div className="absolute top-0 left-0 h-full bg-[#5aa4f4] w-[50%] rounded-full" />
-              <div className="absolute top-1/2 -translate-y-1/2 left-[50%] size-[15px] bg-[#5aa4f4] rounded-full border-2 border-white" />
+            <div className="relative flex items-center h-[20px]">
+              <input
+                type="range"
+                min="500"
+                max="5000"
+                step="100"
+                value={printingCost}
+                onChange={(e) => setPrintingCost(Number(e.target.value))}
+                className="w-full h-[6px] bg-[#5aa4f4]/30 rounded-full appearance-none cursor-pointer accent-[#5aa4f4] outline-none transition-all duration-150"
+                style={{
+                  background: `linear-gradient(to right, #5aa4f4 0%, #5aa4f4 ${costPercent}%, rgba(90, 164, 244, 0.3) ${costPercent}%, rgba(90, 164, 244, 0.3) 100%)`
+                }}
+              />
             </div>
           </div>
-          <div className="h-[1px] bg-white/20 w-full" />
+          <div className="h-[1px] bg-white/10 w-full" />
           {/* Results */}
-          <div className="flex justify-around items-center gap-8">
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="size-[79px] bg-[#FFB700] rounded-full flex items-center justify-center">
+          <div className="flex justify-around items-center gap-8 w-full">
+            <div className="flex flex-col items-center text-center gap-3 min-w-[140px] group">
+              <div className="size-[79px] bg-[#FFB700] rounded-full flex items-center justify-center shadow-lg shadow-[#FFB700]/20 group-hover:scale-110 transition-transform duration-300">
                 <IconSaveMoney />
               </div>
-              <p className="font-semibold text-white text-[16px]">INR 9900/year</p>
-              <p className="text-white/60 text-[12px]">You Save</p>
+              <div className="flex flex-col sm:flex-row sm:items-end justify-center leading-none">
+                <p className="font-bold text-white text-lg sm:text-xl">INR {Math.round(moneySaved)}</p>
+                <span className="text-white/60 text-xs sm:ml-1 mb-0.5">/year</span>
+              </div>
+              <p className="text-white/50 text-[12px] uppercase tracking-wider font-semibold">You Save</p>
             </div>
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="size-[79px] bg-[#0A7204] rounded-full flex items-center justify-center">
+            <div className="flex flex-col items-center text-center gap-3 min-w-[140px] group">
+              <div className="size-[79px] bg-[#0A7204] rounded-full flex items-center justify-center shadow-lg shadow-[#0A7204]/20 group-hover:scale-110 transition-transform duration-300">
                 <IconSavePlant />
               </div>
-              <p className="font-semibold text-white text-[16px]">0 Trees</p>
-              <p className="text-white/60 text-[12px]">Saved</p>
+              <p className="font-bold text-white text-lg sm:text-xl leading-none">{treesSaved} {treesSaved === 1 ? 'Tree' : 'Trees'}</p>
+              <p className="text-white/50 text-[12px] uppercase tracking-wider font-semibold">Saved</p>
             </div>
           </div>
         </div>

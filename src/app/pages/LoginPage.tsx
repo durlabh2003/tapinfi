@@ -12,12 +12,8 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        navigate('/orders');
-      }
-    });
-  }, [navigate]);
+    window.location.href = 'https://tapinfi.vercel.app/';
+  }, []);
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);

@@ -35,7 +35,7 @@ export default function Footer() {
               <h4 className="text-[#5aa4f4] font-black text-sm font-['Poppins'] uppercase tracking-[0.2em]">Account</h4>
               <nav className="flex flex-col gap-3">
                 <Link to="/orders" className="text-white/60 hover:text-white text-sm transition-colors font-['Inter']">My Orders</Link>
-                <Link to="/login" className="text-white/60 hover:text-white text-sm transition-colors font-['Inter']">Login / Sign Up</Link>
+                <a href="https://tapinfi.vercel.app/" className="text-white/60 hover:text-white text-sm transition-colors font-['Inter']">Login / Sign Up</a>
               </nav>
             </div>
           </div>

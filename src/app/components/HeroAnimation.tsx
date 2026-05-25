@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
 import { Sparkles, Rss, Cpu, Share2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import profileAvatar from './profile-avatar.jpg';
@@ -11,8 +11,45 @@ export default function HeroAnimation() {
     offset: ["start start", "end end"]
   });
 
-  // Smooth scroll transitions
-  const smoothY = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+  // Buttery-smooth inertial scroll transition (increased damping and decreased stiffness for supreme fluid physics)
+  const smoothY = useSpring(scrollYProgress, { stiffness: 45, damping: 24, restDelta: 0.001 });
+
+  // Mouse position tracking (uses MotionValues to eliminate React re-renders on mousemove)
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Buttery-smooth spring filters for mouse parallax tracking
+  const mouseXSpring = useSpring(mouseX, { stiffness: 60, damping: 22 });
+  const mouseYSpring = useSpring(mouseY, { stiffness: 60, damping: 22 });
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { clientX, clientY } = e;
+      const { innerWidth, innerHeight } = window;
+      // Normalize to range [-0.5, 0.5]
+      const x = (clientX / innerWidth) - 0.5;
+      const y = (clientY / innerHeight) - 0.5;
+      
+      // Update MotionValues directly
+      mouseX.set(x);
+      mouseY.set(y);
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
+
+  // Subtle 3D tilt values
+  const phoneRotateX = useTransform(mouseYSpring, [-0.5, 0.5], [10, -10]);
+  const phoneRotateY = useTransform(mouseXSpring, [-0.5, 0.5], [-10, 10]);
+
+  const cardTiltX = useTransform(mouseYSpring, [-0.5, 0.5], [15, -15]);
+  const cardTiltY = useTransform(mouseXSpring, [-0.5, 0.5], [-15, 15]);
+
+  // Parallax light reflection shininess
+  const shineX = useTransform(mouseXSpring, [-0.5, 0.5], [-50, 50]);
+  const shineY = useTransform(mouseYSpring, [-0.5, 0.5], [-50, 50]);
 
   // Responsive detection for mobile optimizations
   const [windowSize, setWindowSize] = useState({
@@ -111,12 +148,14 @@ export default function HeroAnimation() {
               scale: phoneScale,
               y: phoneY,
               x: phoneX,
+              rotateX: isMobile ? 0 : phoneRotateX,
+              rotateY: isMobile ? 0 : phoneRotateY,
               perspective: "1200px",
               willChange: "transform, opacity"
             }}
             className="relative z-10 w-[260px] h-[530px] sm:w-[280px] sm:h-[570px] lg:w-[300px] lg:h-[610px] bg-slate-900 rounded-[2.8rem] sm:rounded-[3.2rem] lg:rounded-[3.5rem] border-[8px] sm:border-[9px] lg:border-[10px] border-slate-800 shadow-[0_30px_80px_rgba(0,0,0,0.6)] lg:shadow-[0_40px_100px_rgba(0,0,0,0.7)] flex flex-col overflow-hidden"
           >
-            <div className="relative flex-1 bg-black overflow-hidden">
+            <div className="relative flex-1 bg-black overflow-hidden" style={{ transformStyle: "preserve-3d" }}>
               {/* Dynamic Island */}
               <div className="absolute top-3 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-[100] ring-[1px] ring-white/10" />
 
@@ -199,7 +238,7 @@ export default function HeroAnimation() {
             className="absolute z-20 w-44 h-44 md:w-56 md:h-56 border border-cyan-400/50 rounded-full pointer-events-none shadow-[0_0_20px_rgba(34,211,238,0.25)] md:shadow-[0_0_40px_rgba(34,211,238,0.3)]"
           />
 
-          {/* Premium NFC Card */}
+          {/* Premium NFC Card (Parent container handles scroll transformations) */}
           <motion.div
             style={{
               x: cardX,
@@ -211,34 +250,84 @@ export default function HeroAnimation() {
               transformStyle: isMobile ? "flat" : "preserve-3d",
               willChange: "transform, opacity"
             }}
-            className="absolute z-50 w-[280px] h-[175px] sm:w-[310px] sm:h-[192px] lg:w-[340px] lg:h-[210px] bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-black border border-white/10 rounded-2xl shadow-[0_25px_60px_-12px_rgba(0,0,0,0.8)] flex flex-col p-6 sm:p-7 lg:p-8 overflow-hidden group"
+            className="absolute z-50 flex items-center justify-center"
           >
-            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/brushed-alum.png')]" />
-            <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0%,transparent_50%)]" />
+            {/* Holographic NFC Wireless Glowing Wave */}
+            <motion.div 
+              className="absolute pointer-events-none w-[110%] h-[110%] rounded-[1.8rem] border border-cyan-400/20 blur-[6px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+              animate={{
+                boxShadow: ["0 0 15px rgba(34,211,238,0)", "0 0 35px rgba(34,211,238,0.25)", "0 0 15px rgba(34,211,238,0)"],
+                scale: [0.97, 1.03, 0.97]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
 
-            <div className="flex justify-between items-start relative z-10">
-              <div className="space-y-4">
-                <div className="w-12 h-12 bg-white/10 border border-white/10 rounded-xl flex items-center justify-center md:bg-white/5 md:backdrop-blur-md">
-                  <div className="w-7 h-7 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-md flex items-center justify-center">
-                    <Cpu className="text-white w-4 h-4" />
+            {/* Interactive Card Body (handles floating levitation + hover + mouse 3D parallax) */}
+            <motion.div
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              animate={{
+                y: [0, -12, 0],
+              }}
+              style={{
+                rotateX: isMobile ? 0 : cardTiltX,
+                rotateY: isMobile ? 0 : cardTiltY,
+                transformStyle: "preserve-3d",
+                pointerEvents: "auto"
+              }}
+              transition={{
+                y: {
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }
+              }}
+              className="w-[280px] h-[175px] sm:w-[310px] sm:h-[192px] lg:w-[340px] lg:h-[210px] bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-black border border-white/10 rounded-2xl shadow-[0_25px_60px_-12px_rgba(0,0,0,0.8)] flex flex-col p-6 sm:p-7 lg:p-8 overflow-hidden group cursor-grab active:cursor-grabbing"
+            >
+              {/* Brushed Alum texture */}
+              <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/brushed-alum.png')]" />
+              <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0%,transparent_50%)]" />
+
+              {/* Holographic Dynamic Shine Reflection Overlay (moves dynamically with cursor position) */}
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"
+                style={{
+                  x: shineX,
+                  y: shineY,
+                  willChange: "transform"
+                }}
+              />
+
+              {/* 3D Depth Layer 1: CPU chip, Ready Beacon, Text (translates 30px forward in 3D perspective space) */}
+              <div className="flex justify-between items-start relative z-10" style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }}>
+                <div className="space-y-4">
+                  <div className="w-12 h-12 bg-white/10 border border-white/10 rounded-xl flex items-center justify-center md:bg-white/5 md:backdrop-blur-md">
+                    <div className="w-7 h-7 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-md flex items-center justify-center">
+                      <Cpu className="text-white w-4 h-4" />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[8px] text-white/30 tracking-[0.4em] font-black uppercase">Stealth Edition</p>
+                    <h4 className="text-white text-lg font-bold tracking-tight">NEXUS CARD</h4>
                   </div>
                 </div>
-                <div>
-                  <p className="text-[8px] text-white/30 tracking-[0.4em] font-black uppercase">Stealth Edition</p>
-                  <h4 className="text-white text-lg font-bold tracking-tight">NEXUS CARD</h4>
+                <div className="text-right">
+                  <div className="flex items-center gap-1.5 justify-end">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                    <span className="text-[9px] text-emerald-500 font-black uppercase tracking-[0.1em]">Ready</span>
+                  </div>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="flex items-center gap-1.5 justify-end">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                  <span className="text-[9px] text-emerald-500 font-black uppercase tracking-[0.1em]">Ready</span>
-                </div>
-              </div>
-            </div>
 
-            <div className="mt-auto relative z-10">
-              <p className="text-white/80 font-mono tracking-[0.25em] text-sm">•••• •••• •••• 2026</p>
-            </div>
+              {/* 3D Depth Layer 2: Card Number (translates 20px forward in 3D perspective space) */}
+              <div className="mt-auto relative z-10" style={{ transform: "translateZ(20px)" }}>
+                <p className="text-white/80 font-mono tracking-[0.25em] text-sm">•••• •••• •••• 2026</p>
+              </div>
+            </motion.div>
           </motion.div>
 
           {/* Scrolling CTA Content */}
