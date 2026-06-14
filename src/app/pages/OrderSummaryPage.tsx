@@ -6,7 +6,7 @@ import ScrollReveal from '../components/ScrollReveal';
 import { THEMES } from '../data/themes';
 import { ArrowLeft, Lock } from 'lucide-react';
 
-import { supabase } from '../../lib/supabase';
+import { supabase, isPlaceholder } from '../../lib/supabase';
 
 declare global {
   interface Window {
@@ -35,6 +35,33 @@ export default function OrderSummaryPage() {
         .filter(Boolean) as string[];
       
       if (themeIds.length === 0) return;
+
+      if (isPlaceholder) {
+        const mockThemesData = themeIds.reduce((acc: any, id) => {
+          let name = 'Theme';
+          let imageUrl = '';
+          if (id === 'DirectorProfileTheme') {
+            name = 'Director Profile';
+            imageUrl = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300';
+          } else if (id === 'PinkBusinessCardTheme') {
+            name = 'Pink Business Card';
+            imageUrl = 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=300';
+          } else if (id === 'BusinessTheme') {
+            name = 'Business Theme';
+            imageUrl = 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=300';
+          } else if (id === 'EngineerTheme') {
+            name = 'Engineer Theme';
+            imageUrl = 'https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=300';
+          } else {
+            name = 'Tapinfi Theme';
+            imageUrl = 'https://images.unsplash.com/photo-1531346878377-a5be20888e57?q=80&w=300';
+          }
+          acc[id] = { id, name, image_url: imageUrl };
+          return acc;
+        }, {});
+        setThemesData(mockThemesData);
+        return;
+      }
 
       try {
         const { data, error } = await supabase

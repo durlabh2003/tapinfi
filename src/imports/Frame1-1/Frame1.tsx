@@ -789,7 +789,13 @@ function CalculatorSection() {
         <div className="relative group w-full max-w-[502px] aspect-[502/305] rounded-[30px] overflow-hidden shadow-2xl">
           <img alt="Eco forest" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src={imgHighAngleShotBeautifulTropicalJungleWithExoticTallTrees1} />
           <div className="absolute inset-x-0 bottom-8 flex justify-center">
-            <img alt="Tapinfi" className="h-[40px] md:h-[60px] object-contain opacity-80" src={imgLogo} />
+            <div className="h-[40px] w-[105px] md:h-[60px] md:w-[157px] relative overflow-hidden">
+              <img 
+                alt="Tapinfi" 
+                className="absolute h-[100.18%] left-[-33.59%] max-w-none top-[-0.09%] w-[133.59%] opacity-80" 
+                src={imgLogo} 
+              />
+            </div>
           </div>
         </div>
       </div>

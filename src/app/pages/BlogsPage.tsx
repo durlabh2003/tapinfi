@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ScrollReveal from '../components/ScrollReveal';
-import { supabase } from '../../lib/supabase';
+import { supabase, isPlaceholder } from '../../lib/supabase';
+import { MOCK_BLOGS } from '../data/blogs';
 
 interface BlogPost {
   id: string;
@@ -28,6 +29,12 @@ export default function BlogsPage() {
 
   useEffect(() => {
     async function fetchBlogs() {
+      if (isPlaceholder) {
+        setBlogs(MOCK_BLOGS);
+        setLoading(false);
+        return;
+      }
+
       try {
         const { data, error } = await supabase
           .from('blogs')

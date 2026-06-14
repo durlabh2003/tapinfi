@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import ScrollReveal from '../components/ScrollReveal';
-import { supabase } from '../../lib/supabase';
-
+import { supabase, isPlaceholder } from '../../lib/supabase';
+import { products as staticProducts } from '../data/products';
 import Footer from '../components/Footer';
 
 const SHOP_BTN = 'linear-gradient(63.8351deg, rgb(90, 164, 244) 14.564%, rgb(14, 45, 110) 74.668%)';
@@ -34,6 +34,23 @@ export default function ShopPage() {
 
   useEffect(() => {
     async function fetchProducts() {
+      if (isPlaceholder) {
+        const mappedProducts = staticProducts.map((p) => ({
+          id: p.id,
+          name: p.name,
+          price: p.price,
+          img: p.img,
+          shortDesc: p.shortDesc,
+          description: p.description,
+          card_type: p.id === 'white-gloss' ? 'PVC' : p.id === 'matte-black' ? 'Matt' : 'Wooden',
+          front_mock_photo: p.front_mock_photo || '',
+          back_photo: p.back_photo || '',
+        }));
+        setDbProducts(mappedProducts);
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const { data, error } = await supabase
           .from('products')

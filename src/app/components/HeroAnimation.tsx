@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'fram
 import { Sparkles, Rss, Cpu, Share2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import profileAvatar from './profile-avatar.jpg';
+import imgLogo from '../../imports/Frame1-1/f00b995e56d83fe3818dbb20f3489f43c9842118.png';
 
 export default function HeroAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -302,30 +303,51 @@ export default function HeroAnimation() {
                 }}
               />
 
-              {/* 3D Depth Layer 1: CPU chip, Ready Beacon, Text (translates 30px forward in 3D perspective space) */}
+              {/* Top Row: Brand & Contactless Icon */}
               <div className="flex justify-between items-start relative z-10" style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }}>
-                <div className="space-y-4">
-                  <div className="w-12 h-12 bg-white/10 border border-white/10 rounded-xl flex items-center justify-center md:bg-white/5 md:backdrop-blur-md">
-                    <div className="w-7 h-7 bg-gradient-to-tr from-cyan-500 to-blue-600 rounded-md flex items-center justify-center">
-                      <Cpu className="text-white w-4 h-4" />
-                    </div>
+                <div>
+                  <div className="h-[20px] w-[52px] relative overflow-hidden">
+                    <img
+                      alt="Tapinfi Logo"
+                      src={imgLogo}
+                      className="absolute h-[100.18%] left-[-33.59%] max-w-none top-[-0.09%] w-[133.59%]"
+                    />
                   </div>
-                  <div>
-                    <p className="text-[8px] text-white/30 tracking-[0.4em] font-black uppercase">Stealth Edition</p>
-                    <h4 className="text-white text-lg font-bold tracking-tight">NEXUS CARD</h4>
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <span className="text-[7px] text-cyan-400 font-bold tracking-[0.3em] uppercase">Smart Card</span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="flex items-center gap-1.5 justify-end">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                    <span className="text-[9px] text-emerald-500 font-black uppercase tracking-[0.1em]">Ready</span>
-                  </div>
+                
+                {/* Contactless / NFC symbol */}
+                <div className="text-white/70 hover:text-white transition-colors duration-300">
+                  <svg className="w-6 h-6 rotate-90 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <path d="M5 8a9 9 0 0 1 14 0" />
+                    <path d="M8 11a5 5 0 0 1 8 0" />
+                    <path d="M11 14a1 1 0 0 1 2 0" />
+                  </svg>
                 </div>
               </div>
 
-              {/* 3D Depth Layer 2: Card Number (translates 20px forward in 3D perspective space) */}
-              <div className="mt-auto relative z-10" style={{ transform: "translateZ(20px)" }}>
-                <p className="text-white/80 font-mono tracking-[0.25em] text-sm">•••• •••• •••• 2026</p>
+              {/* Center Area: Elegant Minimal Logo mark */}
+              <div className="flex-1 flex items-center justify-center relative z-10 py-2" style={{ transform: "translateZ(20px)" }}>
+                {/* Abstract linking circles representing NFC Connection */}
+                <div className="flex -space-x-3 opacity-30 group-hover:opacity-50 transition-opacity duration-500">
+                  <div className="w-12 h-12 rounded-full border-2 border-white/60" />
+                  <div className="w-12 h-12 rounded-full border-2 border-cyan-400/80" />
+                </div>
+              </div>
+
+              {/* Bottom Row: Holder Name & Action */}
+              <div className="flex justify-between items-end relative z-10 mt-auto" style={{ transform: "translateZ(25px)" }}>
+                <div>
+                  <h4 className="text-white text-base font-bold tracking-tight">Marcus Sterling</h4>
+                  <p className="text-[8px] text-white/40 tracking-[0.15em] font-semibold uppercase">Founding Partner</p>
+                </div>
+                
+                <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-2.5 py-1 backdrop-blur-md">
+                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                  <span className="text-[8px] text-cyan-200 font-bold uppercase tracking-[0.1em]">TAP TO SHARE</span>
+                </div>
               </div>
             </motion.div>
           </motion.div>
@@ -338,7 +360,7 @@ export default function HeroAnimation() {
               y: ctaY,
               pointerEvents: "auto"
             }}
-            className="absolute z-[200] w-full max-w-[640px] px-6 lg:px-0 text-center lg:text-left lg:left-[100px] xl:left-[150px] left-1/2 -translate-x-1/2 lg:translate-x-0 top-[68%] sm:top-[65%] lg:top-[40%] sm:translate-y-0 -translate-y-1/2"
+            className="absolute z-[200] w-full max-w-[640px] px-6 lg:px-0 text-center lg:text-left lg:left-[100px] xl:left-[150px] left-1/2 -translate-x-1/2 lg:translate-x-0 top-[55%] sm:top-[50%] lg:top-[28%] sm:translate-y-0 -translate-y-1/2"
           >
             <motion.div
               initial={{ opacity: 0, y: 20 }}

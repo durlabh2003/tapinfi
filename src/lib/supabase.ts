@@ -4,10 +4,16 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Supabase credentials missing! Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your environment variables.');
+  console.warn('Supabase credentials missing! Using a placeholder Supabase client to prevent app crash.');
 }
 
-// Only initialize if we have the URL to avoid crashing the whole app
-export const supabase = (supabaseUrl && supabaseAnonKey) 
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null as any; 
+// Fallback to placeholder credentials to avoid null pointer exceptions during local dev/build
+const placeholderUrl = 'https://placeholder-project.supabase.co';
+const placeholderKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJvbGUiOiJhbm9uIn0.placeholder';
+
+export const isPlaceholder = !supabaseUrl || !supabaseAnonKey;
+
+export const supabase = createClient(
+  supabaseUrl || placeholderUrl,
+  supabaseAnonKey || placeholderKey
+); 

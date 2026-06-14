@@ -5,7 +5,7 @@ import Footer from '../components/Footer';
 import { products, Product } from '../data/products';
 import { THEMES as STATIC_THEMES, ThemeOption } from '../data/themes';
 import { useCart } from '../context/CartContext';
-import { supabase } from '../../lib/supabase';
+import { supabase, isPlaceholder } from '../../lib/supabase';
 import ScrollReveal from '../components/ScrollReveal';
 
 // Reusing images from Frame1 for How It Works
@@ -73,6 +73,31 @@ export default function ProductDetailPage() {
   // Fetch profile themes from available_themes table
   React.useEffect(() => {
     async function fetchThemes() {
+      if (isPlaceholder) {
+        const mappedThemes = STATIC_THEMES.map((theme) => {
+          let imageUrl = '';
+          if (theme.id === 'DirectorProfileTheme') {
+            imageUrl = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=300';
+          } else if (theme.id === 'PinkBusinessCardTheme') {
+            imageUrl = 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=300';
+          } else if (theme.id === 'BusinessTheme') {
+            imageUrl = 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=300';
+          } else if (theme.id === 'EngineerTheme') {
+            imageUrl = 'https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=300';
+          } else {
+            imageUrl = 'https://images.unsplash.com/photo-1531346878377-a5be20888e57?q=80&w=300';
+          }
+          return {
+            id: theme.id,
+            name: theme.name,
+            image_url: imageUrl,
+          };
+        });
+        setProfileThemes(mappedThemes);
+        setIsLoadingThemes(false);
+        return;
+      }
+
       try {
         const { data, error } = await supabase
           .from('available_themes')

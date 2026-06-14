@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import imgLogo from '../../imports/Frame1-1/f00b995e56d83fe3818dbb20f3489f43c9842118.png';
 
 export default function Footer() {
   return (
@@ -7,10 +8,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-20 mb-16">
           {/* Column 1: Brand & Contact */}
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#5aa4f4] to-[#0e2d6e]" />
-              <span className="text-xl font-black tracking-tighter text-white font-['Poppins']">TAPINFI</span>
-            </div>
+            <Link to="/" className="h-[37px] w-[97px] block relative overflow-hidden">
+              <img
+                alt="Tapinfi Logo"
+                src={imgLogo}
+                className="absolute h-[100.18%] left-[-33.59%] max-w-none top-[-0.09%] w-[133.59%]"
+              />
+            </Link>
             <p className="text-white/60 text-sm leading-relaxed font-['Inter'] max-w-xs">
               Redefining networking with eco-friendly smart business cards. Make every connection sustainable and powerful.
             </p>

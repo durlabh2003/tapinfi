@@ -2,7 +2,8 @@ import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { supabase } from '../../lib/supabase';
+import { supabase, isPlaceholder } from '../../lib/supabase';
+import { MOCK_BLOGS } from '../data/blogs';
 
 interface BlogPost {
   id: string;
@@ -25,6 +26,13 @@ export default function BlogPostPage() {
   useEffect(() => {
     async function fetchPost() {
       if (!id) return;
+      if (isPlaceholder) {
+        const found = MOCK_BLOGS.find((p) => p.id === id);
+        setPost(found || null);
+        setLoading(false);
+        return;
+      }
+
       try {
         const { data, error } = await supabase
           .from('blogs')
