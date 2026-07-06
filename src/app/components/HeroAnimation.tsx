@@ -73,20 +73,36 @@ export default function HeroAnimation() {
 
   // === ANIMATION TIMING (0 to 1 Progress) ===
   const phoneOpacity = useTransform(smoothY, [0.05, 0.12], [0, 1]);
-  const phoneScale = useTransform(smoothY, [0.05, 0.12, 0.50, 0.58],
-    isMobile ? [0.6, 0.75, 0.75, 0.65] :
-      isTablet ? [0.7, 0.85, 0.85, 0.75] : [0.8, 1, 1, 0.85]
-  );
-  // On mobile/tablet, move phone UP to be at the top
-  const phoneY = useTransform(smoothY, [0, 0.50, 0.58, 0.65],
-    isMobile ? [0, 0, -140, -250] :
-      isTablet ? [0, 0, -180, -320] : [0, 0, 0, 0]
-  );
-  const phoneX = useTransform(smoothY, [0.55, 0.65],
-    [0, isMobile ? 0 : isTablet ? 0 : 250]
+
+  // Determine phone scale endpoints responsively based on viewport height
+  const getMobileEndScale = () => {
+    if (windowSize.height < 680) return 0.40;
+    if (windowSize.height < 780) return 0.46;
+    return 0.54;
+  };
+
+  const getTabletEndScale = () => {
+    if (windowSize.height < 900) return 0.58;
+    return 0.65;
+  };
+
+  const mobileEndScale = getMobileEndScale();
+  const tabletEndScale = getTabletEndScale();
+
+  // Group animations (applied to the wrapper of Phone, Card, and Ripple)
+  const groupScale = useTransform(smoothY, [0.05, 0.12, 0.50, 0.58],
+    isMobile ? [0.55, 0.70, 0.70, mobileEndScale] :
+      isTablet ? [0.65, 0.80, 0.80, tabletEndScale] : [0.8, 1, 1, 0.85]
   );
 
-  // Card
+  // Dynamic responsive X and Y offsets at the end of the scroll
+  const endX = isMobile ? 0 : isTablet ? 0 : (windowSize.width / 4);
+  const endY = isMobile ? -(windowSize.height / 4) : isTablet ? -(windowSize.height / 4) : 0;
+
+  const groupX = useTransform(smoothY, [0.55, 0.65], [0, endX]);
+  const groupY = useTransform(smoothY, [0.50, 0.65], [0, endY]);
+
+  // Card local positions (relative to the Phone/Group Center)
   const cardX = useTransform(smoothY, [0.04, 0.12, 0.30],
     [0, 0, isMobile ? 55 : isTablet ? 100 : 185]
   );
@@ -122,8 +138,7 @@ export default function HeroAnimation() {
 
   // CTA Elements
   const ctaOpacity = useTransform(smoothY, [0.62, 0.70], [0, 1]);
-  const ctaX = useTransform(smoothY, [0.62, 0.70], [0, 0]);
-  const ctaY = useTransform(smoothY, [0.62, 0.70], [0, 0]);
+  const ctaY = useTransform(smoothY, [0.62, 0.70], [20, 0]);
 
   return (
     <div ref={containerRef} className="relative text-white selection:bg-violet-500/30">
@@ -131,7 +146,7 @@ export default function HeroAnimation() {
       {/* Hero Animation Track */}
       <div className="relative h-[1800px] sm:h-[2000px] z-10">
         <motion.div
-          className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-[100px] sm:pt-[120px]"
+          className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-[75px] sm:pt-[90px]"
           style={{ willChange: 'transform, opacity', backfaceVisibility: 'hidden' }}
         >
 
@@ -142,20 +157,27 @@ export default function HeroAnimation() {
             className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] lg:w-[450px] lg:h-[450px] rounded-full pointer-events-none bg-[radial-gradient(circle,rgba(6,182,212,0.25)_0%,transparent_70%)] md:bg-none md:bg-cyan-500/20 md:blur-[90px] lg:blur-[110px]"
           />
 
-          {/* iPhone 15 Pro Mockup */}
+          {/* Phone & Card Animation Group */}
           <motion.div
             style={{
-              opacity: phoneOpacity,
-              scale: phoneScale,
-              y: phoneY,
-              x: phoneX,
-              rotateX: isMobile ? 0 : phoneRotateX,
-              rotateY: isMobile ? 0 : phoneRotateY,
-              perspective: "1200px",
-              willChange: "transform, opacity"
+              scale: groupScale,
+              x: groupX,
+              y: groupY,
+              willChange: "transform"
             }}
-            className="relative z-10 w-[260px] h-[530px] sm:w-[280px] sm:h-[570px] lg:w-[300px] lg:h-[610px] bg-slate-900 rounded-[2.8rem] sm:rounded-[3.2rem] lg:rounded-[3.5rem] border-[8px] sm:border-[9px] lg:border-[10px] border-slate-800 shadow-[0_30px_80px_rgba(0,0,0,0.6)] lg:shadow-[0_40px_100px_rgba(0,0,0,0.7)] flex flex-col overflow-hidden"
+            className="relative flex items-center justify-center pointer-events-none"
           >
+            {/* iPhone 15 Pro Mockup */}
+            <motion.div
+              style={{
+                opacity: phoneOpacity,
+                rotateX: isMobile ? 0 : phoneRotateX,
+                rotateY: isMobile ? 0 : phoneRotateY,
+                perspective: "1200px",
+                willChange: "transform, opacity"
+              }}
+              className="relative z-10 w-[260px] h-[530px] sm:w-[280px] sm:h-[570px] lg:w-[300px] lg:h-[610px] bg-slate-900 rounded-[2.8rem] sm:rounded-[3.2rem] lg:rounded-[3.5rem] border-[8px] sm:border-[9px] lg:border-[10px] border-slate-800 shadow-[0_30px_80px_rgba(0,0,0,0.6)] lg:shadow-[0_40px_100px_rgba(0,0,0,0.7)] flex flex-col overflow-hidden pointer-events-auto"
+            >
             <div className="relative flex-1 bg-black overflow-hidden" style={{ transformStyle: "preserve-3d" }}>
               {/* Dynamic Island */}
               <div className="absolute top-3 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-[100] ring-[1px] ring-white/10" />
@@ -225,34 +247,34 @@ export default function HeroAnimation() {
                 </div>
               </motion.div>
             </div>
-          </motion.div>
+            </motion.div>
 
-          {/* Tap Ripple Effect */}
-          <motion.div
-            style={{
-              scale: rippleScale,
-              opacity: rippleOpacity,
-              x: isMobile ? 55 : isTablet ? 100 : 185,
-              y: isMobile ? -170 : isTablet ? -220 : -310,
-              willChange: "transform, opacity"
-            }}
-            className="absolute z-20 w-44 h-44 md:w-56 md:h-56 border border-cyan-400/50 rounded-full pointer-events-none shadow-[0_0_20px_rgba(34,211,238,0.25)] md:shadow-[0_0_40px_rgba(34,211,238,0.3)]"
-          />
+            {/* Tap Ripple Effect */}
+            <motion.div
+              style={{
+                scale: rippleScale,
+                opacity: rippleOpacity,
+                x: isMobile ? 55 : isTablet ? 100 : 185,
+                y: isMobile ? -170 : isTablet ? -220 : -310,
+                willChange: "transform, opacity"
+              }}
+              className="absolute z-20 w-44 h-44 md:w-56 md:h-56 border border-cyan-400/50 rounded-full pointer-events-none shadow-[0_0_20px_rgba(34,211,238,0.25)] md:shadow-[0_0_40px_rgba(34,211,238,0.3)]"
+            />
 
-          {/* Premium NFC Card (Parent container handles scroll transformations) */}
-          <motion.div
-            style={{
-              x: cardX,
-              y: cardY,
-              rotateZ: cardRotateZ,
-              rotateY: isMobile ? 0 : cardRotateY,
-              scale: cardScale,
-              opacity: cardOpacity,
-              transformStyle: isMobile ? "flat" : "preserve-3d",
-              willChange: "transform, opacity"
-            }}
-            className="absolute z-50 flex items-center justify-center"
-          >
+            {/* Premium NFC Card */}
+            <motion.div
+              style={{
+                x: cardX,
+                y: cardY,
+                rotateZ: cardRotateZ,
+                rotateY: isMobile ? 0 : cardRotateY,
+                scale: cardScale,
+                opacity: cardOpacity,
+                transformStyle: isMobile ? "flat" : "preserve-3d",
+                willChange: "transform, opacity"
+              }}
+              className="absolute z-50 flex items-center justify-center"
+            >
             {/* Holographic NFC Wireless Glowing Wave */}
             <motion.div 
               className="absolute pointer-events-none w-[110%] h-[110%] rounded-[1.8rem] border border-cyan-400/20 blur-[6px] opacity-0 group-hover:opacity-100 transition-opacity duration-700"
@@ -351,26 +373,29 @@ export default function HeroAnimation() {
               </div>
             </motion.div>
           </motion.div>
+          </motion.div>
 
           {/* Scrolling CTA Content */}
           <motion.div
             style={{
               opacity: ctaOpacity,
-              x: ctaX,
-              y: ctaY,
               pointerEvents: "auto"
             }}
-            className="absolute z-[200] w-full max-w-[640px] px-6 lg:px-0 text-center lg:text-left lg:left-[100px] xl:left-[150px] left-1/2 -translate-x-1/2 lg:translate-x-0 top-[55%] sm:top-[50%] lg:top-[28%] sm:translate-y-0 -translate-y-1/2"
+            className="absolute z-[200] left-0 right-0 bottom-[6%] md:bottom-[10%] px-6 text-center flex flex-col items-center lg:left-[10%] lg:right-auto lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:text-left lg:items-start lg:max-w-[460px] xl:max-w-[580px] xl:left-[12%]"
           >
             <motion.div
+              style={{ y: ctaY }}
+              className="w-full flex flex-col items-center lg:items-start"
+            >
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
-              className="mb-5 sm:mb-6 inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 bg-[#5AA4F4]/10 border border-[#5AA4F4]/25 rounded-full backdrop-blur-xl"
+              className="mb-2 sm:mb-6 inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 bg-[#5AA4F4]/10 border border-[#5AA4F4]/25 rounded-full backdrop-blur-xl"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
               <span className="text-[10px] sm:text-[11px] font-bold text-cyan-200 uppercase tracking-[0.25em]">Effortless Onboarding</span>
             </motion.div>
 
-            <h2 className="text-white text-[32px] leading-[1.1] sm:text-[48px] md:text-[64px] lg:text-[72px] xl:text-[80px] font-bold tracking-tight mb-4 sm:mb-8">
+            <h2 className="text-white text-[24px] xs:text-[28px] sm:text-[48px] md:text-[64px] lg:text-[72px] xl:text-[80px] font-bold tracking-tight mb-3 sm:mb-8 leading-[1.15] sm:leading-[1.1]">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E]">Tap with </span>
               <span className="text-white"> Tapinfi.</span>
               <br/>
@@ -380,10 +405,10 @@ export default function HeroAnimation() {
               </span>
             </h2>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 mb-8 sm:mb-10">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 mb-4 sm:mb-10">
               <Link
                 to="/shop"
-                className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] rounded-full px-8 py-3.5 font-['Inter',sans-serif] font-bold text-[16px] text-white shadow-lg hover:scale-105 hover:shadow-[#5AA4F4]/40 transition-all active:scale-95 group pointer-events-auto"
+                className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] rounded-full px-8 py-3 font-['Inter',sans-serif] font-bold text-[15px] sm:text-[16px] text-white shadow-lg hover:scale-105 hover:shadow-[#5AA4F4]/40 transition-all active:scale-95 group pointer-events-auto"
               >
                 SHOP NOW
                 <div className="transition-transform group-hover:translate-x-1">
@@ -391,7 +416,7 @@ export default function HeroAnimation() {
                 </div>
               </Link>
 
-              <div className="flex items-center gap-3 text-white/70 text-[13px] font-medium">
+              <div className="flex items-center gap-3 text-white/70 text-[12px] sm:text-[13px] font-medium">
                 <div className="flex -space-x-2">
                   {[1, 2, 3].map(i => (
                     <div key={i} className="w-6 h-6 rounded-full border border-[#020617] bg-gradient-to-br from-cyan-600 to-blue-600" />
@@ -401,9 +426,10 @@ export default function HeroAnimation() {
               </div>
             </div>
 
-            <p className="text-white/60 text-[15px] sm:text-[17px] leading-relaxed max-w-[480px] mx-auto lg:mx-0 font-medium">
+            <p className="text-white/60 text-[13px] sm:text-[17px] leading-relaxed max-w-[480px] mx-auto lg:mx-0 font-medium">
               One tap. Zero friction. Your entire professional identity, instantly shared.
             </p>
+            </motion.div>
           </motion.div>
 
         </motion.div>
