@@ -42,7 +42,7 @@ export default function ShopPage() {
           img: p.img,
           shortDesc: p.shortDesc,
           description: p.description,
-          card_type: p.id === 'white-gloss' ? 'PVC' : p.id === 'matte-black' ? 'Matt' : 'Wooden',
+          card_type: p.card_type || 'PVC',
           front_mock_photo: p.front_mock_photo || '',
           back_photo: p.back_photo || '',
         }));

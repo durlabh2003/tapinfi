@@ -1,6 +1,6 @@
-import imgWhiteGloss from '../../imports/Frame1-1/e436e6b89b49a3d046b520fae180b3d8e2ef5396.png';
-import imgMatteBlack from '../../imports/Frame1-1/b70470e67d7a77c2b65e8724e75b75f2497ba316.png';
-import imgWooden from '../../imports/Frame1-1/1d69cb9a0b8c7c77c84dc373238e43c2a1424558.png';
+import imgGlossy from '../../imports/Frame1-1/glossy_card.png';
+import imgSilverMatt from '../../imports/Frame1-1/silver_matt_card.png';
+import imgGoldenMatt from '../../imports/Frame1-1/golden_matt_card.png';
 
 export interface Product {
   id: string;
@@ -20,27 +20,43 @@ export interface Product {
 
 export const products: Product[] = [
   {
-    id: 'white-gloss',
-    name: 'PVC GLOSSY',
+    id: '09f566b0-8b7b-4146-b576-85e87409f703',
+    name: 'Glossy',
     price: 499,
-    img: imgWhiteGloss,
-    shortDesc: 'Premium Smart Business Card | Multicolour Print | Custom Logo | QR Enabled | Eco-Friendly Digital Card',
-    description: 'Make a lasting impression with the Tapinfi White Gloss NFC Card, a premium smart business card designed to showcase your brand in the most vibrant and professional way. Crafted with a smooth glossy white finish and high-definition multicolour printing, this card ensures your logo and details stand out with sharp clarity and rich colors.\n\nChoose Tapinfi to present yourself with confidence, creativity, and innovation - because your first impression deserves to be unforgettable.'
+    img: imgGlossy,
+    card_type: 'PVC',
+    shortDesc: 'Premium Smart Business Card | Glossy Finish | Custom Logo | QR Enabled | Eco-Friendly Digital Card',
+    description: 'Make a lasting impression with the Tapinfi Glossy NFC Card, a premium smart business card designed to showcase your brand in the most vibrant and professional way. Crafted with a smooth glossy white finish and high-definition printing, this card ensures your logo and details stand out with sharp clarity and rich colors.\n\nChoose Tapinfi to present yourself with confidence, creativity, and innovation - because your first impression deserves to be unforgettable.',
+    customization_options: {
+      frontFields: ['logo', 'name', 'designation', 'phone', 'email'],
+      backFields: ['qr_code']
+    }
   },
   {
-    id: 'matte-black',
-    name: 'MATTE BLACK',
-    price: 799,
-    img: imgMatteBlack,
-    shortDesc: 'Premium Smart Business Card | Laser Engraved | Custom Logo | QR Enabled | Eco-Friendly Digital Card',
-    description: 'Elevate your networking with the Tapinfi Matte Black NFC Card. This sleek, minimalist design is perfect for professionals who want to make a sophisticated and understated impression. Featuring precision laser engraving on a premium matte black surface.\n\nLeave a lasting impact with a card that speaks volumes about your attention to detail and modern approach.'
+    id: '29160909-60a4-4292-a96c-3d3faa737aab',
+    name: 'Silver Matt',
+    price: 699,
+    img: imgSilverMatt,
+    card_type: 'Matt',
+    shortDesc: 'Premium Smart Business Card | Matte Finish | Custom Logo | QR Enabled | Eco-Friendly Digital Card',
+    description: 'Elevate your networking with the Tapinfi Silver Matt NFC Card. This sleek, minimalist design is perfect for professionals who want to make a sophisticated and understated impression. Featuring precision silver printing on a premium matte surface.\n\nLeave a lasting impact with a card that speaks volumes about your attention to detail and modern approach.',
+    customization_options: {
+      frontFields: ['logo', 'name', 'designation', 'phone', 'email'],
+      backFields: ['qr_code']
+    }
   },
   {
-    id: 'wooden',
-    name: 'WOODEN',
-    price: 1199,
-    img: imgWooden,
-    shortDesc: 'Premium Smart Business Card | Natural Wood Finish | Custom Engraving | QR Enabled | Sustainable Digital Card',
-    description: 'Stand out naturally with the Tapinfi Wooden NFC Card. Crafted from authentic, sustainably sourced wood, each card features a unique grain pattern. Perfect for eco-conscious brands and individuals who want a warm, memorable, and highly tactile networking tool.\n\nCombine the beauty of nature with cutting-edge NFC technology to share your details instantly.'
+    id: 'acb7c056-2459-4417-8302-6c30ee1922cf',
+    name: 'Golden Matt',
+    price: 699,
+    img: imgGoldenMatt,
+    card_type: 'Matt',
+    shortDesc: 'Premium Smart Business Card | Matte Finish | Custom Logo | QR Enabled | Eco-Friendly Digital Card',
+    description: 'Stand out with the Tapinfi Golden Matt NFC Card. Featuring a premium matte surface with striking gold details, this card is designed for individuals who want a warm, memorable, and highly tactile networking tool.\n\nCombine elegance with cutting-edge NFC technology to share your details instantly.',
+    customization_options: {
+      frontFields: ['logo', 'name', 'designation', 'phone', 'email'],
+      backFields: ['qr_code']
+    }
   },
 ];
+

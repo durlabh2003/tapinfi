@@ -247,13 +247,13 @@ export default function OrdersPage() {
                         <div className="flex justify-between">
                           <span className="text-sm text-gray-500">Card Theme</span>
                           <span className="text-sm font-bold text-[#100425]">
-                            {selectedOrder.card_theme_name || (selectedOrder.card_theme_id === 'white-gloss' ? 'PVC GLOSSY' : selectedOrder.card_theme_id === 'matte-black' ? 'MATTE BLACK' : selectedOrder.card_theme_id === 'wooden' ? 'WOODEN' : 'Standard Card')}
+                            {selectedOrder.card_theme_name || (selectedOrder.card_theme_id === 'white-gloss' ? 'PVC GLOSSY' : selectedOrder.card_theme_id === 'matte-black' ? 'MATTE BLACK' : selectedOrder.card_theme_id === 'wooden' ? 'WOODEN' : selectedOrder.card_theme_id === '09f566b0-8b7b-4146-b576-85e87409f703' ? 'GLOSSY' : selectedOrder.card_theme_id === '29160909-60a4-4292-a96c-3d3faa737aab' ? 'SILVER MATT' : selectedOrder.card_theme_id === 'acb7c056-2459-4417-8302-6c30ee1922cf' ? 'GOLDEN MATT' : 'Standard Card')}
                           </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-sm text-gray-500">Material</span>
                           <span className="text-sm font-bold text-[#100425]">
-                            {selectedOrder.card_material || (selectedOrder.card_theme_id === 'white-gloss' ? 'PVC Glossy' : selectedOrder.card_theme_id === 'matte-black' ? 'Matte Black' : selectedOrder.card_theme_id === 'wooden' ? 'Wooden' : 'Standard')}
+                            {selectedOrder.card_material || (selectedOrder.card_theme_id === 'white-gloss' ? 'PVC Glossy' : selectedOrder.card_theme_id === 'matte-black' ? 'Matte Black' : selectedOrder.card_theme_id === 'wooden' ? 'Wooden' : selectedOrder.card_theme_id === '09f566b0-8b7b-4146-b576-85e87409f703' ? 'Glossy' : selectedOrder.card_theme_id === '29160909-60a4-4292-a96c-3d3faa737aab' ? 'Silver Matt' : selectedOrder.card_theme_id === 'acb7c056-2459-4417-8302-6c30ee1922cf' ? 'Golden Matt' : 'Standard')}
                           </span>
                         </div>
                         <div className="flex justify-between">

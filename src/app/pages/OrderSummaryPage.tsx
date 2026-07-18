@@ -221,7 +221,10 @@ export default function OrderSummaryPage() {
           const materialMap: Record<string, string> = {
             'white-gloss': 'PVC Glossy',
             'matte-black': 'Matte Black',
-            'wooden': 'Wooden'
+            'wooden': 'Wooden',
+            '09f566b0-8b7b-4146-b576-85e87409f703': 'Glossy',
+            '29160909-60a4-4292-a96c-3d3faa737aab': 'Silver Matt',
+            'acb7c056-2459-4417-8302-6c30ee1922cf': 'Golden Matt'
           };
           // Strip the timestamp from the unique ID if present
           const baseProductId = firstItem?.id.split('-')[0];

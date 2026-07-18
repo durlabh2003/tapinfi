@@ -564,8 +564,8 @@ function OurProducts() {
       <div className="flex flex-col xl:flex-row gap-12 w-full justify-center items-center">
         {staticProducts.slice(0, 3).map((p, i) => {
           let toLink = `/product/${p.id}`;
-          if (p.id === 'white-gloss') toLink = '/shop?material=PVC';
-          if (p.id === 'matte-black') toLink = '/shop?material=Matt';
+          if (p.id === '09f566b0-8b7b-4146-b576-85e87409f703') toLink = '/shop?material=PVC';
+          if (p.id === '29160909-60a4-4292-a96c-3d3faa737aab' || p.id === 'acb7c056-2459-4417-8302-6c30ee1922cf') toLink = '/shop?material=Matt';
           return (
             <ProductCard 
               key={p.id}
@@ -573,7 +573,7 @@ function OurProducts() {
               price={p.price.toString()} 
               image={p.img} 
               delay={(i * 100).toString()} 
-              comingSoon={p.id === 'wooden'}
+              comingSoon={false}
               linkTo={toLink}
             />
           );

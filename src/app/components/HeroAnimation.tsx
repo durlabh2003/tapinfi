@@ -26,14 +26,16 @@ export default function HeroAnimation() {
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
+    // Only bind mousemove listener if screen width is at least 768px (desktop/tablet) and supports hover/fine pointer
+    const isTouchOnly = window.matchMedia('(pointer: coarse)').matches;
+    if (window.innerWidth < 768 || isTouchOnly) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       const { clientX, clientY } = e;
       const { innerWidth, innerHeight } = window;
-      // Normalize to range [-0.5, 0.5]
       const x = (clientX / innerWidth) - 0.5;
       const y = (clientY / innerHeight) - 0.5;
       
-      // Update MotionValues directly
       mouseX.set(x);
       mouseY.set(y);
     };
@@ -132,9 +134,13 @@ export default function HeroAnimation() {
   const notifY = useTransform(smoothY, [0.33, 0.38, 0.48, 0.54], [-120, 24, 24, -120]);
   const notifOpacity = useTransform(smoothY, [0.33, 0.38, 0.48, 0.54], [0, 1, 1, 0]);
 
-  // Profile Website Reveal
-  const profileHeight = useTransform(smoothY, [0.46, 0.56], ["0%", "100%"]);
+  // Profile Website Reveal (Hardware-accelerated y-translation to prevent layout reflows)
+  const profileY = useTransform(smoothY, [0.46, 0.56], ["100%", "0%"]);
   const profileOpacity = useTransform(smoothY, [0.46, 0.48], [0, 1]);
+
+  // Intro Elements (First fold UI visible at scroll 0, fades out dynamically)
+  const introOpacity = useTransform(smoothY, [0, 0.08], [1, 0]);
+  const introY = useTransform(smoothY, [0, 0.08], [0, -30]);
 
   // CTA Elements
   const ctaOpacity = useTransform(smoothY, [0.62, 0.70], [0, 1]);
@@ -150,6 +156,35 @@ export default function HeroAnimation() {
           style={{ willChange: 'transform, opacity', backfaceVisibility: 'hidden' }}
         >
 
+          {/* Introductory Title (Visible at scroll 0, fades out as user scrolls) */}
+          <motion.div
+            style={{ opacity: introOpacity, y: introY, pointerEvents: 'none' }}
+            className="absolute top-[12%] sm:top-[15%] z-20 text-center px-4 max-w-xl flex flex-col items-center"
+          >
+            <h1 className="text-[28px] sm:text-[42px] lg:text-[52px] font-black tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/60 drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+              Next-Gen Smart Cards
+            </h1>
+            <p className="text-white/60 text-xs sm:text-base font-medium mt-2 max-w-md">
+              The Future of Connection is Here. Scroll to Experience.
+            </p>
+          </motion.div>
+
+          {/* Scroll Cue (Fades out quickly as user scrolls) */}
+          <motion.div
+            style={{ opacity: introOpacity, y: useTransform(smoothY, [0, 0.08], [0, 20]), pointerEvents: 'none' }}
+            className="absolute bottom-[8%] sm:bottom-[10%] z-20 flex flex-col items-center gap-2"
+          >
+            <span className="text-[10px] sm:text-xs font-semibold text-cyan-400 tracking-[0.2em] uppercase animate-pulse">
+              Scroll to Experience
+            </span>
+            <div className="w-[18px] h-[30px] sm:w-[22px] sm:h-[36px] border-2 border-white/30 rounded-full flex justify-center p-1">
+              <motion.div
+                animate={{ y: [0, 6, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                className="w-1 h-1.5 sm:w-1.5 sm:h-2 bg-cyan-400 rounded-full"
+              />
+            </div>
+          </motion.div>
 
           {/* Initial Card Center Glow */}
           <motion.div
@@ -215,7 +250,7 @@ export default function HeroAnimation() {
 
               {/* Profile Website View */}
               <motion.div
-                style={{ height: profileHeight, opacity: profileOpacity }}
+                style={{ y: profileY, opacity: profileOpacity }}
                 className="absolute inset-0 bg-white z-[120] overflow-hidden shadow-inner"
               >
                 <div className="h-full w-full flex flex-col">
@@ -396,7 +431,7 @@ export default function HeroAnimation() {
             </motion.div>
 
             <h2 className="text-white text-[24px] xs:text-[28px] sm:text-[48px] md:text-[64px] lg:text-[72px] xl:text-[80px] font-bold tracking-tight mb-3 sm:mb-8 leading-[1.15] sm:leading-[1.1]">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E]">Tap with </span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#5AA4F4] to-[#80CAFF]">Tap with </span>
               <span className="text-white"> Tapinfi.</span>
               <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/40 drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
@@ -408,7 +443,7 @@ export default function HeroAnimation() {
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 mb-4 sm:mb-10">
               <Link
                 to="/shop"
-                className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#5AA4F4] to-[#0E2D6E] rounded-full px-8 py-3 font-['Inter',sans-serif] font-bold text-[15px] sm:text-[16px] text-white shadow-lg hover:scale-105 hover:shadow-[#5AA4F4]/40 transition-all active:scale-95 group pointer-events-auto"
+                className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#5AA4F4] to-[#1e40af] rounded-full px-8 py-3 font-['Inter',sans-serif] font-bold text-[15px] sm:text-[16px] text-white shadow-lg hover:scale-105 hover:shadow-[#5AA4F4]/40 transition-all active:scale-95 group pointer-events-auto"
               >
                 SHOP NOW
                 <div className="transition-transform group-hover:translate-x-1">
