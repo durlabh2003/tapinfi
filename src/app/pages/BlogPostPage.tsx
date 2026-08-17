@@ -188,7 +188,7 @@ export default function BlogPostPage() {
             <nav className="mb-14 p-6 sm:p-8 bg-[#f8fbff] border border-[#d8e8fe] rounded-3xl space-y-4 shadow-sm">
               <div className="flex items-center gap-2 text-[#0e2d6e] font-bold text-base uppercase tracking-wider">
                 <span className="w-2 h-2 rounded-full bg-[#5aa4f4]" />
-                Table of Contents ({sections.length} Modules)
+                Table of Contents ({sections.length} Sections)
               </div>
               <ol className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm font-medium">
                 {sections.map((sec, idx) => (
@@ -217,9 +217,6 @@ export default function BlogPostPage() {
                 >
                   {/* Primary Heading (H2) with Serial Number */}
                   <div className="space-y-2">
-                    <span className="text-xs font-bold uppercase tracking-widest text-[#5aa4f4] bg-[#eef5ff] px-3 py-1 rounded-full">
-                      Module #{secIdx + 1}
-                    </span>
                     <h2 className="text-[26px] sm:text-[34px] font-bold text-[#100425] leading-tight flex items-start gap-3">
                       <span className="text-[#5aa4f4] font-mono">{secIdx + 1}.</span>
                       <span>{sec.primaryHeading}</span>
