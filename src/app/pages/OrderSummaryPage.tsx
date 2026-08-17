@@ -241,7 +241,9 @@ export default function OrderSummaryPage() {
             profile_theme_name: profileThemeName,
             customization_type: firstItem?.customization?.frontOption === 'logo' ? 'logo' : 'personal',
             personal_full_name: firstItem?.customization?.fullName,
-            personal_phone: firstItem?.customization?.phone,
+            personal_phone: firstItem?.customization?.countryCode
+              ? `${firstItem.customization.countryCode} ${firstItem.customization.phone || ''}`.trim()
+              : firstItem?.customization?.phone,
             personal_email: firstItem?.customization?.email,
             company_logo_link: firstItem?.customization?.logoUrl,
             delivery_name: deliveryDetails?.fullName,

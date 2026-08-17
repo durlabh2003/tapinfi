@@ -7,6 +7,7 @@ export interface CustomizationData {
   fullName: string;
   companyName: string;
   designation: string;
+  countryCode?: string;
   phone: string;
   email: string;
   logoUrl: string | null;

@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { AlertCircle } from 'lucide-react';
 import ScrollReveal from '../ScrollReveal';
 import { CustomizationData } from '../../context/CartContext';
+import { COUNTRY_CODES, DEFAULT_COUNTRY_CODE } from '../../data/countryCodes';
 
 import { Product } from '../../data/products';
 import { supabase } from '../../../lib/supabase';
@@ -62,10 +63,19 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
 
       // Phone
       if (isFieldActive('phone') || isFieldActive('personal_details')) {
+        const selectedCountry = COUNTRY_CODES.find(c => c.code === (data.countryCode || '+91')) || DEFAULT_COUNTRY_CODE;
         if (!data.phone.trim()) {
           newErrors.phone = 'Phone number is required';
-        } else if (!/^[6-9]\d{9}$/.test(data.phone)) {
-          newErrors.phone = 'Please enter a valid 10-digit phone number';
+        } else if (selectedCountry.validator) {
+          if (!selectedCountry.validator(data.phone)) {
+            newErrors.phone = selectedCountry.errorMessage || `Please enter a valid phone number for ${selectedCountry.country}`;
+          }
+        } else {
+          const min = selectedCountry.minDigits || 7;
+          const max = selectedCountry.maxDigits || 15;
+          if (data.phone.length < min || data.phone.length > max) {
+            newErrors.phone = `Please enter a valid ${min === max ? min : `${min} to ${max}`}-digit phone number for ${selectedCountry.country}`;
+          }
         }
       }
 
@@ -270,16 +280,37 @@ export default function CardCustomizationStep({ data, onChange, onFinish, produc
                   {(frontFields.includes('phone') || frontFields.includes('personal_details')) && (
                     <div>
                        <label className="block text-sm font-medium text-gray-700 font-['Inter'] mb-1">Phone Number *</label>
-                       <input 
-                          type="tel" 
-                          value={data.phone}
-                          onChange={e => {
-                            const value = e.target.value.replace(/\D/g, '');
-                            if (value.length <= 10) onChange({ phone: value });
-                          }}
-                          placeholder="9876543210"
-                          className={`w-full px-4 py-3 rounded-xl border ${currentErrors.phone && data.phone ? 'border-red-500' : 'border-gray-300'} focus:ring-2 focus:ring-[#5aa4f4] focus:border-[#5aa4f4] outline-none font-['Inter'] transition-shadow`}
-                       />
+                       <div className={`flex rounded-xl border ${currentErrors.phone && data.phone ? 'border-red-500' : 'border-gray-300'} focus-within:ring-2 focus-within:ring-[#5aa4f4] focus-within:border-[#5aa4f4] overflow-hidden bg-white transition-shadow`}>
+                          <select
+                            value={data.countryCode || '+91'}
+                            onChange={e => {
+                              const newCode = e.target.value;
+                              const countryObj = COUNTRY_CODES.find(c => c.code === newCode) || DEFAULT_COUNTRY_CODE;
+                              const maxLen = countryObj.maxDigits || countryObj.digits || 15;
+                              const trimmedPhone = data.phone.slice(0, maxLen);
+                              onChange({ countryCode: newCode, phone: trimmedPhone });
+                            }}
+                            className="px-3 py-3 bg-gray-50 border-r border-gray-300 font-['Inter'] text-sm font-semibold text-[#0e2d6e] outline-none cursor-pointer hover:bg-gray-100 transition-colors max-w-[180px] truncate"
+                          >
+                            {COUNTRY_CODES.map(c => (
+                              <option key={`${c.iso}-${c.code}`} value={c.code}>
+                                {c.flag} {c.code} ({c.country})
+                              </option>
+                            ))}
+                          </select>
+                          <input 
+                            type="tel" 
+                            value={data.phone}
+                            onChange={e => {
+                              const selectedCountry = COUNTRY_CODES.find(c => c.code === (data.countryCode || '+91')) || DEFAULT_COUNTRY_CODE;
+                              const maxLen = selectedCountry.maxDigits || selectedCountry.digits || 15;
+                              const value = e.target.value.replace(/\D/g, '');
+                              if (value.length <= maxLen) onChange({ phone: value });
+                            }}
+                            placeholder={(COUNTRY_CODES.find(c => c.code === (data.countryCode || '+91')) || DEFAULT_COUNTRY_CODE).placeholder || '1234567890'}
+                            className="flex-1 px-4 py-3 outline-none font-['Inter'] text-gray-900 placeholder:text-gray-400 bg-transparent"
+                          />
+                       </div>
                        {currentErrors.phone && data.phone && (
                          <p className="text-red-500 text-[10px] font-bold flex items-center gap-1 mt-1 ml-1">
                            <AlertCircle className="w-3 h-3" /> {currentErrors.phone}

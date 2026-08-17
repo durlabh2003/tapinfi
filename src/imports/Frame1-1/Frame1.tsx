@@ -529,7 +529,7 @@ function ProductCard({ title, price, image, delay, comingSoon, linkTo }: { title
         />
       </div>
 
-      <div className="w-full flex items-center justify-between mt-auto pt-6 border-t border-white/10">
+      <div className="w-full flex items-center justify-between mt-auto pt-6">
         <div className="text-white flex items-baseline gap-2">
           <span className="font-['Poppins',sans-serif] font-bold text-lg text-white/60">INR</span>
           <span className="font-['Poppins',sans-serif] font-black text-[32px] tracking-tight">{price}</span>
@@ -788,11 +788,23 @@ function CalculatorSection() {
         {/* Right Image */}
         <div className="relative group w-full max-w-[502px] aspect-[502/305] rounded-[30px] overflow-hidden shadow-2xl">
           <img alt="Eco forest" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src={imgHighAngleShotBeautifulTropicalJungleWithExoticTallTrees1} />
-          <div className="absolute inset-x-0 bottom-8 flex justify-center">
+          
+          {/* NFC Symbol - Top Right Corner */}
+          <div className="absolute top-5 right-6 z-10 flex items-center justify-center pointer-events-none">
+            <svg className="w-7 h-7 text-white/90 drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+              <path d="M6 9a6 6 0 0 1 0 6" />
+              <path d="M10 7a10 10 0 0 1 0 10" />
+              <path d="M14 5a14 14 0 0 1 0 14" />
+              <path d="M18 3a18 18 0 0 1 0 18" />
+            </svg>
+          </div>
+
+          {/* Tapinfi Logo - Center */}
+          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
             <div className="h-[40px] w-[105px] md:h-[60px] md:w-[157px] relative overflow-hidden">
               <img 
                 alt="Tapinfi" 
-                className="absolute h-[100.18%] left-[-33.59%] max-w-none top-[-0.09%] w-[133.59%] opacity-80" 
+                className="absolute h-[100.18%] left-[-33.59%] max-w-none top-[-0.09%] w-[133.59%] opacity-90 drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]" 
                 src={imgLogo} 
               />
             </div>

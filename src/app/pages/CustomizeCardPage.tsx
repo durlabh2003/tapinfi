@@ -24,6 +24,7 @@ export default function CustomizeCardPage() {
     fullName: '',
     companyName: '',
     designation: '',
+    countryCode: '+91',
     phone: '',
     email: '',
     logoUrl: null,
