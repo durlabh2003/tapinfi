@@ -38,6 +38,153 @@ export interface BlogPost {
   keywords?: string;
 }
 
+/**
+ * Smart Parser to guarantee raw Markdown text (e.g. ## 1. , ### 1.1, #### 1.1.1, ---)
+ * is ALWAYS parsed into structured BlogSections and styled HTML elements.
+ */
+export function parseContentToSections(content?: string, existingSections?: BlogSection[]): BlogSection[] {
+  if (Array.isArray(existingSections) && existingSections.length > 0) {
+    return existingSections;
+  }
+  if (!content || !content.trim()) {
+    return [];
+  }
+
+  // Split by markdown horizontal rule divider '---'
+  const rawSections = content.split(/\n\s*---\s*\n/);
+  const sections: BlogSection[] = [];
+
+  rawSections.forEach((secStr, secIdx) => {
+    const lines = secStr.split('\n');
+    let primaryHeading = `Section ${secIdx + 1}`;
+    let sectionImage: string | null = null;
+    let imageCaption = '';
+    const subheadings: SubHeading[] = [];
+    let currentSub: SubHeading | null = null;
+    let currentChild: SubHeadingChild | null = null;
+
+    lines.forEach((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) return;
+
+      // Primary Heading (H2 or ##)
+      if (trimmed.startsWith('## ')) {
+        primaryHeading = trimmed.replace(/^##\s*/, '').replace(/^\d+\.\s*/, '');
+      }
+      // Image markdown format ![alt](url)
+      else if (trimmed.startsWith('![')) {
+        const match = trimmed.match(/!\[(.*?)\]\((.*?)\)/);
+        if (match) {
+          imageCaption = match[1];
+          sectionImage = match[2];
+        }
+      }
+      // Secondary Heading (H3 or ###)
+      else if (trimmed.startsWith('### ')) {
+        if (currentSub) {
+          subheadings.push(currentSub);
+        }
+        const subTitle = trimmed.replace(/^###\s*/, '').replace(/^\d+(\.\d+)*\s*/, '');
+        currentSub = {
+          id: `sub_${secIdx}_${subheadings.length}_${Math.random().toString(36).substr(2, 4)}`,
+          title: subTitle,
+          contentType: 'paragraph',
+          content: '',
+          subHeadings: []
+        };
+        currentChild = null;
+      }
+      // Nested Sub-Heading (H4/H5 or #### / #####)
+      else if (trimmed.startsWith('#### ') || trimmed.startsWith('##### ')) {
+        const childTitle = trimmed.replace(/^#{4,5}\s*/, '').replace(/^\d+(\.\d+)*\s*/, '');
+        currentChild = {
+          id: `child_${secIdx}_${Math.random().toString(36).substr(2, 4)}`,
+          title: childTitle,
+          contentType: 'paragraph',
+          content: ''
+        };
+        if (!currentSub) {
+          currentSub = {
+            id: `sub_${secIdx}_0_${Math.random().toString(36).substr(2, 4)}`,
+            title: primaryHeading,
+            contentType: 'paragraph',
+            content: '',
+            subHeadings: []
+          };
+        }
+        if (!currentSub.subHeadings) currentSub.subHeadings = [];
+        currentSub.subHeadings.push(currentChild);
+      }
+      // Bullet list item
+      else if (trimmed.startsWith('•') || trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+        const cleanBullet = trimmed.replace(/^[\s•\-\*]+/, '').trim();
+        if (currentChild) {
+          currentChild.contentType = 'list';
+          currentChild.content = currentChild.content
+            ? `${currentChild.content}\n• ${cleanBullet}`
+            : `• ${cleanBullet}`;
+        } else if (currentSub) {
+          currentSub.contentType = 'list';
+          currentSub.content = currentSub.content
+            ? `${currentSub.content}\n• ${cleanBullet}`
+            : `• ${cleanBullet}`;
+        } else {
+          currentSub = {
+            id: `sub_${secIdx}_0_${Math.random().toString(36).substr(2, 4)}`,
+            title: primaryHeading,
+            contentType: 'list',
+            content: `• ${cleanBullet}`,
+            subHeadings: []
+          };
+        }
+      }
+      // Supportive text paragraph
+      else {
+        if (currentChild) {
+          currentChild.content = currentChild.content
+            ? `${currentChild.content}\n${trimmed}`
+            : trimmed;
+        } else if (currentSub) {
+          currentSub.content = currentSub.content
+            ? `${currentSub.content}\n${trimmed}`
+            : trimmed;
+        } else {
+          currentSub = {
+            id: `sub_${secIdx}_0_${Math.random().toString(36).substr(2, 4)}`,
+            title: primaryHeading,
+            contentType: 'paragraph',
+            content: trimmed,
+            subHeadings: []
+          };
+        }
+      }
+    });
+
+    if (currentSub) {
+      subheadings.push(currentSub);
+    }
+
+    sections.push({
+      id: `sec_${secIdx + 1}`,
+      sectionNumber: secIdx + 1,
+      primaryHeading,
+      sectionImage,
+      imageCaption,
+      subheadings: subheadings.length > 0 ? subheadings : [
+        {
+          id: `sub_${secIdx}_default`,
+          title: primaryHeading,
+          contentType: 'paragraph',
+          content: secStr,
+          subHeadings: []
+        }
+      ]
+    });
+  });
+
+  return sections;
+}
+
 export const MOCK_BLOGS: BlogPost[] = [
   {
     id: 'future-of-networking',

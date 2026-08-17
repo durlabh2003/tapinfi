@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { supabase, isPlaceholder } from '../../lib/supabase';
-import { MOCK_BLOGS, BlogPost, BlogSection } from '../data/blogs';
+import { MOCK_BLOGS, BlogPost, BlogSection, parseContentToSections } from '../data/blogs';
 
 export default function BlogPostPage() {
   const { id } = useParams<{ id: string }>();
@@ -16,7 +16,12 @@ export default function BlogPostPage() {
 
       if (isPlaceholder) {
         const found = MOCK_BLOGS.find((p) => p.id === id);
-        setPost(found || null);
+        if (found) {
+          const finalSections = parseContentToSections(found.content, found.sections);
+          setPost({ ...found, sections: finalSections });
+        } else {
+          setPost(null);
+        }
         setLoading(false);
         return;
       }
@@ -30,16 +35,21 @@ export default function BlogPostPage() {
 
         if (error) throw error;
 
-        // Parse sections if stored as JSON string
+        // Parse sections if stored as JSON array/string, or parse raw markdown content
         let sections: BlogSection[] = [];
-        if (Array.isArray(data.sections)) {
+        if (Array.isArray(data.sections) && data.sections.length > 0) {
           sections = data.sections;
-        } else if (typeof data.sections === 'string') {
+        } else if (typeof data.sections === 'string' && data.sections.trim()) {
           try {
             sections = JSON.parse(data.sections);
           } catch {
             sections = [];
           }
+        }
+
+        // Fallback: parse raw markdown content into structured sections
+        if ((!sections || sections.length === 0) && data.content) {
+          sections = parseContentToSections(data.content);
         }
 
         setPost({
@@ -49,7 +59,12 @@ export default function BlogPostPage() {
       } catch (err) {
         console.error('Error fetching post:', err);
         const fallback = MOCK_BLOGS.find((p) => p.id === id);
-        setPost(fallback || null);
+        if (fallback) {
+          const finalSections = parseContentToSections(fallback.content, fallback.sections);
+          setPost({ ...fallback, sections: finalSections });
+        } else {
+          setPost(null);
+        }
       } finally {
         setLoading(false);
       }
@@ -70,6 +85,7 @@ export default function BlogPostPage() {
   }, [post]);
 
   const formatDate = (dateStr: string) => {
+    if (!dateStr) return '';
     return new Date(dateStr).toLocaleDateString('en-US', {
       month: 'long',
       day: 'numeric',
@@ -290,7 +306,6 @@ export default function BlogPostPage() {
               ))}
             </div>
           ) : (
-            /* Legacy Plaintext Content Fallback */
             <div className="prose prose-lg max-w-none">
               <div className="font-['Poppins:Regular',sans-serif] text-[16px] sm:text-[18px] text-[#333] leading-relaxed whitespace-pre-line">
                 {post.content}
