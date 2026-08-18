@@ -42,9 +42,9 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  // Click-outside & touch-outside dismissal for mobile menu and header dropdowns
+  // Click-outside dismissal for desktop header
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
       }
@@ -52,12 +52,10 @@ export default function Header() {
 
     if (menuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('touchstart', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
     };
   }, [menuOpen]);
 
@@ -206,9 +204,14 @@ export default function Header() {
                 </span>
               )}
             </button>
+
+            {/* Hamburger Toggle Button with stopPropagation */}
             <button
-              className="text-white p-2.5 rounded-full hover:bg-white/10 transition-all active:scale-95"
-              onClick={() => setMenuOpen(!menuOpen)}
+              className="text-white p-2.5 rounded-full hover:bg-white/10 transition-all active:scale-95 cursor-pointer relative z-[110]"
+              onClick={(e) => {
+                e.stopPropagation();
+                setMenuOpen(prev => !prev);
+              }}
               aria-label="Toggle menu"
             >
               {menuOpen ? (
@@ -225,68 +228,77 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Full-width Full-screen Mobile Navigation Drawer */}
+      {/* Mobile Backdrop & Navigation Drawer */}
       {menuOpen && (
-        <div
-          className="fixed inset-x-0 top-[80px] lg:top-[90px] bottom-0 bg-[#020617]/98 backdrop-blur-2xl z-40 lg:hidden flex flex-col justify-between p-6 sm:p-8 border-t border-white/10 overflow-y-auto animate-in fade-in slide-in-from-top-4 duration-300"
-        >
-          {/* Navigation Links */}
-          <nav className="flex flex-col space-y-4 pt-2">
-            {navItems.map((item) => {
-              const isActive = location.pathname === item.path;
-              return (
+        <>
+          {/* Backdrop overlay */}
+          <div
+            className="fixed inset-0 top-[80px] lg:top-[90px] bg-black/70 backdrop-blur-md z-[80] lg:hidden"
+            onClick={() => setMenuOpen(false)}
+          />
+
+          {/* Full-screen drawer */}
+          <div
+            className="fixed inset-x-0 top-[80px] lg:top-[90px] bottom-0 bg-[#020617] z-[90] lg:hidden flex flex-col justify-between p-6 sm:p-8 border-t border-white/10 overflow-y-auto animate-in fade-in slide-in-from-top-4 duration-300"
+          >
+            {/* Navigation Links */}
+            <nav className="flex flex-col space-y-4 pt-2">
+              {navItems.map((item) => {
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setMenuOpen(false)}
+                    className={`flex items-center justify-between p-4 rounded-2xl transition-all duration-200 font-['Poppins',sans-serif] ${
+                      isActive 
+                        ? 'bg-[#5aa4f4]/15 border border-[#5aa4f4]/40 text-[#5aa4f4] font-bold' 
+                        : 'text-white/90 hover:bg-white/5 hover:text-white font-medium'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      {isActive && <span className="w-2 h-2 rounded-full bg-[#5aa4f4] shadow-[0_0_10px_#5aa4f4]" />}
+                      <span className="text-xl tracking-wider">{item.label}</span>
+                    </div>
+                    <ChevronRight className={`w-5 h-5 ${isActive ? 'text-[#5aa4f4]' : 'text-white/40'}`} />
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Bottom Actions & Support info */}
+            <div className="space-y-6 pt-6 border-t border-white/10 mt-auto">
+              {session ? (
                 <Link
-                  key={item.path}
-                  to={item.path}
+                  to="/orders"
                   onClick={() => setMenuOpen(false)}
-                  className={`flex items-center justify-between p-4 rounded-2xl transition-all duration-200 font-['Poppins',sans-serif] ${
-                    isActive 
-                      ? 'bg-[#5aa4f4]/15 border border-[#5aa4f4]/40 text-[#5aa4f4] font-bold' 
-                      : 'text-white/90 hover:bg-white/5 hover:text-white font-medium'
-                  }`}
+                  className="w-full h-14 bg-[#5aa4f4] text-white font-['Poppins',sans-serif] font-bold rounded-2xl flex items-center justify-center gap-2 text-lg shadow-lg shadow-[#5aa4f4]/30 hover:bg-[#4a94e4] transition-all"
                 >
-                  <div className="flex items-center gap-3">
-                    {isActive && <span className="w-2 h-2 rounded-full bg-[#5aa4f4] shadow-[0_0_10px_#5aa4f4]" />}
-                    <span className="text-xl tracking-wider">{item.label}</span>
-                  </div>
-                  <ChevronRight className={`w-5 h-5 ${isActive ? 'text-[#5aa4f4]' : 'text-white/40'}`} />
+                  MY ORDERS
                 </Link>
-              );
-            })}
-          </nav>
+              ) : (
+                <a
+                  href="https://tapinfi.vercel.app/"
+                  onClick={() => setMenuOpen(false)}
+                  className="w-full h-14 bg-gradient-to-r from-[#5aa4f4] to-[#0e2d6e] text-white font-['Poppins',sans-serif] font-bold rounded-2xl flex items-center justify-center gap-2 text-lg shadow-lg shadow-[#5aa4f4]/20 hover:opacity-95 transition-all"
+                >
+                  LOGIN TO DASHBOARD
+                </a>
+              )}
 
-          {/* Bottom Actions & Support info */}
-          <div className="space-y-6 pt-6 border-t border-white/10 mt-auto">
-            {session ? (
-              <Link
-                to="/orders"
-                onClick={() => setMenuOpen(false)}
-                className="w-full h-14 bg-[#5aa4f4] text-white font-['Poppins',sans-serif] font-bold rounded-2xl flex items-center justify-center gap-2 text-lg shadow-lg shadow-[#5aa4f4]/30 hover:bg-[#4a94e4] transition-all"
-              >
-                MY ORDERS
-              </Link>
-            ) : (
-              <a
-                href="https://tapinfi.vercel.app/"
-                onClick={() => setMenuOpen(false)}
-                className="w-full h-14 bg-gradient-to-r from-[#5aa4f4] to-[#0e2d6e] text-white font-['Poppins',sans-serif] font-bold rounded-2xl flex items-center justify-center gap-2 text-lg shadow-lg shadow-[#5aa4f4]/20 hover:opacity-95 transition-all"
-              >
-                LOGIN TO DASHBOARD
-              </a>
-            )}
-
-            <div className="grid grid-cols-2 gap-3 text-xs text-white/60 pt-2 font-['Inter',sans-serif]">
-              <a href="mailto:support@tapinfi.com" className="flex items-center gap-2 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                <Mail className="w-4 h-4 text-[#5aa4f4]" />
-                <span className="truncate">Email Us</span>
-              </a>
-              <a href="tel:+917340181915" className="flex items-center gap-2 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                <Phone className="w-4 h-4 text-[#5aa4f4]" />
-                <span>+91 7340181915</span>
-              </a>
+              <div className="grid grid-cols-2 gap-3 text-xs text-white/60 pt-2 font-['Inter',sans-serif]">
+                <a href="mailto:support@tapinfi.com" className="flex items-center gap-2 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                  <Mail className="w-4 h-4 text-[#5aa4f4]" />
+                  <span className="truncate">Email Us</span>
+                </a>
+                <a href="tel:+917340181915" className="flex items-center gap-2 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                  <Phone className="w-4 h-4 text-[#5aa4f4]" />
+                  <span>+91 7340181915</span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
       
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
