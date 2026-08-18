@@ -175,7 +175,7 @@ export default function ProductDetailPage() {
             {/* Left: Product Image Section */}
             <ScrollReveal animation="fade-right">
               <div className="space-y-6">
-                <div className="aspect-[4/3] bg-gray-50 rounded-[40px] overflow-hidden border border-gray-100 relative group shadow-inner flex items-center justify-center p-8 lg:p-12 transition-all duration-500">
+                <div className="aspect-[4/3] bg-white rounded-[40px] overflow-hidden border border-gray-100 relative group flex items-center justify-center p-8 lg:p-12 transition-all duration-500">
                   <img 
                     src={product.img || product.front_mock_photo} 
                     alt={product.name} 

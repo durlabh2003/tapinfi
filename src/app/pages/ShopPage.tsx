@@ -160,7 +160,7 @@ export default function ShopPage() {
                         <p className="text-[18px] text-[#0e2d6e] mb-4 font-bold" style={{ fontFamily: "'Inter', sans-serif" }}>
                           {p.name}
                         </p>
-                        <div className="flex-1 flex items-center justify-center py-4 overflow-hidden rounded-xl bg-gray-50/50 mb-4">
+                        <div className="flex-1 flex items-center justify-center py-4 overflow-hidden rounded-xl bg-transparent mb-4">
                           <img
                             alt={`${p.name} NFC Card`}
                             className="max-h-[240px] w-auto object-contain
