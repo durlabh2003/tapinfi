@@ -228,7 +228,7 @@ export default function Header() {
       {/* Full-width Full-screen Mobile Navigation Drawer */}
       {menuOpen && (
         <div
-          className="fixed inset-x-0 top-[80px] bottom-0 bg-[#020617]/98 backdrop-blur-2xl z-40 lg:hidden flex flex-col justify-between p-6 sm:p-8 border-t border-white/10 overflow-y-auto animate-in fade-in slide-in-from-top-4 duration-300"
+          className="fixed inset-x-0 top-[80px] lg:top-[90px] bottom-0 bg-[#020617]/98 backdrop-blur-2xl z-40 lg:hidden flex flex-col justify-between p-6 sm:p-8 border-t border-white/10 overflow-y-auto animate-in fade-in slide-in-from-top-4 duration-300"
         >
           {/* Navigation Links */}
           <nav className="flex flex-col space-y-4 pt-2">

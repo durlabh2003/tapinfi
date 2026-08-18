@@ -159,7 +159,7 @@ export default function HeroAnimation() {
           {/* Introductory Title (Visible at scroll 0, fades out as user scrolls) */}
           <motion.div
             style={{ opacity: introOpacity, y: introY, pointerEvents: 'none' }}
-            className="absolute top-[12%] sm:top-[15%] z-20 text-center px-4 max-w-xl flex flex-col items-center"
+            className="absolute top-[100px] sm:top-[120px] lg:top-[140px] z-20 text-center px-4 max-w-xl flex flex-col items-center"
           >
             <h1 className="text-[28px] sm:text-[42px] lg:text-[52px] font-black tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/60 drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
               Next-Gen Smart Cards
