@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
-import { Sparkles, Rss, Cpu, Share2, ArrowRight } from 'lucide-react';
+import { Rss, Share2, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import profileAvatar from './profile-avatar.jpg';
 import imgLogo from '../../imports/Frame1-1/f00b995e56d83fe3818dbb20f3489f43c9842118.png';
@@ -11,48 +11,6 @@ export default function HeroAnimation() {
     target: containerRef,
     offset: ["start start", "end end"]
   });
-
-  // Buttery-smooth inertial scroll transition (increased damping and decreased stiffness for supreme fluid physics)
-  const smoothY = useSpring(scrollYProgress, { stiffness: 45, damping: 24, restDelta: 0.001 });
-
-  // Mouse position tracking (uses MotionValues to eliminate React re-renders on mousemove)
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  // Buttery-smooth spring filters for mouse parallax tracking
-  const mouseXSpring = useSpring(mouseX, { stiffness: 60, damping: 22 });
-  const mouseYSpring = useSpring(mouseY, { stiffness: 60, damping: 22 });
-
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    // Only bind mousemove listener if screen width is at least 768px (desktop/tablet) and supports hover/fine pointer
-    const isTouchOnly = window.matchMedia('(pointer: coarse)').matches;
-    if (window.innerWidth < 768 || isTouchOnly) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e;
-      const { innerWidth, innerHeight } = window;
-      const x = (clientX / innerWidth) - 0.5;
-      const y = (clientY / innerHeight) - 0.5;
-      
-      mouseX.set(x);
-      mouseY.set(y);
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [mouseX, mouseY]);
-
-  // Subtle 3D tilt values
-  const phoneRotateX = useTransform(mouseYSpring, [-0.5, 0.5], [10, -10]);
-  const phoneRotateY = useTransform(mouseXSpring, [-0.5, 0.5], [-10, 10]);
-
-  const cardTiltX = useTransform(mouseYSpring, [-0.5, 0.5], [15, -15]);
-  const cardTiltY = useTransform(mouseXSpring, [-0.5, 0.5], [-15, 15]);
-
-  // Parallax light reflection shininess
-  const shineX = useTransform(mouseXSpring, [-0.5, 0.5], [-50, 50]);
-  const shineY = useTransform(mouseYSpring, [-0.5, 0.5], [-50, 50]);
 
   // Responsive detection for mobile optimizations
   const [windowSize, setWindowSize] = useState({
@@ -71,16 +29,50 @@ export default function HeroAnimation() {
 
   const isMobile = windowSize.width < 768;
   const isTablet = windowSize.width >= 768 && windowSize.width < 1024;
-  const isDesktop = windowSize.width >= 1024;
+
+  // Inertial scroll transition: Direct scrollYProgress on mobile for instant 1-to-1 iPhone touch response!
+  const desktopSmoothY = useSpring(scrollYProgress, { stiffness: 60, damping: 26, restDelta: 0.001 });
+  const activeProgress = isMobile ? scrollYProgress : desktopSmoothY;
+
+  // Mouse position tracking (desktop only)
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const mouseXSpring = useSpring(mouseX, { stiffness: 80, damping: 25 });
+  const mouseYSpring = useSpring(mouseY, { stiffness: 80, damping: 25 });
+
+  useEffect(() => {
+    const isTouchOnly = window.matchMedia('(pointer: coarse)').matches;
+    if (window.innerWidth < 768 || isTouchOnly) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const { clientX, clientY } = e;
+      const { innerWidth, innerHeight } = window;
+      const x = (clientX / innerWidth) - 0.5;
+      const y = (clientY / innerHeight) - 0.5;
+      
+      mouseX.set(x);
+      mouseY.set(y);
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [mouseX, mouseY]);
+
+  // 3D tilt values (desktop only)
+  const phoneRotateX = useTransform(mouseYSpring, [-0.5, 0.5], [8, -8]);
+  const phoneRotateY = useTransform(mouseXSpring, [-0.5, 0.5], [-8, 8]);
+  const cardTiltX = useTransform(mouseYSpring, [-0.5, 0.5], [12, -12]);
+  const cardTiltY = useTransform(mouseXSpring, [-0.5, 0.5], [-12, 12]);
+
+  const shineX = useTransform(mouseXSpring, [-0.5, 0.5], [-40, 40]);
+  const shineY = useTransform(mouseYSpring, [-0.5, 0.5], [-40, 40]);
 
   // === ANIMATION TIMING (0 to 1 Progress) ===
-  const phoneOpacity = useTransform(smoothY, [0.06, 0.14], [0, 1]);
+  const phoneOpacity = useTransform(activeProgress, [0.06, 0.14], [0, 1]);
 
-  // Determine phone scale endpoints responsively based on viewport height
   const getMobileEndScale = () => {
-    if (windowSize.height < 680) return 0.40;
-    if (windowSize.height < 780) return 0.46;
-    return 0.54;
+    if (windowSize.height < 680) return 0.42;
+    if (windowSize.height < 780) return 0.48;
+    return 0.56;
   };
 
   const getTabletEndScale = () => {
@@ -91,88 +83,79 @@ export default function HeroAnimation() {
   const mobileEndScale = getMobileEndScale();
   const tabletEndScale = getTabletEndScale();
 
-  // Group animations (applied to the wrapper of Phone, Card, and Ripple)
-  const groupScale = useTransform(smoothY, [0.06, 0.14, 0.50, 0.58],
-    isMobile ? [0.55, 0.70, 0.70, mobileEndScale] :
+  const groupScale = useTransform(activeProgress, [0.06, 0.14, 0.50, 0.58],
+    isMobile ? [0.60, 0.72, 0.72, mobileEndScale] :
       isTablet ? [0.65, 0.80, 0.80, tabletEndScale] : [0.8, 1, 1, 0.85]
   );
 
-  // Dynamic responsive X and Y offsets at the end of the scroll
   const endX = isMobile ? 0 : isTablet ? 0 : (windowSize.width / 4);
   const endY = isMobile ? -(windowSize.height / 4) : isTablet ? -(windowSize.height / 4) : 0;
 
-  const groupX = useTransform(smoothY, [0.55, 0.65], [0, endX]);
-  const groupY = useTransform(smoothY, [0.50, 0.65], [0, endY]);
+  const groupX = useTransform(activeProgress, [0.55, 0.65], [0, endX]);
+  const groupY = useTransform(activeProgress, [0.50, 0.65], [0, endY]);
 
-  // Card local positions (relative to the Phone/Group Center)
-  const cardX = useTransform(smoothY, [0.04, 0.12, 0.30],
-    [0, 0, isMobile ? 55 : isTablet ? 100 : 185]
+  const cardX = useTransform(activeProgress, [0.04, 0.12, 0.30],
+    [0, 0, isMobile ? 45 : isTablet ? 100 : 185]
   );
-  const cardY = useTransform(smoothY, [0.04, 0.12, 0.30],
-    [0, 0, isMobile ? -140 : isTablet ? -180 : -255]
+  const cardY = useTransform(activeProgress, [0.04, 0.12, 0.30],
+    [0, 0, isMobile ? -120 : isTablet ? -180 : -255]
   );
-  const cardRotateZ = useTransform(smoothY, [0.04, 0.12, 0.30],
-    [0, 0, isMobile ? -10 : -20]
+  const cardRotateZ = useTransform(activeProgress, [0.04, 0.12, 0.30],
+    [0, 0, isMobile ? -8 : -20]
   );
-  const cardRotateY = useTransform(smoothY, [0.04, 0.12, 0.30],
-    [0, 0, isMobile ? 20 : 45]
+  const cardRotateY = useTransform(activeProgress, [0.04, 0.12, 0.30],
+    [0, 0, isMobile ? 15 : 45]
   );
-  const cardScale = useTransform(smoothY, [0.04, 0.12, 0.30, 0.55, 0.62],
-    isMobile ? [0.8, 0.8, 0.38, 0.38, 0] :
+  const cardScale = useTransform(activeProgress, [0.04, 0.12, 0.30, 0.55, 0.62],
+    isMobile ? [0.85, 0.85, 0.42, 0.42, 0] :
       isTablet ? [0.95, 0.95, 0.42, 0.42, 0] : [1.1, 1.1, 0.48, 0.48, 0]
   );
-  const cardOpacity = useTransform(smoothY, [0.55, 0.62], [1, 0]);
+  const cardOpacity = useTransform(activeProgress, [0.55, 0.62], [1, 0]);
 
-  // Initial Card Glow
-  const initialGlowOpacity = useTransform(smoothY, [0, 0.05], [0.8, 0]);
+  const initialGlowOpacity = useTransform(activeProgress, [0, 0.05], [0.8, 0]);
 
-  // Tap Ripple
-  const rippleScale = useTransform(smoothY, [0.30, 0.38], [0, 2.5]);
-  const rippleOpacity = useTransform(smoothY, [0.30, 0.32, 0.38], [0, 0.8, 0]);
+  const rippleScale = useTransform(activeProgress, [0.30, 0.38], [0, 2.5]);
+  const rippleOpacity = useTransform(activeProgress, [0.30, 0.32, 0.38], [0, 0.8, 0]);
 
-  // iOS Notification
-  const notifY = useTransform(smoothY, [0.33, 0.38, 0.48, 0.54], [-120, 24, 24, -120]);
-  const notifOpacity = useTransform(smoothY, [0.33, 0.38, 0.48, 0.54], [0, 1, 1, 0]);
+  const notifY = useTransform(activeProgress, [0.33, 0.38, 0.48, 0.54], [-120, 24, 24, -120]);
+  const notifOpacity = useTransform(activeProgress, [0.33, 0.38, 0.48, 0.54], [0, 1, 1, 0]);
 
-  // Profile Website Reveal (Hardware-accelerated y-translation to prevent layout reflows)
-  const profileY = useTransform(smoothY, [0.46, 0.56], ["100%", "0%"]);
-  const profileOpacity = useTransform(smoothY, [0.46, 0.48], [0, 1]);
+  const profileY = useTransform(activeProgress, [0.46, 0.56], ["100%", "0%"]);
+  const profileOpacity = useTransform(activeProgress, [0.46, 0.48], [0, 1]);
 
-  // Intro Elements (First fold UI visible at scroll 0, fades out dynamically)
-  const introOpacity = useTransform(smoothY, [0, 0.05], [1, 0]);
-  const introY = useTransform(smoothY, [0, 0.05], [0, -30]);
+  const introOpacity = useTransform(activeProgress, [0, 0.05], [1, 0]);
+  const introY = useTransform(activeProgress, [0, 0.05], [0, -30]);
 
-  // CTA Elements
-  const ctaOpacity = useTransform(smoothY, [0.62, 0.70], [0, 1]);
-  const ctaY = useTransform(smoothY, [0.62, 0.70], [20, 0]);
+  const ctaOpacity = useTransform(activeProgress, [0.62, 0.70], [0, 1]);
+  const ctaY = useTransform(activeProgress, [0.62, 0.70], [20, 0]);
 
   return (
     <div ref={containerRef} className="relative text-white selection:bg-violet-500/30">
 
-      {/* Hero Animation Track */}
-      <div className="relative h-[1800px] sm:h-[2000px] z-10">
+      {/* Hero Animation Track - Compact 1100px on mobile for fast, responsive iPhone scrolling */}
+      <div className="relative h-[1100px] sm:h-[1800px] lg:h-[2000px] z-10">
         <motion.div
-          className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-[75px] sm:pt-[90px]"
+          className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-[70px] sm:pt-[90px]"
           style={{ willChange: 'transform, opacity', backfaceVisibility: 'hidden' }}
         >
 
           {/* Introductory Title (Visible at scroll 0, fades out as user scrolls) */}
           <motion.div
             style={{ opacity: introOpacity, y: introY, pointerEvents: 'none' }}
-            className="absolute top-[100px] sm:top-[120px] lg:top-[140px] z-20 text-center px-4 max-w-xl flex flex-col items-center"
+            className="absolute top-[90px] sm:top-[120px] lg:top-[140px] z-20 text-center px-4 max-w-xl flex flex-col items-center"
           >
-            <h1 className="text-[28px] sm:text-[42px] lg:text-[52px] font-black tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/60 drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+            <h1 className="text-[26px] sm:text-[42px] lg:text-[52px] font-black tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/60 drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
               Next-Gen Smart Cards
             </h1>
-            <p className="text-white/60 text-xs sm:text-base font-medium mt-2 max-w-md">
+            <p className="text-white/60 text-xs sm:text-base font-medium mt-1.5 sm:mt-2 max-w-md">
               The Future of Connection is Here. Scroll to Experience.
             </p>
           </motion.div>
 
           {/* Scroll Cue (Fades out quickly as user scrolls) */}
           <motion.div
-            style={{ opacity: introOpacity, y: useTransform(smoothY, [0, 0.08], [0, 20]), pointerEvents: 'none' }}
-            className="absolute bottom-[8%] sm:bottom-[10%] z-20 flex flex-col items-center gap-2"
+            style={{ opacity: introOpacity, y: useTransform(activeProgress, [0, 0.05], [0, 20]), pointerEvents: 'none' }}
+            className="absolute bottom-[6%] sm:bottom-[10%] z-20 flex flex-col items-center gap-2"
           >
             <span className="text-[10px] sm:text-xs font-semibold text-cyan-400 tracking-[0.2em] uppercase animate-pulse">
               Scroll to Experience
@@ -189,7 +172,7 @@ export default function HeroAnimation() {
           {/* Initial Card Center Glow */}
           <motion.div
             style={{ opacity: initialGlowOpacity }}
-            className="absolute w-[320px] h-[320px] sm:w-[400px] sm:h-[400px] lg:w-[450px] lg:h-[450px] rounded-full pointer-events-none bg-[radial-gradient(circle,rgba(6,182,212,0.25)_0%,transparent_70%)] md:bg-none md:bg-cyan-500/20 md:blur-[90px] lg:blur-[110px]"
+            className="absolute w-[280px] h-[280px] sm:w-[400px] sm:h-[400px] lg:w-[450px] lg:h-[450px] rounded-full pointer-events-none bg-[radial-gradient(circle,rgba(6,182,212,0.25)_0%,transparent_70%)] md:bg-none md:bg-cyan-500/20 md:blur-[90px] lg:blur-[110px]"
           />
 
           {/* Phone & Card Animation Group */}
@@ -211,19 +194,19 @@ export default function HeroAnimation() {
                 perspective: "1200px",
                 willChange: "transform, opacity"
               }}
-              className="relative z-10 w-[260px] h-[530px] sm:w-[280px] sm:h-[570px] lg:w-[300px] lg:h-[610px] bg-slate-900 rounded-[2.8rem] sm:rounded-[3.2rem] lg:rounded-[3.5rem] border-[8px] sm:border-[9px] lg:border-[10px] border-slate-800 shadow-[0_30px_80px_rgba(0,0,0,0.6)] lg:shadow-[0_40px_100px_rgba(0,0,0,0.7)] flex flex-col overflow-hidden pointer-events-auto"
+              className="relative z-10 w-[230px] h-[470px] sm:w-[280px] sm:h-[570px] lg:w-[300px] lg:h-[610px] bg-slate-900 rounded-[2.4rem] sm:rounded-[3.2rem] lg:rounded-[3.5rem] border-[7px] sm:border-[9px] lg:border-[10px] border-slate-800 shadow-[0_30px_80px_rgba(0,0,0,0.6)] lg:shadow-[0_40px_100px_rgba(0,0,0,0.7)] flex flex-col overflow-hidden pointer-events-auto"
             >
             <div className="relative flex-1 bg-black overflow-hidden" style={{ transformStyle: "preserve-3d" }}>
               {/* Dynamic Island */}
-              <div className="absolute top-3 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-[100] ring-[1px] ring-white/10" />
+              <div className="absolute top-2.5 sm:top-3 left-1/2 -translate-x-1/2 w-24 sm:w-28 h-6 sm:h-7 bg-black rounded-full z-[100] ring-[1px] ring-white/10" />
 
               {/* Home Screen Icons */}
-              <div className="h-full flex flex-col p-6 pt-16 space-y-6 opacity-40">
+              <div className="h-full flex flex-col p-5 sm:p-6 pt-14 sm:pt-16 space-y-5 sm:space-y-6 opacity-40">
                 <div className="flex justify-between">
-                  <div className="w-14 h-14 bg-slate-800/40 rounded-2xl border border-white/5" />
-                  <div className="w-14 h-14 bg-slate-800/40 rounded-2xl border border-white/5" />
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/40 rounded-2xl border border-white/5" />
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/40 rounded-2xl border border-white/5" />
                 </div>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-4 gap-3 sm:gap-4">
                   {[...Array(12)].map((_, i) => (
                     <div key={i} className="aspect-square bg-slate-800/20 rounded-xl border border-white/5" />
                   ))}
@@ -233,18 +216,18 @@ export default function HeroAnimation() {
               {/* iOS Notification */}
               <motion.div
                 style={{ y: notifY, opacity: notifOpacity, willChange: "transform, opacity" }}
-                className="absolute top-4 inset-x-3 bg-slate-900/95 border border-white/10 rounded-[1.5rem] p-4 z-[110] flex items-center gap-4 shadow-2xl md:bg-white/10 md:backdrop-blur-2xl md:border-white/20"
+                className="absolute top-4 inset-x-3 bg-slate-900/95 border border-white/10 rounded-[1.5rem] p-3.5 sm:p-4 z-[110] flex items-center gap-3.5 shadow-2xl md:bg-white/10 md:backdrop-blur-2xl md:border-white/20"
               >
-                <div className="w-11 h-11 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-[0_4px_12px_rgba(6,182,212,0.3)]">
-                  <Rss className="text-white w-6 h-6" />
+                <div className="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center shrink-0 shadow-[0_4px_12px_rgba(6,182,212,0.3)]">
+                  <Rss className="text-white w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-center mb-0.5">
-                    <span className="text-[10px] text-white/40 uppercase font-black tracking-widest">NFC LINK</span>
-                    <span className="text-[10px] text-white/30 tracking-tight">Now</span>
+                    <span className="text-[9px] sm:text-[10px] text-white/40 uppercase font-black tracking-widest">NFC LINK</span>
+                    <span className="text-[9px] sm:text-[10px] text-white/30 tracking-tight">Now</span>
                   </div>
-                  <p className="text-sm text-white font-bold leading-tight">Digital Business Card</p>
-                  <p className="text-[11px] text-white/50 truncate">Tap to view professional profile</p>
+                  <p className="text-xs sm:text-sm text-white font-bold leading-tight">Digital Business Card</p>
+                  <p className="text-[10px] sm:text-[11px] text-white/50 truncate">Tap to view professional profile</p>
                 </div>
               </motion.div>
 
@@ -255,28 +238,28 @@ export default function HeroAnimation() {
               >
                 <div className="h-full w-full flex flex-col">
                   {/* Banner */}
-                  <div className="h-40 bg-[#0a0a0c] relative">
+                  <div className="h-36 sm:h-40 bg-[#0a0a0c] relative">
                     <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center" />
-                    <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 w-24 h-24 rounded-full border-[5px] border-white shadow-xl overflow-hidden bg-slate-200">
+                    <div className="absolute -bottom-10 sm:-bottom-12 left-1/2 -translate-x-1/2 w-20 h-20 sm:w-24 sm:h-24 rounded-full border-[4px] sm:border-[5px] border-white shadow-xl overflow-hidden bg-slate-200">
                       <img src={profileAvatar} alt="Profile" className="w-full h-full object-cover" />
                     </div>
                   </div>
 
-                  <div className="flex-1 pt-14 px-6 text-center">
-                    <h3 className="text-slate-900 text-2xl font-black tracking-tighter">Marcus Sterling</h3>
-                    <p className="text-cyan-600 text-[10px] font-black uppercase tracking-[0.2em] mt-1">Founding Partner • Creative</p>
+                  <div className="flex-1 pt-12 sm:pt-14 px-5 sm:px-6 text-center">
+                    <h3 className="text-slate-900 text-xl sm:text-2xl font-black tracking-tighter">Marcus Sterling</h3>
+                    <p className="text-cyan-600 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] mt-1">Founding Partner • Creative</p>
 
-                    <div className="flex justify-center gap-3 my-6">
+                    <div className="flex justify-center gap-3 my-5 sm:my-6">
                       {[1, 2, 3].map(i => (
-                        <div key={i} className="w-9 h-9 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400">
-                          <Share2 className="w-4 h-4" />
+                        <div key={i} className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400">
+                          <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </div>
                       ))}
                     </div>
 
-                    <div className="space-y-3">
-                      <button className="w-full py-3.5 bg-slate-950 text-white rounded-2xl text-[13px] font-black shadow-lg">Save Contact</button>
-                      <button className="w-full py-3.5 border-2 border-slate-100 text-slate-500 rounded-2xl text-[13px] font-bold">Message</button>
+                    <div className="space-y-2.5 sm:space-y-3">
+                      <button className="w-full py-3 sm:py-3.5 bg-slate-950 text-white rounded-xl sm:rounded-2xl text-xs sm:text-[13px] font-black shadow-lg">Save Contact</button>
+                      <button className="w-full py-3 sm:py-3.5 border-2 border-slate-100 text-slate-500 rounded-xl sm:rounded-2xl text-xs sm:text-[13px] font-bold">Message</button>
                     </div>
                   </div>
                 </div>
@@ -289,11 +272,11 @@ export default function HeroAnimation() {
               style={{
                 scale: rippleScale,
                 opacity: rippleOpacity,
-                x: isMobile ? 55 : isTablet ? 100 : 185,
-                y: isMobile ? -170 : isTablet ? -220 : -310,
+                x: isMobile ? 45 : isTablet ? 100 : 185,
+                y: isMobile ? -140 : isTablet ? -220 : -310,
                 willChange: "transform, opacity"
               }}
-              className="absolute z-20 w-44 h-44 md:w-56 md:h-56 border border-cyan-400/50 rounded-full pointer-events-none shadow-[0_0_20px_rgba(34,211,238,0.25)] md:shadow-[0_0_40px_rgba(34,211,238,0.3)]"
+              className="absolute z-20 w-36 h-36 md:w-56 md:h-56 border border-cyan-400/50 rounded-full pointer-events-none shadow-[0_0_20px_rgba(34,211,238,0.25)] md:shadow-[0_0_40px_rgba(34,211,238,0.3)]"
             />
 
             {/* Premium NFC Card */}
@@ -324,12 +307,12 @@ export default function HeroAnimation() {
               }}
             />
 
-            {/* Interactive Card Body (handles floating levitation + hover + mouse 3D parallax) */}
+            {/* Interactive Card Body */}
             <motion.div
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
               animate={{
-                y: [0, -12, 0],
+                y: [0, -10, 0],
               }}
               style={{
                 rotateX: isMobile ? 0 : cardTiltX,
@@ -339,18 +322,18 @@ export default function HeroAnimation() {
               }}
               transition={{
                 y: {
-                  duration: 6,
+                  duration: 5,
                   repeat: Infinity,
                   ease: "easeInOut"
                 }
               }}
-              className="w-[280px] h-[175px] sm:w-[310px] sm:h-[192px] lg:w-[340px] lg:h-[210px] bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-black border border-white/10 rounded-2xl shadow-[0_25px_60px_-12px_rgba(0,0,0,0.8)] flex flex-col p-6 sm:p-7 lg:p-8 overflow-hidden group cursor-grab active:cursor-grabbing"
+              className="w-[250px] h-[155px] sm:w-[310px] sm:h-[192px] lg:w-[340px] lg:h-[210px] bg-gradient-to-br from-[#1e293b] via-[#0f172a] to-black border border-white/10 rounded-2xl shadow-[0_25px_60px_-12px_rgba(0,0,0,0.8)] flex flex-col p-5 sm:p-7 lg:p-8 overflow-hidden group cursor-grab active:cursor-grabbing"
             >
               {/* Brushed Alum texture */}
               <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/brushed-alum.png')]" />
               <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_0%,transparent_50%)]" />
 
-              {/* Holographic Dynamic Shine Reflection Overlay (moves dynamically with cursor position) */}
+              {/* Holographic Dynamic Shine Reflection Overlay */}
               <motion.div 
                 className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"
                 style={{
@@ -363,7 +346,7 @@ export default function HeroAnimation() {
               {/* Top Row: Brand & Contactless Icon */}
               <div className="flex justify-between items-start relative z-10" style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }}>
                 <div>
-                  <div className="h-[20px] w-[52px] relative overflow-hidden">
+                  <div className="h-[18px] sm:h-[20px] w-[46px] sm:w-[52px] relative overflow-hidden">
                     <img
                       alt="Tapinfi Logo"
                       src={imgLogo}
@@ -371,13 +354,13 @@ export default function HeroAnimation() {
                     />
                   </div>
                   <div className="flex items-center gap-1 mt-0.5">
-                    <span className="text-[7px] text-cyan-400 font-bold tracking-[0.3em] uppercase">Smart Card</span>
+                    <span className="text-[6px] sm:text-[7px] text-cyan-400 font-bold tracking-[0.3em] uppercase">Smart Card</span>
                   </div>
                 </div>
                 
                 {/* Contactless / NFC symbol */}
                 <div className="text-white/70 hover:text-white transition-colors duration-300">
-                  <svg className="w-6 h-6 rotate-90 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 rotate-90 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                     <path d="M5 8a9 9 0 0 1 14 0" />
                     <path d="M8 11a5 5 0 0 1 8 0" />
                     <path d="M11 14a1 1 0 0 1 2 0" />
@@ -386,24 +369,23 @@ export default function HeroAnimation() {
               </div>
 
               {/* Center Area: Elegant Minimal Logo mark */}
-              <div className="flex-1 flex items-center justify-center relative z-10 py-2" style={{ transform: "translateZ(20px)" }}>
-                {/* Abstract linking circles representing NFC Connection */}
-                <div className="flex -space-x-3 opacity-30 group-hover:opacity-50 transition-opacity duration-500">
-                  <div className="w-12 h-12 rounded-full border-2 border-white/60" />
-                  <div className="w-12 h-12 rounded-full border-2 border-cyan-400/80" />
+              <div className="flex-1 flex items-center justify-center relative z-10 py-1 sm:py-2" style={{ transform: "translateZ(20px)" }}>
+                <div className="flex -space-x-2.5 sm:-space-x-3 opacity-30 group-hover:opacity-50 transition-opacity duration-500">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white/60" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-cyan-400/80" />
                 </div>
               </div>
 
               {/* Bottom Row: Holder Name & Action */}
               <div className="flex justify-between items-end relative z-10 mt-auto" style={{ transform: "translateZ(25px)" }}>
                 <div>
-                  <h4 className="text-white text-base font-bold tracking-tight">Marcus Sterling</h4>
-                  <p className="text-[8px] text-white/40 tracking-[0.15em] font-semibold uppercase">Founding Partner</p>
+                  <h4 className="text-white text-sm sm:text-base font-bold tracking-tight">Marcus Sterling</h4>
+                  <p className="text-[7px] sm:text-[8px] text-white/40 tracking-[0.15em] font-semibold uppercase">Founding Partner</p>
                 </div>
                 
-                <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-2.5 py-1 backdrop-blur-md">
-                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                  <span className="text-[8px] text-cyan-200 font-bold uppercase tracking-[0.1em]">TAP TO SHARE</span>
+                <div className="flex items-center gap-1 sm:gap-1.5 bg-white/5 border border-white/10 rounded-full px-2 sm:px-2.5 py-0.5 sm:py-1 backdrop-blur-md">
+                  <div className="w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                  <span className="text-[7px] sm:text-[8px] text-cyan-200 font-bold uppercase tracking-[0.1em]">TAP TO SHARE</span>
                 </div>
               </div>
             </motion.div>
@@ -416,7 +398,7 @@ export default function HeroAnimation() {
               opacity: ctaOpacity,
               pointerEvents: "auto"
             }}
-            className="absolute z-[200] left-0 right-0 bottom-[6%] md:bottom-[10%] px-6 text-center flex flex-col items-center lg:left-[10%] lg:right-auto lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:text-left lg:items-start lg:max-w-[460px] xl:max-w-[580px] xl:left-[12%]"
+            className="absolute z-[200] left-0 right-0 bottom-[6%] md:bottom-[10%] px-5 sm:px-6 text-center flex flex-col items-center lg:left-[10%] lg:right-auto lg:top-1/2 lg:-translate-y-1/2 lg:bottom-auto lg:text-left lg:items-start lg:max-w-[460px] xl:max-w-[580px] xl:left-[12%]"
           >
             <motion.div
               style={{ y: ctaY }}
