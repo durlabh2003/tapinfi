@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../../lib/supabase';
 import imgLogo from '../../imports/Frame1-1/f00b995e56d83fe3818dbb20f3489f43c9842118.png';
 import { useCart } from '../context/CartContext';
@@ -18,16 +18,41 @@ export default function Header() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [session, setSession] = useState<any>(null);
   const { cartCount, setIsCartOpen } = useCart();
+  const headerRef = useRef<HTMLDivElement>(null);
 
   const [visible, setVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // Close mobile menu on page navigation
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
+  // Click-outside & touch-outside dismissal for mobile menu and header dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [menuOpen]);
+
+  // Scroll listener for sticky header animation
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Determine if we have scrolled down past the threshold
       setIsScrolled(currentScrollY > 50);
 
       // Keep navbar visible if mobile dropdown menu is open
@@ -37,13 +62,10 @@ export default function Header() {
       }
 
       if (currentScrollY <= 50) {
-        // Always show at the very top of the page
         setVisible(true);
       } else if (currentScrollY > lastScrollY) {
-        // Scrolling down -> hide navbar
         setVisible(false);
       } else {
-        // Scrolling up -> show navbar
         setVisible(true);
       }
 
@@ -75,6 +97,7 @@ export default function Header() {
 
   return (
     <div
+      ref={headerRef}
       className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
         visible ? 'translate-y-0' : '-translate-y-full'
       }`}
@@ -83,13 +106,13 @@ export default function Header() {
       <div
         className={`h-[90px] flex items-center transition-all duration-300 ${
           isScrolled
-            ? 'bg-[#000000]/90 backdrop-blur-md border-b border-white/10 mx-4 sm:mx-8 rounded-bl-[25px] rounded-br-[25px] shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
+            ? 'bg-[#000000]/90 backdrop-blur-md border-b border-white/10 mx-2 sm:mx-8 rounded-bl-[25px] rounded-br-[25px] shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
             : isHome
             ? 'bg-transparent'
-            : 'bg-[#000000] mx-4 sm:mx-8 rounded-bl-[25px] rounded-br-[25px] border-b border-white/5'
+            : 'bg-[#000000] mx-2 sm:mx-8 rounded-bl-[25px] rounded-br-[25px] border-b border-white/5'
         }`}
       >
-        <div className="w-full max-w-[1440px] mx-auto flex items-center justify-between px-6 lg:px-[86px]">
+        <div className="w-full max-w-[1440px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-[86px]">
           {/* Logo */}
           <Link to="/" className="h-[37px] w-[97px] shrink-0 relative overflow-hidden">
             <img
@@ -106,13 +129,12 @@ export default function Header() {
               <Link to="/shop" className={linkClass('/shop')} style={NAV_FONT}>SHOP</Link>
               <Link to="/blogs" className={linkClass('/blogs')} style={NAV_FONT}>BLOGS</Link>
               <Link to="/about" className={linkClass('/about')} style={NAV_FONT}>ABOUT US</Link>
-
             </div>
 
             {/* Cart icon */}
             <button 
               aria-label="Cart" 
-              className="text-white hover:text-[#5aa4f4] transition-colors relative"
+              className="text-white hover:text-[#5aa4f4] transition-colors relative p-1"
               onClick={() => setIsCartOpen(true)}
             >
               <svg className="w-[22px] h-[22px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -120,7 +142,7 @@ export default function Header() {
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-[#5aa4f4] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#100425]">
+                <span className="absolute -top-1 -right-2 bg-[#5aa4f4] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#100425]">
                   {cartCount}
                 </span>
               )}
@@ -150,21 +172,21 @@ export default function Header() {
           <div className="flex items-center gap-4 lg:hidden">
             <button 
               aria-label="Cart" 
-              className="text-white hover:text-[#5aa4f4] transition-colors relative"
+              className="text-white hover:text-[#5aa4f4] transition-colors relative p-1"
               onClick={() => setIsCartOpen(true)}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-[#5aa4f4] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#100425]">
+                <span className="absolute -top-1 -right-2 bg-[#5aa4f4] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#100425]">
                   {cartCount}
                 </span>
               )}
             </button>
             <button
-              className="text-white p-1"
+              className="text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle menu"
             >
@@ -182,37 +204,43 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile dropdown menu */}
+      {/* Mobile dropdown menu with backdrop */}
       {menuOpen && (
-        <div
-          className="lg:hidden bg-[#000000] border-t border-white/10 px-6 py-6 flex flex-col gap-5"
-          style={NAV_FONT}
-        >
-          <Link to="/" className={linkClass('/')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>HOME</Link>
-          <Link to="/shop" className={linkClass('/shop')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>SHOP</Link>
-          <Link to="/blogs" className={linkClass('/blogs')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>BLOGS</Link>
-          <Link to="/about" className={linkClass('/about')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>ABOUT US</Link>
+        <>
+          <div
+            className="fixed inset-0 top-[90px] bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+            onClick={() => setMenuOpen(false)}
+          />
+          <div
+            className="relative z-50 lg:hidden bg-[#000000] border-t border-white/10 mx-2 sm:mx-8 rounded-b-[25px] px-6 py-6 flex flex-col gap-5 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200"
+            style={NAV_FONT}
+          >
+            <Link to="/" className={linkClass('/')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>HOME</Link>
+            <Link to="/shop" className={linkClass('/shop')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>SHOP</Link>
+            <Link to="/blogs" className={linkClass('/blogs')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>BLOGS</Link>
+            <Link to="/about" className={linkClass('/about')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>ABOUT US</Link>
 
-          {session ? (
-            <Link
-              to="/orders"
-              className="text-center border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 mt-2 bg-white/10"
-              style={NAV_FONT}
-              onClick={() => setMenuOpen(false)}
-            >
-              ORDERS
-            </Link>
-          ) : (
-            <a
-              href="https://tapinfi.vercel.app/"
-              className="text-center border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 mt-2"
-              style={NAV_FONT}
-              onClick={() => setMenuOpen(false)}
-            >
-              LOGIN
-            </a>
-          )}
-        </div>
+            {session ? (
+              <Link
+                to="/orders"
+                className="text-center border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 mt-2 bg-white/10"
+                style={NAV_FONT}
+                onClick={() => setMenuOpen(false)}
+              >
+                ORDERS
+              </Link>
+            ) : (
+              <a
+                href="https://tapinfi.vercel.app/"
+                className="text-center border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 mt-2"
+                style={NAV_FONT}
+                onClick={() => setMenuOpen(false)}
+              >
+                LOGIN
+              </a>
+            )}
+          </div>
+        </>
       )}
       
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />

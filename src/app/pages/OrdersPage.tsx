@@ -171,7 +171,7 @@ export default function OrdersPage() {
                     </div>
                     <div className="text-left md:text-right w-full md:w-auto border-t md:border-none pt-4 md:pt-0 border-gray-200">
                       <p className="text-sm text-gray-500 mb-1 font-['Inter']">Total Amount</p>
-                      <p className="text-2xl font-bold text-[#0e2d6e] font-['Inter']">₹{order.final_amount.toLocaleString()}</p>
+                      <p className="text-2xl font-bold text-[#0e2d6e] font-['Inter']">₹{Number(order.final_amount || 0).toFixed(2)}</p>
                     </div>
                   </div>
                 ))}
@@ -300,7 +300,7 @@ export default function OrdersPage() {
                       )}
                       <div className="flex justify-between items-center pt-3 border-t border-gray-50 mt-2">
                         <span className="text-lg font-bold text-[#100425]">Total Paid</span>
-                        <span className="text-2xl font-bold text-[#0e2d6e]">₹{selectedOrder.final_amount.toLocaleString()}</span>
+                        <span className="text-2xl font-bold text-[#0e2d6e]">₹{Number(selectedOrder.final_amount || 0).toFixed(2)}</span>
                       </div>
                     </div>
                   </div>

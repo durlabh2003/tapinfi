@@ -3,19 +3,24 @@
 @import './theme.css';
 @import './animations.css';
 
-html {
-  overflow-x: visible;
-}
-
-body {
+html, body {
   margin: 0;
   padding: 0;
   width: 100%;
+  max-width: 100vw;
   overflow-x: hidden;
   font-family: 'Inter', sans-serif;
   background-color: #020617;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+}
+
+#root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 :root {
