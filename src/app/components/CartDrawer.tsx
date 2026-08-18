@@ -113,7 +113,7 @@ export default function CartDrawer() {
           <div className="p-6 border-t border-gray-100 bg-gray-50/50">
             <div className="flex justify-between items-center mb-6">
               <span className="text-gray-500 font-['Inter'] font-medium">Subtotal</span>
-              <span className="text-2xl font-bold text-[#0e2d6e] font-['Inter']">₹{cartTotal}</span>
+              <span className="text-2xl font-bold text-[#0e2d6e] font-['Inter']">₹{Number(cartTotal).toFixed(2)}</span>
             </div>
             <button 
               className="w-full h-14 rounded-full text-white font-semibold font-['Inter'] text-lg transition-transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-[#5aa4f4]/20"

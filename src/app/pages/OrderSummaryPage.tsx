@@ -129,7 +129,7 @@ export default function OrderSummaryPage() {
 
   // Dynamic shipping from state
   const taxes = 0; // Removed GST
-  const finalTotal = (cartTotal - discount) + shipping;
+  const finalTotal = Math.round(((cartTotal - discount) + shipping) * 100) / 100;
 
   const handleApplyCoupon = async () => {
     if (couponCode.trim() === '') {
@@ -204,7 +204,7 @@ export default function OrderSummaryPage() {
   const handleConfirmAndPay = () => {
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: finalTotal * 100, // Amount in paise
+      amount: Math.round(finalTotal * 100), // Amount in paise
       currency: "INR",
       name: "Tapinfi",
       description: "Order Payment",
@@ -290,7 +290,7 @@ export default function OrderSummaryPage() {
         navigate('/checkout/success', { 
           state: { 
             paymentId: response.razorpay_payment_id,
-            total: finalTotal 
+            total: Number(finalTotal).toFixed(2)
           } 
         });
       },
@@ -429,7 +429,7 @@ export default function OrderSummaryPage() {
                 <div className="space-y-4 mb-6 pb-6 border-b border-gray-100 font-['Inter']">
                   <div className="flex justify-between text-gray-600">
                     <span>Subtotal</span>
-                    <span className="font-medium text-gray-900">₹{cartTotal}</span>
+                    <span className="font-medium text-gray-900">₹{Number(cartTotal).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
@@ -437,7 +437,7 @@ export default function OrderSummaryPage() {
                       {loadingShipping ? (
                         <span className="text-xs text-gray-400 animate-pulse">Calculating...</span>
                       ) : (
-                        `₹${shipping}`
+                        `₹${Number(shipping).toFixed(2)}`
                       )}
                     </span>
                   </div>
@@ -452,7 +452,7 @@ export default function OrderSummaryPage() {
                         <span>Discount ({appliedCoupon.code})</span>
                         <button onClick={removeCoupon} className="text-xs text-red-500 hover:underline ml-1">Remove</button>
                       </div>
-                      <span>-₹{discount}</span>
+                      <span>-₹{Number(discount).toFixed(2)}</span>
                     </div>
                   )}
                 </div>
@@ -489,7 +489,7 @@ export default function OrderSummaryPage() {
                 
                 <div className="flex justify-between items-end mb-8 font-['Inter']">
                   <span className="text-lg font-medium text-gray-600">Total</span>
-                  <span className="text-3xl font-bold text-[#0e2d6e]">₹{finalTotal}</span>
+                  <span className="text-3xl font-bold text-[#0e2d6e]">₹{Number(finalTotal).toFixed(2)}</span>
                 </div>
 
                 <button 
