@@ -118,7 +118,7 @@ export default function Header() {
   return (
     <div
       ref={headerRef}
-      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
+      className={`fixed left-0 right-0 top-0 z-[100] transition-all duration-300 ${
         visible ? 'translate-y-0' : '-translate-y-full'
       }`}
     >

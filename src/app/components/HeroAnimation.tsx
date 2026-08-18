@@ -74,7 +74,7 @@ export default function HeroAnimation() {
   const isDesktop = windowSize.width >= 1024;
 
   // === ANIMATION TIMING (0 to 1 Progress) ===
-  const phoneOpacity = useTransform(smoothY, [0.05, 0.12], [0, 1]);
+  const phoneOpacity = useTransform(smoothY, [0.06, 0.14], [0, 1]);
 
   // Determine phone scale endpoints responsively based on viewport height
   const getMobileEndScale = () => {
@@ -92,7 +92,7 @@ export default function HeroAnimation() {
   const tabletEndScale = getTabletEndScale();
 
   // Group animations (applied to the wrapper of Phone, Card, and Ripple)
-  const groupScale = useTransform(smoothY, [0.05, 0.12, 0.50, 0.58],
+  const groupScale = useTransform(smoothY, [0.06, 0.14, 0.50, 0.58],
     isMobile ? [0.55, 0.70, 0.70, mobileEndScale] :
       isTablet ? [0.65, 0.80, 0.80, tabletEndScale] : [0.8, 1, 1, 0.85]
   );
@@ -124,7 +124,7 @@ export default function HeroAnimation() {
   const cardOpacity = useTransform(smoothY, [0.55, 0.62], [1, 0]);
 
   // Initial Card Glow
-  const initialGlowOpacity = useTransform(smoothY, [0, 0.10], [0.8, 0]);
+  const initialGlowOpacity = useTransform(smoothY, [0, 0.05], [0.8, 0]);
 
   // Tap Ripple
   const rippleScale = useTransform(smoothY, [0.30, 0.38], [0, 2.5]);
@@ -139,8 +139,8 @@ export default function HeroAnimation() {
   const profileOpacity = useTransform(smoothY, [0.46, 0.48], [0, 1]);
 
   // Intro Elements (First fold UI visible at scroll 0, fades out dynamically)
-  const introOpacity = useTransform(smoothY, [0, 0.08], [1, 0]);
-  const introY = useTransform(smoothY, [0, 0.08], [0, -30]);
+  const introOpacity = useTransform(smoothY, [0, 0.05], [1, 0]);
+  const introY = useTransform(smoothY, [0, 0.05], [0, -30]);
 
   // CTA Elements
   const ctaOpacity = useTransform(smoothY, [0.62, 0.70], [0, 1]);
