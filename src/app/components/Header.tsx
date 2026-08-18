@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase';
 import imgLogo from '../../imports/Frame1-1/f00b995e56d83fe3818dbb20f3489f43c9842118.png';
 import { useCart } from '../context/CartContext';
 import LoginModal from './LoginModal';
+import { ChevronRight, Mail, Phone } from 'lucide-react';
 
 const NAV_FONT: React.CSSProperties = {
   fontFamily: "'Inter', sans-serif",
@@ -28,6 +29,18 @@ export default function Header() {
   useEffect(() => {
     setMenuOpen(false);
   }, [location.pathname]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
 
   // Click-outside & touch-outside dismissal for mobile menu and header dropdowns
   useEffect(() => {
@@ -95,6 +108,13 @@ export default function Header() {
       location.pathname === path ? 'text-[#5aa4f4]' : 'text-white hover:text-[#5aa4f4]'
     }`;
 
+  const navItems = [
+    { label: 'HOME', path: '/' },
+    { label: 'SHOP', path: '/shop' },
+    { label: 'BLOGS', path: '/blogs' },
+    { label: 'ABOUT US', path: '/about' },
+  ];
+
   return (
     <div
       ref={headerRef}
@@ -104,17 +124,17 @@ export default function Header() {
     >
       {/* Main bar */}
       <div
-        className={`h-[90px] flex items-center transition-all duration-300 ${
-          isScrolled
-            ? 'bg-[#000000]/90 backdrop-blur-md border-b border-white/10 mx-2 sm:mx-8 rounded-bl-[25px] rounded-br-[25px] shadow-[0_10px_30px_rgba(0,0,0,0.5)]'
+        className={`h-[80px] lg:h-[90px] flex items-center transition-all duration-300 ${
+          isScrolled || menuOpen
+            ? 'bg-[#020617]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.8)]'
             : isHome
             ? 'bg-transparent'
-            : 'bg-[#000000] mx-2 sm:mx-8 rounded-bl-[25px] rounded-br-[25px] border-b border-white/5'
+            : 'bg-[#020617] border-b border-white/5'
         }`}
       >
-        <div className="w-full max-w-[1440px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-[86px]">
+        <div className="w-full max-w-[1440px] mx-auto flex items-center justify-between px-4 sm:px-8 lg:px-[86px]">
           {/* Logo */}
-          <Link to="/" className="h-[37px] w-[97px] shrink-0 relative overflow-hidden">
+          <Link to="/" className="h-[34px] sm:h-[37px] w-[90px] sm:w-[97px] shrink-0 relative overflow-hidden">
             <img
               alt="Tapinfi Logo"
               src={imgLogo}
@@ -125,10 +145,11 @@ export default function Header() {
           {/* Desktop nav — hidden below lg */}
           <nav className="hidden lg:flex items-center gap-10" style={NAV_FONT}>
             <div className="flex items-center gap-10">
-              <Link to="/" className={linkClass('/')} style={NAV_FONT}>HOME</Link>
-              <Link to="/shop" className={linkClass('/shop')} style={NAV_FONT}>SHOP</Link>
-              <Link to="/blogs" className={linkClass('/blogs')} style={NAV_FONT}>BLOGS</Link>
-              <Link to="/about" className={linkClass('/about')} style={NAV_FONT}>ABOUT US</Link>
+              {navItems.map((item) => (
+                <Link key={item.path} to={item.path} className={linkClass(item.path)} style={NAV_FONT}>
+                  {item.label}
+                </Link>
+              ))}
             </div>
 
             {/* Cart icon */}
@@ -169,34 +190,34 @@ export default function Header() {
           </nav>
 
           {/* Mobile right actions */}
-          <div className="flex items-center gap-4 lg:hidden">
+          <div className="flex items-center gap-3 lg:hidden">
             <button 
               aria-label="Cart" 
-              className="text-white hover:text-[#5aa4f4] transition-colors relative p-1"
+              className="text-white hover:text-[#5aa4f4] transition-colors relative p-2"
               onClick={() => setIsCartOpen(true)}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-2 bg-[#5aa4f4] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#100425]">
+                <span className="absolute top-0 right-0 bg-[#5aa4f4] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#100425]">
                   {cartCount}
                 </span>
               )}
             </button>
             <button
-              className="text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
+              className="text-white p-2.5 rounded-full hover:bg-white/10 transition-all active:scale-95"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle menu"
             >
               {menuOpen ? (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
             </button>
@@ -204,43 +225,68 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile dropdown menu with backdrop */}
+      {/* Full-width Full-screen Mobile Navigation Drawer */}
       {menuOpen && (
-        <>
-          <div
-            className="fixed inset-0 top-[90px] bg-black/60 backdrop-blur-sm z-40 lg:hidden"
-            onClick={() => setMenuOpen(false)}
-          />
-          <div
-            className="relative z-50 lg:hidden bg-[#000000] border-t border-white/10 mx-2 sm:mx-8 rounded-b-[25px] px-6 py-6 flex flex-col gap-5 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200"
-            style={NAV_FONT}
-          >
-            <Link to="/" className={linkClass('/')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>HOME</Link>
-            <Link to="/shop" className={linkClass('/shop')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>SHOP</Link>
-            <Link to="/blogs" className={linkClass('/blogs')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>BLOGS</Link>
-            <Link to="/about" className={linkClass('/about')} style={NAV_FONT} onClick={() => setMenuOpen(false)}>ABOUT US</Link>
+        <div
+          className="fixed inset-x-0 top-[80px] bottom-0 bg-[#020617]/98 backdrop-blur-2xl z-40 lg:hidden flex flex-col justify-between p-6 sm:p-8 border-t border-white/10 overflow-y-auto animate-in fade-in slide-in-from-top-4 duration-300"
+        >
+          {/* Navigation Links */}
+          <nav className="flex flex-col space-y-4 pt-2">
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setMenuOpen(false)}
+                  className={`flex items-center justify-between p-4 rounded-2xl transition-all duration-200 font-['Poppins',sans-serif] ${
+                    isActive 
+                      ? 'bg-[#5aa4f4]/15 border border-[#5aa4f4]/40 text-[#5aa4f4] font-bold' 
+                      : 'text-white/90 hover:bg-white/5 hover:text-white font-medium'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    {isActive && <span className="w-2 h-2 rounded-full bg-[#5aa4f4] shadow-[0_0_10px_#5aa4f4]" />}
+                    <span className="text-xl tracking-wider">{item.label}</span>
+                  </div>
+                  <ChevronRight className={`w-5 h-5 ${isActive ? 'text-[#5aa4f4]' : 'text-white/40'}`} />
+                </Link>
+              );
+            })}
+          </nav>
 
+          {/* Bottom Actions & Support info */}
+          <div className="space-y-6 pt-6 border-t border-white/10 mt-auto">
             {session ? (
               <Link
                 to="/orders"
-                className="text-center border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 mt-2 bg-white/10"
-                style={NAV_FONT}
                 onClick={() => setMenuOpen(false)}
+                className="w-full h-14 bg-[#5aa4f4] text-white font-['Poppins',sans-serif] font-bold rounded-2xl flex items-center justify-center gap-2 text-lg shadow-lg shadow-[#5aa4f4]/30 hover:bg-[#4a94e4] transition-all"
               >
-                ORDERS
+                MY ORDERS
               </Link>
             ) : (
               <a
                 href="https://tapinfi.vercel.app/"
-                className="text-center border border-white text-white rounded-[50px] px-6 py-2 hover:bg-white hover:text-[#100425] transition-all duration-200 mt-2"
-                style={NAV_FONT}
                 onClick={() => setMenuOpen(false)}
+                className="w-full h-14 bg-gradient-to-r from-[#5aa4f4] to-[#0e2d6e] text-white font-['Poppins',sans-serif] font-bold rounded-2xl flex items-center justify-center gap-2 text-lg shadow-lg shadow-[#5aa4f4]/20 hover:opacity-95 transition-all"
               >
-                LOGIN
+                LOGIN TO DASHBOARD
               </a>
             )}
+
+            <div className="grid grid-cols-2 gap-3 text-xs text-white/60 pt-2 font-['Inter',sans-serif]">
+              <a href="mailto:support@tapinfi.com" className="flex items-center gap-2 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                <Mail className="w-4 h-4 text-[#5aa4f4]" />
+                <span className="truncate">Email Us</span>
+              </a>
+              <a href="tel:+917340181915" className="flex items-center gap-2 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                <Phone className="w-4 h-4 text-[#5aa4f4]" />
+                <span>+91 7340181915</span>
+              </a>
+            </div>
           </div>
-        </>
+        </div>
       )}
       
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
