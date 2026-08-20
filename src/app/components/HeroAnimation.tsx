@@ -94,11 +94,11 @@ export default function HeroAnimation() {
   const groupX = useTransform(activeProgress, [0.55, 0.65], [0, endX]);
   const groupY = useTransform(activeProgress, [0.50, 0.65], [0, endY]);
 
-  const cardX = useTransform(activeProgress, [0.04, 0.12, 0.30],
-    [0, 0, isMobile ? 45 : isTablet ? 100 : 185]
+  const cardX = useTransform(activeProgress, [0, 0.06, 0.12, 0.30],
+    [0, 0, 0, isMobile ? 45 : isTablet ? 100 : 185]
   );
-  const cardY = useTransform(activeProgress, [0.04, 0.12, 0.30],
-    [0, 0, isMobile ? -120 : isTablet ? -180 : -255]
+  const cardY = useTransform(activeProgress, [0, 0.06, 0.12, 0.30],
+    [isMobile ? 35 : 85, isMobile ? 35 : 85, 0, isMobile ? -120 : isTablet ? -180 : -255]
   );
   const cardRotateZ = useTransform(activeProgress, [0.04, 0.12, 0.30],
     [0, 0, isMobile ? -8 : -20]
@@ -108,7 +108,7 @@ export default function HeroAnimation() {
   );
   const cardScale = useTransform(activeProgress, [0.04, 0.12, 0.30, 0.55, 0.62],
     isMobile ? [0.85, 0.85, 0.42, 0.42, 0] :
-      isTablet ? [0.95, 0.95, 0.42, 0.42, 0] : [1.1, 1.1, 0.48, 0.48, 0]
+      isTablet ? [0.95, 0.95, 0.42, 0.42, 0] : [1.05, 1.05, 0.48, 0.48, 0]
   );
   const cardOpacity = useTransform(activeProgress, [0.55, 0.62], [1, 0]);
 
@@ -135,14 +135,14 @@ export default function HeroAnimation() {
       {/* Hero Animation Track - Compact 1100px on mobile for fast, responsive iPhone scrolling */}
       <div className="relative h-[1100px] sm:h-[1800px] lg:h-[2000px] z-10">
         <motion.div
-          className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden pt-[70px] sm:pt-[90px]"
+          className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-x-clip pt-[70px] sm:pt-[90px]"
           style={{ willChange: 'transform, opacity', backfaceVisibility: 'hidden' }}
         >
 
           {/* Introductory Title (Visible at scroll 0, fades out as user scrolls) */}
           <motion.div
             style={{ opacity: introOpacity, y: introY, pointerEvents: 'none' }}
-            className="absolute top-[90px] sm:top-[120px] lg:top-[140px] z-20 text-center px-4 max-w-xl flex flex-col items-center"
+            className="absolute top-[85px] sm:top-[105px] lg:top-[115px] z-20 text-center px-4 max-w-xl flex flex-col items-center"
           >
             <h1 className="text-[26px] sm:text-[42px] lg:text-[52px] font-black tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/60 drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
               Next-Gen Smart Cards

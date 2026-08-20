@@ -893,7 +893,7 @@ function Group25() {
 
 function Website() {
   return (
-    <div className="relative bg-[#020617] w-full max-w-full min-h-screen overflow-x-hidden flex flex-col items-center" data-name="Website">
+    <div className="relative bg-[#020617] w-full max-w-full min-h-screen overflow-x-clip flex flex-col items-center" data-name="Website">
       {/* Background radial glow decorations to recreate the missing glow effect properly */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden">
         <div className="absolute top-[300px] left-1/2 -translate-x-1/2 w-[1100px] max-w-full h-[700px] rounded-full bg-[#5AA4F4]/15 blur-[160px]" />
@@ -955,7 +955,7 @@ export default function Frame() {
   }, []);
 
   return (
-    <div className="relative w-full max-w-full overflow-x-hidden">
+    <div className="relative w-full max-w-full overflow-x-clip">
       <Website />
     </div>
   );

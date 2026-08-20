@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase';
 import imgLogo from '../../imports/Frame1-1/f00b995e56d83fe3818dbb20f3489f43c9842118.png';
 import { useCart } from '../context/CartContext';
 import LoginModal from './LoginModal';
-import { ChevronRight, Mail, Phone } from 'lucide-react';
+import { Home, ShoppingBag, FileText, Users, LogIn, Package, X, Menu } from 'lucide-react';
 
 const NAV_FONT: React.CSSProperties = {
   fontFamily: "'Inter', sans-serif",
@@ -30,19 +30,7 @@ export default function Header() {
     setMenuOpen(false);
   }, [location.pathname]);
 
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [menuOpen]);
-
-  // Click-outside dismissal for desktop header
+  // Click-outside dismissal for mobile dropdown and desktop header
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
@@ -66,8 +54,9 @@ export default function Header() {
 
       setIsScrolled(currentScrollY > 50);
 
-      // Keep navbar visible if mobile dropdown menu is open
+      // Keep navbar 100% visible if mobile dropdown menu is open
       if (menuOpen) {
+        setVisible(true);
         setLastScrollY(currentScrollY);
         return;
       }
@@ -107,27 +96,25 @@ export default function Header() {
     }`;
 
   const navItems = [
-    { label: 'HOME', path: '/' },
-    { label: 'SHOP', path: '/shop' },
-    { label: 'BLOGS', path: '/blogs' },
-    { label: 'ABOUT US', path: '/about' },
+    { label: 'Home', path: '/', icon: Home },
+    { label: 'Shop', path: '/shop', icon: ShoppingBag },
+    { label: 'Blog', path: '/blogs', icon: FileText },
+    { label: 'About Us', path: '/about', icon: Users },
   ];
 
   return (
     <div
       ref={headerRef}
       className={`fixed left-0 right-0 top-0 z-[100] transition-all duration-300 ${
-        visible ? 'translate-y-0' : '-translate-y-full'
+        visible || menuOpen ? 'translate-y-0' : '-translate-y-full'
       }`}
     >
       {/* Main bar */}
       <div
         className={`h-[80px] lg:h-[90px] flex items-center transition-all duration-300 ${
-          isScrolled || menuOpen
-            ? 'bg-[#020617]/95 backdrop-blur-xl border-b border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.8)]'
-            : isHome
-            ? 'bg-transparent'
-            : 'bg-[#020617] border-b border-white/5'
+          isScrolled || menuOpen || !isHome
+            ? 'bg-[#040817] border-b border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.8)]'
+            : 'bg-transparent'
         }`}
       >
         <div className="w-full max-w-[1440px] mx-auto flex items-center justify-between px-4 sm:px-8 lg:px-[86px]">
@@ -145,7 +132,7 @@ export default function Header() {
             <div className="flex items-center gap-10">
               {navItems.map((item) => (
                 <Link key={item.path} to={item.path} className={linkClass(item.path)} style={NAV_FONT}>
-                  {item.label}
+                  {item.label.toUpperCase()}
                 </Link>
               ))}
             </div>
@@ -188,10 +175,10 @@ export default function Header() {
           </nav>
 
           {/* Mobile right actions */}
-          <div className="flex items-center gap-3 lg:hidden">
+          <div className="flex items-center gap-4 lg:hidden">
             <button 
               aria-label="Cart" 
-              className="text-white hover:text-[#5aa4f4] transition-colors relative p-2"
+              className="text-white hover:text-[#5aa4f4] transition-colors relative p-1.5"
               onClick={() => setIsCartOpen(true)}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,109 +186,99 @@ export default function Header() {
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               {cartCount > 0 && (
-                <span className="absolute top-0 right-0 bg-[#5aa4f4] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#100425]">
+                <span className="absolute -top-1 -right-1.5 bg-[#5aa4f4] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#100425]">
                   {cartCount}
                 </span>
               )}
             </button>
 
-            {/* Hamburger Toggle Button with stopPropagation */}
+            {/* Hamburger / Close Circular Toggle Button matching screenshot */}
             <button
-              className="text-white p-2.5 rounded-full hover:bg-white/10 transition-all active:scale-95 cursor-pointer relative z-[110]"
+              className={`w-10 h-10 rounded-full border transition-all flex items-center justify-center cursor-pointer relative z-[110] active:scale-95 ${
+                menuOpen
+                  ? 'border-white/80 bg-white/10 text-white shadow-[0_0_15px_rgba(255,255,255,0.2)]'
+                  : 'border-white/50 bg-white/5 text-white hover:bg-white/10 hover:border-white/70'
+              }`}
               onClick={(e) => {
                 e.stopPropagation();
+                setVisible(true);
                 setMenuOpen(prev => !prev);
               }}
               aria-label="Toggle menu"
             >
               {menuOpen ? (
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="w-5 h-5 text-white" />
               ) : (
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+                <Menu className="w-5 h-5 text-white" />
               )}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Backdrop & Navigation Drawer */}
+      {/* Mobile Popover Dropdown Card */}
       {menuOpen && (
-        <>
-          {/* Backdrop overlay */}
-          <div
-            className="fixed inset-0 top-[80px] lg:top-[90px] bg-black/70 backdrop-blur-md z-[80] lg:hidden"
-            onClick={() => setMenuOpen(false)}
-          />
+        <div className="absolute top-[76px] right-4 sm:right-8 w-64 bg-[#080d1e]/98 backdrop-blur-2xl border border-white/15 rounded-2xl p-2.5 shadow-[0_25px_60px_rgba(0,0,0,0.85)] z-[120] lg:hidden animate-in fade-in zoom-in-95 duration-200">
+          {/* Top Notch / Triangular Arrow pointing to circular button */}
+          <div className="absolute -top-[7px] right-[14px] w-3.5 h-3.5 bg-[#080d1e] rotate-45 border-t border-l border-white/15" />
 
-          {/* Full-screen drawer */}
-          <div
-            className="fixed inset-x-0 top-[80px] lg:top-[90px] bottom-0 bg-[#020617] z-[90] lg:hidden flex flex-col justify-between p-6 sm:p-8 border-t border-white/10 overflow-y-auto animate-in fade-in slide-in-from-top-4 duration-300"
-          >
-            {/* Navigation Links */}
-            <nav className="flex flex-col space-y-4 pt-2">
-              {navItems.map((item) => {
-                const isActive = location.pathname === item.path;
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => setMenuOpen(false)}
-                    className={`flex items-center justify-between p-4 rounded-2xl transition-all duration-200 font-['Poppins',sans-serif] ${
-                      isActive 
-                        ? 'bg-[#5aa4f4]/15 border border-[#5aa4f4]/40 text-[#5aa4f4] font-bold' 
-                        : 'text-white/90 hover:bg-white/5 hover:text-white font-medium'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      {isActive && <span className="w-2 h-2 rounded-full bg-[#5aa4f4] shadow-[0_0_10px_#5aa4f4]" />}
-                      <span className="text-xl tracking-wider">{item.label}</span>
-                    </div>
-                    <ChevronRight className={`w-5 h-5 ${isActive ? 'text-[#5aa4f4]' : 'text-white/40'}`} />
-                  </Link>
-                );
-              })}
-            </nav>
+          <nav className="flex flex-col gap-1 relative z-20">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive =
+                item.path === '/'
+                  ? location.pathname === '/'
+                  : location.pathname.startsWith(item.path);
 
-            {/* Bottom Actions & Support info */}
-            <div className="space-y-6 pt-6 border-t border-white/10 mt-auto">
-              {session ? (
+              return (
                 <Link
-                  to="/orders"
+                  key={item.path}
+                  to={item.path}
                   onClick={() => setMenuOpen(false)}
-                  className="w-full h-14 bg-[#5aa4f4] text-white font-['Poppins',sans-serif] font-bold rounded-2xl flex items-center justify-center gap-2 text-lg shadow-lg shadow-[#5aa4f4]/30 hover:bg-[#4a94e4] transition-all"
+                  className={`flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all ${
+                    isActive
+                      ? 'bg-[#182645] text-[#5aa4f4] font-semibold'
+                      : 'text-white/90 hover:bg-white/10 hover:text-white font-medium'
+                  }`}
                 >
-                  MY ORDERS
+                  <Icon className={`w-5 h-5 ${isActive ? 'text-[#5aa4f4]' : 'text-white/90'}`} />
+                  <span className="text-base tracking-wide">{item.label}</span>
                 </Link>
-              ) : (
-                <a
-                  href="https://tapinfi.vercel.app/"
-                  onClick={() => setMenuOpen(false)}
-                  className="w-full h-14 bg-gradient-to-r from-[#5aa4f4] to-[#0e2d6e] text-white font-['Poppins',sans-serif] font-bold rounded-2xl flex items-center justify-center gap-2 text-lg shadow-lg shadow-[#5aa4f4]/20 hover:opacity-95 transition-all"
-                >
-                  LOGIN TO DASHBOARD
-                </a>
-              )}
+              );
+            })}
 
-              <div className="grid grid-cols-2 gap-3 text-xs text-white/60 pt-2 font-['Inter',sans-serif]">
-                <a href="mailto:support@tapinfi.com" className="flex items-center gap-2 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                  <Mail className="w-4 h-4 text-[#5aa4f4]" />
-                  <span className="truncate">Email Us</span>
-                </a>
-                <a href="tel:+917340181915" className="flex items-center gap-2 p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                  <Phone className="w-4 h-4 text-[#5aa4f4]" />
-                  <span>+91 7340181915</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </>
+            <div className="h-[1px] bg-white/10 my-1.5" />
+
+            {session ? (
+              <Link
+                to="/orders"
+                onClick={() => setMenuOpen(false)}
+                className={`flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all ${
+                  location.pathname.startsWith('/orders')
+                    ? 'bg-[#182645] text-[#5aa4f4] font-semibold'
+                    : 'text-white/90 hover:bg-white/10 hover:text-white font-medium'
+                }`}
+              >
+                <Package className={`w-5 h-5 ${location.pathname.startsWith('/orders') ? 'text-[#5aa4f4]' : 'text-white/90'}`} />
+                <span className="text-base tracking-wide">My Orders</span>
+              </Link>
+            ) : (
+              <a
+                href="https://tapinfi.vercel.app/"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-3.5 px-4 py-3 rounded-xl text-white/90 hover:bg-white/10 hover:text-white font-medium transition-all"
+              >
+                <LogIn className="w-5 h-5 text-white/90" />
+                <span className="text-base tracking-wide">Login</span>
+              </a>
+            )}
+          </nav>
+        </div>
       )}
       
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </div>
   );
 }
+
+

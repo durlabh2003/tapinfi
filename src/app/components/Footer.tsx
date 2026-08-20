@@ -63,7 +63,7 @@ export default function Footer() {
             &copy; 2025 Tapinfi. All Rights Reserved.
           </p>
           <div className="flex flex-wrap justify-center gap-6">
-            <Link to="/refund-policy" className="text-white/40 hover:text-white text-xs transition-colors font-['Inter']">Refund Policy</Link>
+            <Link to="/refund-policy" className="text-white/40 hover:text-white text-xs transition-colors font-['Inter']">Refund & Return Policy</Link>
             <Link to="/privacy-policy" className="text-white/40 hover:text-white text-xs transition-colors font-['Inter']">Privacy Policy</Link>
             <Link to="/terms" className="text-white/40 hover:text-white text-xs transition-colors font-['Inter']">Terms & Conditions</Link>
           </div>
